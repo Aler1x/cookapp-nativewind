@@ -4,6 +4,7 @@ import { Text } from '~/components/ui/text';
 import { Button } from '~/components/ui/button';
 import { useColorScheme } from '~/lib/useColorScheme';
 import { MoonStar, Sun } from '~/assets/icons';
+import { Link } from '~/components/ui/button-link';
 
 export default function Content() {
   const { colorScheme, toggleColorScheme } = useColorScheme();
@@ -15,7 +16,7 @@ export default function Content() {
           <View className="flex flex-col items-center gap-4 text-center">
             <Text
               role="heading"
-              className="text-3xl text-center native:text-5xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl"
+              className="text-3xl text-center native:text-4xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl"
             >
               Welcome to Project ACME
             </Text>
@@ -28,8 +29,9 @@ export default function Content() {
               {colorScheme === 'dark' ? <MoonStar className='text-foreground' /> : <Sun className='text-foreground' />}
             </Button>
 
-            <View className="gap-4">
-            </View>
+            <Link href='/(tabs)/search/results'>
+              <Text>Search</Text>
+            </Link>
           </View>
         </View>
       </View>

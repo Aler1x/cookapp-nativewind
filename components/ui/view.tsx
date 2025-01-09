@@ -13,7 +13,7 @@ const View = React.forwardRef<ViewRef, SlottableViewProps>(
 
     return (
       <Component
-        className={cn('flex bg-background', viewClass, className)}
+        className={cn(viewClass, className)}
         ref={ref}
         {...props}
       />
