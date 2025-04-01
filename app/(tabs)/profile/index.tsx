@@ -13,7 +13,7 @@ export default function Page() {
       <Link href="/profile/preferences">
         <Text>Preferences</Text>
       </Link>
-      <Link href="/profile/achievements">
+      <Link href="(tabs)/profile/achievements">
         <Text>Achievements</Text>
       </Link>
       <Link href="/profile/settings">

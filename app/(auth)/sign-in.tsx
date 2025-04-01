@@ -19,7 +19,7 @@ export default function SignInScreen() {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'heightr'}
       keyboardVerticalOffset={Platform.OS === 'ios' ? 50 : 0}
       className="flex-1"
     >

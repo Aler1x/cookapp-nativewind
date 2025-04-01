@@ -1,60 +1,74 @@
-import { Tabs, Stack, useSegments  } from 'expo-router';
+import { Tabs, usePathname } from 'expo-router';
 import React from 'react';
 import { Platform } from 'react-native';
 import { useColorScheme } from '~/lib/useColorScheme';
 import { NAV_THEME } from '~/lib/constants';
 import { CirclePlus, LibraryBig, ShoppingBasket, CircleUserRound, Search } from '~/assets/icons';
-import NavBar from '~/components/nav-bar';
-import { View } from '~/components/ui/view';
 
 export default function RootLayout() {
-  const segments = useSegments();
-
-  const hideNavBarRoutes = ['achievements', 'settings', 'preferences', 'filters'];
-  const hideNavbar = hideNavBarRoutes.some((route) => segments.includes(route));
+  const { isDarkColorScheme } = useColorScheme();
 
   return (
-    <View className='flex-1'>
-      <Stack
-        screenOptions={{
-          headerShown: false,
-          animation: 'none',
+    <Tabs
+      screenOptions={{
+        headerShown: false,
+        tabBarActiveTintColor: isDarkColorScheme ? NAV_THEME.dark.colors.foreground : NAV_THEME.light.colors.foreground,
+        tabBarShowLabel: false,
+        tabBarHideOnKeyboard: true,
+        tabBarStyle: Platform.select({
+          ios: {
+            position: 'absolute',
+          },
+          default: {
+            backgroundColor: isDarkColorScheme ? NAV_THEME.dark.colors.background : NAV_THEME.light.colors.background,
+            borderTopWidth: 0,
+            borderLeftWidth: 0,
+            borderRightWidth: 0,
+            borderBottomWidth: 0,
+            paddingTop: 0,
+            paddingBottom: 20,
+            paddingLeft: 0,
+            paddingRight: 0,
+          }
+        }),
+        animation: 'fade',
+      }}
+    >
+      <Tabs.Screen
+        name="search"
+        options={{
+          title: 'Search',
+          tabBarIcon: ({ color }) => <Search size={28} color={color} />,
         }}
-      >
-        <Stack.Screen
-          name="search"
-          options={{
-            title: 'Search',
-          }}
-        />
-        <Stack.Screen
-          name="library"
-          options={{
-            title: 'Library',
-          }}
-        />
-        <Stack.Screen
-          name="create"
-          options={{
-            title: 'Create',
-          }}
-        />
-        <Stack.Screen
-          name="shopping"
-          options={{
-            title: 'Shopping',
-          }}
-        />
-        <Stack.Screen
-          name="profile"
-          options={{
-            title: 'Profile',
-          }}
-        />
-      </Stack>
-
-      {!hideNavbar &&  <NavBar />}
-
-    </View>
+      />
+      <Tabs.Screen
+        name="library"
+        options={{
+          title: 'Library',
+          tabBarIcon: ({ color }) => <LibraryBig size={28} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="create"
+        options={{
+          title: 'Create',
+          tabBarIcon: ({ color }) => <CirclePlus size={28} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="shopping"
+        options={{
+          title: 'Shopping',
+          tabBarIcon: ({ color }) => <ShoppingBasket size={28} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: 'Profile',
+          tabBarIcon: ({ color }) => <CircleUserRound size={28} color={color} />,
+        }}
+      />
+    </Tabs>
   );
 }
