@@ -1,4 +1,4 @@
-import { ThemeProvider, Theme } from "@react-navigation/native";
+import { ThemeProvider } from "@react-navigation/native";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { NAV_THEME } from "~/lib/constants";
@@ -16,6 +16,8 @@ import {
 } from "@expo-google-fonts/comfortaa";
 import "~/app/global.css";
 import { useEffect } from 'react';
+import { ClerkProvider, ClerkLoaded } from '@clerk/clerk-expo'
+import { tokenCache } from '@clerk/clerk-expo/token-cache'
 
 SplashScreen.preventAutoHideAsync();
 
@@ -42,23 +44,30 @@ export default function Layout() {
   }
 
   return (
-    <SafeAreaProvider>
-      <ThemeProvider
-        value={isDarkColorScheme ? NAV_THEME.dark : NAV_THEME.light}
-      >
-        <Stack
-          screenOptions={{
-            headerShown: false,
-          }}
-        >
-          {/* <Stack.Screen name="(auth)" /> */}
-          <Stack.Screen name="(tabs)" />
-          <Stack.Screen name="+not-found" />
-        </Stack>
+    <ClerkProvider tokenCache={tokenCache}>
+      <ClerkLoaded>
+        <SafeAreaProvider>
+          <ThemeProvider
+            value={isDarkColorScheme ? NAV_THEME.dark : NAV_THEME.light}
+          >
+            <Stack
+              screenOptions={{
+                headerShown: false,
+                contentStyle: {
+                  backgroundColor: isDarkColorScheme ? NAV_THEME.dark.colors.background : NAV_THEME.light.colors.background,
+                },
+              }}
+            >
+              <Stack.Screen name="(auth)" />
+              <Stack.Screen name="(tabs)" />
+              <Stack.Screen name="+not-found" />
+            </Stack>
 
-        <PortalHost />
-        <StatusBar style="auto" />
-      </ThemeProvider>
-    </SafeAreaProvider>
+            <PortalHost />
+            <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
+          </ThemeProvider>
+        </SafeAreaProvider>
+      </ClerkLoaded>
+    </ClerkProvider>
   );
 }

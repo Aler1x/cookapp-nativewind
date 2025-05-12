@@ -2,20 +2,22 @@
   "expo": {
     "name": "cookapp-nativewind",
     "slug": "cookapp-nativewind",
-    "scheme": "cookapp",
+    "scheme": "cookapp-nativewind",
     "version": "1.0.0",
     "userInterfaceStyle": "automatic",
     "icon": "./assets/images/icon.png",
     "newArchEnabled": true,
     "orientation": "default",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.yourcompany.cookapp-nativewind"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.yourcompany.cookappnativewind"
     },
     "web": {
       "output": "static",
@@ -50,7 +52,8 @@
             "./node_modules/@expo-google-fonts/comfortaa/Comfortaa_700Bold.ttf"
           ]
         }
-      ]
+      ],
+      "expo-web-browser"
     ]
   }
 }

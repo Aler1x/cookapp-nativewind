@@ -10,6 +10,8 @@ import {
   CircleUserRound,
   CirclePlus,
 } from "lucide-react-native";
+import Google from "./google";
+import Apple from "./apple";
 import { iconWithClassName } from "~/lib/iconWithClassName";
 
 iconWithClassName(MoonStar);
@@ -34,4 +36,6 @@ export {
   ShoppingBasket,
   CircleUserRound,
   CirclePlus,
+  Google,
+  Apple,
 };
