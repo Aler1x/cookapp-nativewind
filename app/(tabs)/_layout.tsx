@@ -1,5 +1,4 @@
-import { Tabs, usePathname } from 'expo-router';
-import React from 'react';
+import { Tabs } from 'expo-router';
 import { Platform } from 'react-native';
 import { useColorScheme } from '~/lib/useColorScheme';
 import { NAV_THEME } from '~/lib/constants';
@@ -21,23 +20,25 @@ export default function RootLayout() {
           },
           default: {
             backgroundColor: isDarkColorScheme ? NAV_THEME.dark.colors.background : NAV_THEME.light.colors.background,
-            borderTopWidth: 0,
+            borderTopWidth: 1,
             borderLeftWidth: 0,
             borderRightWidth: 0,
             borderBottomWidth: 0,
-            paddingTop: 0,
-            paddingBottom: 20,
-            paddingLeft: 0,
-            paddingRight: 0,
+            paddingTop: 30,
+            paddingBottom: 70,
+            paddingLeft: 10,
+            paddingRight: 10,
+            borderTopLeftRadius: 60,
+            borderTopRightRadius: 60,
           }
         }),
-        animation: 'fade',
+        animation: 'shift',
       }}
     >
       <Tabs.Screen
-        name="search"
+        name="home"
         options={{
-          title: 'Search',
+          title: 'Home',
           tabBarIcon: ({ color }) => <Search size={28} color={color} />,
         }}
       />

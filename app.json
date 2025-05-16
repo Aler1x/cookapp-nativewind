@@ -53,7 +53,8 @@
           ]
         }
       ],
-      "expo-web-browser"
+      "expo-web-browser",
+      "expo-asset"
     ]
   }
 }

@@ -1,0 +1,84 @@
+@startuml
+left to right direction
+skinparam actorStyle awesome
+skinparam packageStyle rectangle
+
+' Define actors
+actor "Unauthorized User" as UnauthorizedUser
+actor "Authorized User" as AuthorizedUser
+actor "Chat Bot" as ChatBot
+
+' Define inheritance between actors
+UnauthorizedUser <|-- AuthorizedUser
+
+' Define boundaries
+rectangle "Recipe Collection System" {
+  ' Common use cases for both user types
+  usecase "See Recipes" as SeeRecipes
+  usecase "Filter Recipes" as FilterRecipes
+  usecase "Search Recipe" as SearchRecipe
+  usecase "See Recipe Details" as SeeRecipeDetails
+  
+  ' Unauthorized user specific use cases
+  usecase "Login" as Login
+  usecase "Register" as Register
+  
+  ' Authorized user specific use cases
+  usecase "Create Recipe" as CreateRecipe
+  usecase "Edit Created Recipes" as EditRecipe
+  usecase "Create Collections" as CreateCollections
+  usecase "Delete Collections" as DeleteCollections
+  usecase "Add Recipe to Collection" as AddToCollection
+  usecase "Remove Recipe from Collection" as RemoveFromCollection
+  usecase "Edit Collections" as EditCollections
+  usecase "Talk to Chat Bot" as TalkToChatBot
+  usecase "Add Ingredient to Shopping List" as AddToShoppingList
+  usecase "Mark Ingredient as Bought" as MarkAsBought
+  usecase "Wipe Shopping List" as WipeShoppingList
+  usecase "Share Shopping List" as ShareShoppingList
+  usecase "Change Measurement Units" as ChangeMeasurementUnits
+  usecase "Set Preferences" as SetPreferences
+  usecase "Share Recipe by Link" as ShareRecipe
+  usecase "Logout" as Logout
+
+  ' Chat bot specific use cases
+  usecase "Create Recipe via Bot" as BotCreateRecipe
+  usecase "Search Recipe via Bot" as BotSearchRecipe
+  usecase "Filter Recipe via Bot" as BotFilterRecipe
+}
+
+' Connect actors with use cases
+UnauthorizedUser --> SeeRecipes
+UnauthorizedUser --> FilterRecipes
+UnauthorizedUser --> SearchRecipe
+UnauthorizedUser --> SeeRecipeDetails
+UnauthorizedUser --> Login
+UnauthorizedUser --> Register
+
+AuthorizedUser --> CreateRecipe
+AuthorizedUser --> EditRecipe
+AuthorizedUser --> CreateCollections
+AuthorizedUser --> DeleteCollections
+AuthorizedUser --> TalkToChatBot
+AuthorizedUser --> AddToShoppingList
+AuthorizedUser --> MarkAsBought
+AuthorizedUser --> WipeShoppingList
+AuthorizedUser --> ShareShoppingList
+AuthorizedUser --> ChangeMeasurementUnits
+AuthorizedUser --> SetPreferences
+AuthorizedUser --> ShareRecipe
+AuthorizedUser --> Logout
+
+ChatBot --> BotCreateRecipe
+ChatBot --> BotSearchRecipe
+ChatBot --> BotFilterRecipe
+
+' Define relationships between use cases
+TalkToChatBot --> BotCreateRecipe : <<include>>
+TalkToChatBot --> BotSearchRecipe : <<include>>
+TalkToChatBot --> BotFilterRecipe : <<include>>
+CreateCollections --|> EditCollections : <<extends>>
+EditCollections --|> AddToCollection : <<includes>>
+EditCollections --|> RemoveFromCollection : <<includes>>
+
+@enduml

@@ -1,4 +1,4 @@
-import type { AuthResponse } from '~/types/auth';
+import type { AuthResponse } from '~/types';
 
 export async function signIn(email: string, password: string) {
   try {

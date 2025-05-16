@@ -18,6 +18,8 @@ import "~/app/global.css";
 import { useEffect } from 'react';
 import { ClerkProvider, ClerkLoaded } from '@clerk/clerk-expo'
 import { tokenCache } from '@clerk/clerk-expo/token-cache'
+import Toast from 'react-native-toast-message'
+import { toaster } from "~/components/toaster";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -44,7 +46,7 @@ export default function Layout() {
   }
 
   return (
-    <ClerkProvider tokenCache={tokenCache}>
+    <ClerkProvider tokenCache={tokenCache} afterSignOutUrl="/">
       <ClerkLoaded>
         <SafeAreaProvider>
           <ThemeProvider
@@ -56,14 +58,15 @@ export default function Layout() {
                 contentStyle: {
                   backgroundColor: isDarkColorScheme ? NAV_THEME.dark.colors.background : NAV_THEME.light.colors.background,
                 },
+                keyboardHandlingEnabled: true,
               }}
             >
-              <Stack.Screen name="(auth)" />
               <Stack.Screen name="(tabs)" />
               <Stack.Screen name="+not-found" />
             </Stack>
 
             <PortalHost />
+            <Toast topOffset={50} config={toaster} />
             <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
           </ThemeProvider>
         </SafeAreaProvider>

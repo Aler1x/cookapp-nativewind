@@ -9,9 +9,13 @@ import {
   ShoppingBasket,
   CircleUserRound,
   CirclePlus,
+  SearchIcon,
+  LogOut,
+  UserPen,
+  ChevronRight,
 } from "lucide-react-native";
-import Google from "./google";
-import Apple from "./apple";
+import GoogleIcon from "./google";
+import AppleIcon from "./apple";
 import { iconWithClassName } from "~/lib/iconWithClassName";
 
 iconWithClassName(MoonStar);
@@ -24,7 +28,10 @@ iconWithClassName(LibraryBig);
 iconWithClassName(ShoppingBasket);
 iconWithClassName(CircleUserRound);
 iconWithClassName(CirclePlus);
-
+iconWithClassName(SearchIcon);
+iconWithClassName(LogOut);
+iconWithClassName(UserPen);
+iconWithClassName(ChevronRight);
 export {
   MoonStar,
   Sun,
@@ -36,6 +43,10 @@ export {
   ShoppingBasket,
   CircleUserRound,
   CirclePlus,
-  Google,
-  Apple,
+  GoogleIcon,
+  AppleIcon,
+  SearchIcon,
+  LogOut,
+  UserPen,
+  ChevronRight,
 };

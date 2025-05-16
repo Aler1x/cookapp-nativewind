@@ -6,13 +6,15 @@ import { cn } from '~/lib/utils';
 
 const TextClassContext = React.createContext<string | undefined>(undefined);
 
-const Text = React.forwardRef<TextRef, SlottableTextProps>(
+type TextProps = SlottableTextProps;
+
+const Text = React.forwardRef<TextRef, TextProps>(
   ({ className, asChild = false, ...props }, ref) => {
     const textClass = React.useContext(TextClassContext);
     const Component = asChild ? Slot.Text : RNText;
     return (
       <Component
-        className={cn('text-base text-foreground web:select-text', textClass, className)}
+        className={cn('text-base text-foreground web:select-text tracking-[0.05em]', textClass, className)}
         ref={ref}
         {...props}
       />
