@@ -13,10 +13,12 @@ import {
   LogOut,
   UserPen,
   ChevronRight,
-} from "lucide-react-native";
-import GoogleIcon from "./google";
-import AppleIcon from "./apple";
-import { iconWithClassName } from "~/lib/iconWithClassName";
+  BotMessageSquare,
+  Heart,
+} from 'lucide-react-native';
+import GoogleIcon from './google';
+import AppleIcon from './apple';
+import { iconWithClassName } from '~/lib/iconWithClassName';
 
 iconWithClassName(MoonStar);
 iconWithClassName(Sun);
@@ -32,6 +34,8 @@ iconWithClassName(SearchIcon);
 iconWithClassName(LogOut);
 iconWithClassName(UserPen);
 iconWithClassName(ChevronRight);
+iconWithClassName(BotMessageSquare);
+iconWithClassName(Heart);
 export {
   MoonStar,
   Sun,
@@ -49,4 +53,6 @@ export {
   LogOut,
   UserPen,
   ChevronRight,
+  BotMessageSquare,
+  Heart,
 };

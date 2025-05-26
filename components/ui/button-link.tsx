@@ -67,21 +67,15 @@ cssInterop(ExpoLink, {
   className: 'style',
 });
 
-export function Link({ 
-  children, 
-  className,
-  variant,
-  size,
-  ...props 
-}: StyledLinkProps) {
+export function Link({ children, className, variant, size, ...props }: StyledLinkProps) {
   return (
     <TextClassContext.Provider
-      value={linkTextVariants({ variant, size, className: 'web:pointer-events-none' })}
-    >
-      <ExpoLink
-        className={cn(linkVariants({ variant, size, className }))}
-        {...props}
-      >
+      value={linkTextVariants({
+        variant,
+        size,
+        className: 'web:pointer-events-none',
+      })}>
+      <ExpoLink className={cn(linkVariants({ variant, size, className }))} {...props}>
         {children}
       </ExpoLink>
     </TextClassContext.Provider>

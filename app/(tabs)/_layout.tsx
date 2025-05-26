@@ -2,7 +2,7 @@ import { Tabs } from 'expo-router';
 import { Platform } from 'react-native';
 import { useColorScheme } from '~/lib/useColorScheme';
 import { NAV_THEME } from '~/lib/constants';
-import { CirclePlus, LibraryBig, ShoppingBasket, CircleUserRound, Search } from '~/assets/icons';
+import { BotMessageSquare, LibraryBig, ShoppingBasket, CircleUserRound, Search } from '~/assets/icons';
 
 export default function RootLayout() {
   const { isDarkColorScheme } = useColorScheme();
@@ -17,8 +17,6 @@ export default function RootLayout() {
         tabBarStyle: Platform.select({
           ios: {
             position: 'absolute',
-          },
-          default: {
             backgroundColor: isDarkColorScheme ? NAV_THEME.dark.colors.background : NAV_THEME.light.colors.background,
             borderTopWidth: 1,
             borderLeftWidth: 0,
@@ -30,41 +28,54 @@ export default function RootLayout() {
             paddingRight: 10,
             borderTopLeftRadius: 60,
             borderTopRightRadius: 60,
-          }
+          },
+          default: {
+            backgroundColor: isDarkColorScheme ? NAV_THEME.dark.colors.background : NAV_THEME.light.colors.background,
+            borderTopWidth: 1,
+            borderLeftWidth: 0,
+            borderRightWidth: 0,
+            borderBottomWidth: 0,
+            paddingTop: 20,
+            paddingBottom: 80,
+            paddingLeft: 10,
+            paddingRight: 10,
+            borderTopLeftRadius: 60,
+            borderTopRightRadius: 60,
+          },
         }),
         animation: 'shift',
       }}
-    >
+      initialRouteName='home'>
       <Tabs.Screen
-        name="home"
+        name='home'
         options={{
           title: 'Home',
           tabBarIcon: ({ color }) => <Search size={28} color={color} />,
         }}
       />
       <Tabs.Screen
-        name="library"
+        name='library'
         options={{
           title: 'Library',
           tabBarIcon: ({ color }) => <LibraryBig size={28} color={color} />,
         }}
       />
       <Tabs.Screen
-        name="create"
+        name='chat'
         options={{
-          title: 'Create',
-          tabBarIcon: ({ color }) => <CirclePlus size={28} color={color} />,
+          title: 'Chat',
+          tabBarIcon: ({ color }) => <BotMessageSquare size={28} color={color} />,
         }}
       />
       <Tabs.Screen
-        name="shopping"
+        name='shopping'
         options={{
           title: 'Shopping',
           tabBarIcon: ({ color }) => <ShoppingBasket size={28} color={color} />,
         }}
       />
       <Tabs.Screen
-        name="profile"
+        name='profile'
         options={{
           title: 'Profile',
           tabBarIcon: ({ color }) => <CircleUserRound size={28} color={color} />,

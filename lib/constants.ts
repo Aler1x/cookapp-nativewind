@@ -21,26 +21,26 @@ export const NAV_THEME = {
   light: {
     dark: false,
     colors: {
-      background: 'hsl(26 37% 96%)', // background
-      foreground: 'hsl(240 10% 3.9%)', // foreground
-      border: 'hsl(240 5.9% 90%)', // border
-      card: 'hsl(0 0% 100%)', // card
-      notification: 'hsl(0 84.2% 60.2%)', // destructive
-      primary: 'hsl(240 5.9% 10%)', // primary
-      text: 'hsl(240 10% 3.9%)', // foreground
+      background: 'hsl(26 37% 96%)', // --background
+      foreground: 'hsl(240 10% 3.9%)', // --foreground
+      border: 'hsl(240 5.9% 90%)', // --border
+      card: 'hsl(0 0% 100%)', // --card
+      notification: 'hsl(0 84.2% 60.2%)', // --destructive
+      primary: 'hsl(14 78% 66%)', // --primary
+      text: 'hsl(240 10% 3.9%)', // --foreground
     },
     fonts: fonts,
   },
   dark: {
     dark: true,
     colors: {
-      background: 'hsl(240 10% 3.9%)', // background
-      foreground: 'hsl(0 0% 98%)', // foreground
-      border: 'hsl(240 3.7% 15.9%)', // border
-      card: 'hsl(240 10% 3.9%)', // card
-      notification: 'hsl(0 72% 51%)', // destructive
-      primary: 'hsl(0 0% 98%)', // primary
-      text: 'hsl(0 0% 98%)', // foreground
+      background: 'hsl(23, 40%, 4%)', // --background (dark)
+      foreground: 'hsl(240, 10%, 96%)', // --foreground (dark)
+      border: 'hsl(240 3.7% 15.9%)', // --border (dark)
+      card: 'hsl(23, 40%, 4%)', // --card (dark)
+      notification: 'hsl(0 72% 51%)', // --destructive (dark)
+      primary: 'hsl(14 78% 34%)', // --primary (dark)
+      text: 'hsl(240, 10%, 96%)', // --foreground (dark)
     },
     fonts: fonts,
   },

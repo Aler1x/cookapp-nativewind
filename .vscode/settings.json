@@ -1,6 +1,15 @@
 {
-  "cSpell.words": [
-    "Comfortaa",
-    "Nativewind"
+  "cSpell.words": ["Comfortaa", "Nativewind"],
+  "sqltools.connections": [
+    {
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5432,
+      "driver": "PostgreSQL",
+      "name": "pg@docker",
+      "username": "root",
+      "database": "recipe_hub",
+      "password": "root"
+    }
   ]
 }

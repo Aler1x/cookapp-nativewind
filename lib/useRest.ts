@@ -26,7 +26,7 @@ export function useRest(endpoint: string, options: RestOptions = {}) {
 
   const baseUrl = options.baseUrl || process.env.EXPO_PUBLIC_API_ENDPOINT || '';
   const url = `${baseUrl}${endpoint}`;
-  
+
   const defaultHeaders = {
     'Content-Type': 'application/json',
     ...options.headers,
@@ -35,21 +35,17 @@ export function useRest(endpoint: string, options: RestOptions = {}) {
   /**
    * Helper function to handle API requests
    */
-  const handleRequest = async <T>(
-    method: string,
-    path: string = '',
-    data?: any
-  ): Promise<RestResponse<T>> => {
+  const handleRequest = async <T>(method: string, path: string = '', data?: any): Promise<RestResponse<T>> => {
     setIsLoading(true);
     setError(null);
-    
+
     try {
       const requestOptions: RequestInit = {
         method,
         headers: defaultHeaders,
       };
 
-      if (data && (method !== 'GET' && method !== 'HEAD')) {
+      if (data && method !== 'GET' && method !== 'HEAD') {
         requestOptions.body = JSON.stringify(data);
       }
 
@@ -76,34 +72,34 @@ export function useRest(endpoint: string, options: RestOptions = {}) {
     get: async <T>(): Promise<RestResponse<T>> => {
       return handleRequest<T>('GET');
     },
-    
+
     // Get a single resource by ID
     getById: async <T>(id: string): Promise<RestResponse<T>> => {
       return handleRequest<T>('GET', id);
     },
-    
+
     // Create a new resource
     post: async <T>(data: any): Promise<RestResponse<T>> => {
       return handleRequest<T>('POST', '', data);
     },
-    
+
     // Update a resource with ID
     put: async <T>(id: string, data: any): Promise<RestResponse<T>> => {
       return handleRequest<T>('PUT', id, data);
     },
-    
+
     // Partially update a resource
     patch: async <T>(id: string, data: any): Promise<RestResponse<T>> => {
       return handleRequest<T>('PATCH', id, data);
     },
-    
+
     // Delete a resource
     delete: async <T>(id: string): Promise<RestResponse<T>> => {
       return handleRequest<T>('DELETE', id);
     },
-    
+
     // Current state
     isLoading,
     error,
   };
-} 
+}

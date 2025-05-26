@@ -21,7 +21,7 @@ import { useRest } from '~/lib/useRest';
 // Basic usage
 function MyComponent() {
   const { get, getById, post, put, patch, delete: deleteItem, isLoading, error } = useRest('/items');
-  
+
   // Get all items
   const fetchItems = async () => {
     const response = await get<Item[]>();
@@ -29,47 +29,47 @@ function MyComponent() {
       // Use response.data
     }
   };
-  
+
   // Get item by ID
   const fetchItemById = async (id: string) => {
     const response = await getById<Item>(id);
     // Use response.data
   };
-  
+
   // Create new item
   const createItem = async (data: ItemInput) => {
     const response = await post<Item>(data);
     // Use response.data
   };
-  
+
   // Update item
   const updateItem = async (id: string, data: ItemInput) => {
     const response = await put<Item>(id, data);
     // Use response.data
   };
-  
+
   // Partially update item
   const patchItem = async (id: string, data: Partial<ItemInput>) => {
     const response = await patch<Item>(id, data);
     // Use response.data
   };
-  
+
   // Delete item
   const removeItem = async (id: string) => {
     const response = await deleteItem<Item>(id);
     // Handle deletion
   };
-  
+
   // Access loading state
   if (isLoading) {
     return <LoadingIndicator />;
   }
-  
+
   // Handle errors
   if (error) {
     return <ErrorComponent message={error.message} />;
   }
-  
+
   return (
     // Your component JSX
   );
@@ -118,4 +118,4 @@ The hook uses the `EXPO_PUBLIC_API_ENDPOINT` environment variable for the base U
 
 ## Example
 
-See `useRestExample.tsx` for a complete usage example. 
+See `useRestExample.tsx` for a complete usage example.

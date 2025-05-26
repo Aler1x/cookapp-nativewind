@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text } from '~/components/ui/text';
+import { Button } from '~/components/ui/button';
 import { View } from '~/components/ui/view';
-import RecipeCard from "~/components/recipe-card";
+import RecipeCard from '~/components/recipe-card';
 import CategoryBadge from '~/components/category-badge';
 import SearchBar from '~/components/search-bar';
 import { RecipePage } from '~/mockup/recipe-data';
 import { Recipe } from '~/types';
+import { Link } from '~/components/ui/button-link';
 
 // Category types for the filter badges
 const categories = [
@@ -27,7 +29,7 @@ export default function Page() {
     const loadData = async () => {
       try {
         const data = RecipePage;
-        setRecipes(data.data.slice(0, 10));
+        setRecipes(data?.data?.slice(0, 10));
       } catch (error) {
         console.error('Failed to load recipe data:', error);
       } finally {
@@ -39,37 +41,39 @@ export default function Page() {
   }, []);
 
   const getTotalDuration = (recipe: Recipe): number => {
-    const { preparation, cooking, baking, resting } = recipe.duration;
-    return (preparation || 0) + (cooking || 0) + (baking || 0) + (resting || 0);
+    const { preparation, cooking, resting } = recipe.duration;
+    return (preparation || 0) + (cooking || 0) + (resting || 0);
   };
 
-  const filteredRecipes = recipes.filter(recipe => 
-    recipe.title.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredRecipes = recipes.filter((recipe) => recipe.title.toLowerCase().includes(searchQuery.toLowerCase()));
 
-  const popularRecipes = [...recipes].sort((a, b) => 
-    (b.user_reactions?.rating || 0) - (a.user_reactions?.rating || 0)
-  ).slice(0, 5);
+  const popularRecipes = [...recipes]
+    .sort((a, b) => (b.user_reactions?.rating || 0) - (a.user_reactions?.rating || 0))
+    .slice(0, 5);
+
+  const colors = ['#ADD6CF', '#9FB693', '#F8E8C4', '#F0AF9E', '#E48364'];
+
+  const randomColor = () => colors[Math.floor(Math.random() * colors.length)];
 
   return (
-    <SafeAreaView className="flex-1 bg-background">
-      <ScrollView className="flex-1 px-4">
-        <View className="mt-4 mb-2 max-w-[180px]">
-          <Text className="text-2xl font-bold">What do you want to cook today?</Text>
+    <SafeAreaView className='flex-1 bg-background'>
+      <ScrollView className='flex-1 px-4'>
+        <View className='mt-4 mb-2 max-w-[220px]'>
+          <Text className='text-2xl' style={{ fontFamily: 'Comfortaa_700Bold' }}>
+            What do you want to cook today?
+          </Text>
         </View>
 
-        <SearchBar 
-          placeholder="Recipe, ingredient"
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-        />
+        <Link href='/home/filters' asChild>
+          <Button>
+            <Text>Filters</Text>
+          </Button>
+        </Link>
 
-        <ScrollView 
-          horizontal 
-          showsHorizontalScrollIndicator={false}
-          className="py-4"
-        >
-          {categories.map(category => (
+        <SearchBar placeholder='Recipe, ingredient' value={searchQuery} onChangeText={setSearchQuery} />
+
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} className='py-4'>
+          {categories.map((category) => (
             <CategoryBadge
               key={category.id}
               title={category.title}
@@ -79,31 +83,28 @@ export default function Page() {
           ))}
         </ScrollView>
 
-        <View className="mt-2 mb-4">
-          <View className="flex-row justify-between items-center mb-2">
-            <Text className="text-lg font-bold">Popular Recipes</Text>
+        <View className='mt-2 mb-4'>
+          <View className='flex-row justify-between items-center mb-2'>
+            <Text className='text-lg'>Popular Recipes</Text>
             <TouchableOpacity>
-              <Text className="text-sm text-gray-500">View all</Text>
+              <Text className='text-sm text-gray-500'>View all</Text>
             </TouchableOpacity>
           </View>
 
-          <ScrollView 
-            horizontal 
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ paddingRight: 16 }}
-          >
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ paddingRight: 16 }}>
             {loading ? (
               <Text>Loading recipes...</Text>
             ) : (
-              popularRecipes.map(recipe => (
+              popularRecipes.map((recipe) => (
                 <RecipeCard
                   key={recipe.id}
                   id={recipe.id}
                   title={recipe.title}
                   image={recipe.image.url}
-                  size="medium"
+                  size='medium'
                   rating={recipe.user_reactions?.rating || 0}
                   duration={getTotalDuration(recipe)}
+                  style={{ backgroundColor: randomColor() }}
                 />
               ))
             )}

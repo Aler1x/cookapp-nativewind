@@ -2,12 +2,7 @@ import { Platform } from 'react-native';
 
 // import { HelloWave } from '@/components/HelloWave';
 import { Image } from '~/components/ui/image';
-import Animated, {
-  interpolate,
-  useAnimatedRef,
-  useAnimatedStyle,
-  useScrollViewOffset,
-} from 'react-native-reanimated';
+import Animated, { interpolate, useAnimatedRef, useAnimatedStyle, useScrollViewOffset } from 'react-native-reanimated';
 import { View } from '~/components/ui/view';
 import { Text } from '~/components/ui/text';
 import { useBottomTabOverflow } from '~/components/TabBarBackground';
@@ -33,7 +28,7 @@ export default function HomeScreen() {
         {
           scale: interpolate(scrollOffset.value, [-HEADER_HEIGHT, 0, HEADER_HEIGHT], [2, 1, 1]),
         },
-      ] as const
+      ] as const,
     };
   });
 
@@ -44,13 +39,14 @@ export default function HomeScreen() {
         scrollEventThrottle={16}
         scrollIndicatorInsets={{ bottom }}
         contentContainerStyle={{ paddingBottom: bottom }}>
-        <Animated.View style={[
+        <Animated.View
+          style={[
             headerAnimatedStyle,
             {
               height: HEADER_HEIGHT,
               overflow: 'hidden',
-              backgroundColor: isDarkColorScheme ? '#1D3D47' : '#A1CEDC'
-            }
+              backgroundColor: isDarkColorScheme ? '#1D3D47' : '#A1CEDC',
+            },
           ]}>
           <Image
             source={require('~/assets/images/partial-react-logo.png')}
@@ -61,7 +57,7 @@ export default function HomeScreen() {
 
         <View className='flex-1 overflow-hidden gap-4 p-8'>
           <View className='flex-row gap-2 items-center'>
-            <Text className='text-3xl font-bold leading-8'>Welcome!</Text>
+            <Text className='text-3xl leading-8'>Welcome!</Text>
             <Animated.View className='animate-wave'>
               <Text className='text-2xl -mt-[6px]'>👋</Text>
             </Animated.View>
@@ -69,13 +65,12 @@ export default function HomeScreen() {
           <View className='gap-2 mb-0'>
             <Text className='text-lg font-semibold leading-8'>Step 1: Try it</Text>
             <Text>
-              Edit <Text className='font-semibold leading-6'>app/(tabs)/index.tsx</Text> to see changes.
-              Press{' '}
+              Edit <Text className='font-semibold leading-6'>app/(tabs)/index.tsx</Text> to see changes. Press{' '}
               <Text className='font-semibold leading-6'>
                 {Platform.select({
                   ios: 'cmd + d',
                   android: 'cmd + m',
-                  web: 'F12'
+                  web: 'F12',
                 })}
               </Text>{' '}
               to open developer tools.
@@ -83,22 +78,18 @@ export default function HomeScreen() {
           </View>
           <View className='gap-2 mb-0'>
             <Text className='text-lg font-semibold leading-8'>Step 2: Explore</Text>
-            <Text>
-              Tap the Explore tab to learn more about what's included in this starter app.
-            </Text>
+            <Text>Tap the Explore tab to learn more about what's included in this starter app.</Text>
           </View>
           <View className='gap-2 mb-0'>
             <Text className='text-lg font-semibold leading-8'>Step 3: Get a fresh start</Text>
             <Text>
-              When you're ready, run{' '}
-              <Text className='font-semibold'>npm run reset-project</Text> to get a fresh{' '}
+              When you're ready, run <Text className='font-semibold'>npm run reset-project</Text> to get a fresh{' '}
               <Text className='font-semibold'>app</Text> directory. This will move the current{' '}
-              <Text className='font-semibold'>app</Text> to{' '}
-              <Text className='font-semibold'>app-example</Text>.
+              <Text className='font-semibold'>app</Text> to <Text className='font-semibold'>app-example</Text>.
             </Text>
           </View>
         </View>
       </Animated.ScrollView>
-    </View >
+    </View>
   );
 }

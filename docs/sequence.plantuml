@@ -15,8 +15,6 @@ alt Not authenticated
     Clerk -> User: Present auth options
     User -> Clerk: Provide credentials
     Clerk --> App: Return auth token
-    App -> API: Send token for validation
-    API --> App: Confirm token validity
 end
 
 == Recipe Browsing ==

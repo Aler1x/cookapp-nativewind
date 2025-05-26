@@ -1,5 +1,3 @@
 {
-  "recommendations": [
-    "jebbs.plantuml"
-  ]
+  "recommendations": ["jebbs.plantuml"]
 }

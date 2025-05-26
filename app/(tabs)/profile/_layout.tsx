@@ -5,7 +5,7 @@ import { useColorScheme } from '~/lib/useColorScheme';
 
 export default function Layout() {
   const { isDarkColorScheme } = useColorScheme();
-  
+
   return (
     <Stack
       screenOptions={{
@@ -13,13 +13,9 @@ export default function Layout() {
         contentStyle: {
           backgroundColor: isDarkColorScheme ? NAV_THEME.dark.colors.background : NAV_THEME.light.colors.background,
         },
-      }}
-    >
-      <Stack.Screen name="index" options={{ headerShown: false }} />
-      <Stack.Screen name="settings" />
-      <Stack.Screen name="achievements" />
-      <Stack.Screen name="preferences" />
+      }}>
+      <Stack.Screen name='index' options={{ headerShown: false }} />
+      <Stack.Screen name='settings' options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
     </Stack>
   );
 }
-

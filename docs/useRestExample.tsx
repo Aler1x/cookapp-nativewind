@@ -36,7 +36,7 @@ export function UserComponent() {
       name: 'John Doe',
       email: 'john@example.com',
     };
-    
+
     const response = await post<User>(newUser);
     if (response.data) {
       setUsers([...users, response.data]);
@@ -49,10 +49,10 @@ export function UserComponent() {
       name: 'Jane Doe',
       email: 'jane@example.com',
     };
-    
+
     const response = await put<User>(id, updatedUser);
     if (response.data) {
-      setUsers(users.map(user => user.id === id ? response.data! : user));
+      setUsers(users.map((user) => (user.id === id ? response.data! : user)));
     }
   };
 
@@ -61,10 +61,10 @@ export function UserComponent() {
     const userPatch = {
       name: 'John Updated',
     };
-    
+
     const response = await patch<User>(id, userPatch);
     if (response.data) {
-      setUsers(users.map(user => user.id === id ? response.data! : user));
+      setUsers(users.map((user) => (user.id === id ? response.data! : user)));
     }
   };
 
@@ -72,7 +72,7 @@ export function UserComponent() {
   const removeUser = async (id: string) => {
     const response = await deleteUser<User>(id);
     if (response.data) {
-      setUsers(users.filter(user => user.id !== id));
+      setUsers(users.filter((user) => user.id !== id));
     }
   };
 
@@ -92,17 +92,19 @@ export function UserComponent() {
   return (
     <View>
       <Text>Users: {users.length}</Text>
-      <Button title="Create User" onPress={createUser} />
-      {users.map(user => (
+      <Button title='Create User' onPress={createUser} />
+      {users.map((user) => (
         <View key={user.id}>
-          <Text>{user.name} ({user.email})</Text>
-          <Button title="View Details" onPress={() => fetchUserById(user.id)} />
-          <Button title="Update" onPress={() => updateUser(user.id)} />
-          <Button title="Patch" onPress={() => patchUser(user.id)} />
-          <Button title="Delete" onPress={() => removeUser(user.id)} />
+          <Text>
+            {user.name} ({user.email})
+          </Text>
+          <Button title='View Details' onPress={() => fetchUserById(user.id)} />
+          <Button title='Update' onPress={() => updateUser(user.id)} />
+          <Button title='Patch' onPress={() => patchUser(user.id)} />
+          <Button title='Delete' onPress={() => removeUser(user.id)} />
         </View>
       ))}
-      
+
       {currentUser && (
         <View>
           <Text>Selected User:</Text>
@@ -113,4 +115,4 @@ export function UserComponent() {
       )}
     </View>
   );
-} 
+}

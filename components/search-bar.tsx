@@ -10,28 +10,23 @@ interface SearchBarProps {
   onSubmit?: () => void;
 }
 
-export default function SearchBar({
-  placeholder = 'Search...',
-  value,
-  onChangeText,
-  onSubmit
-}: SearchBarProps) {
+export default function SearchBar({ placeholder = 'Search...', value, onChangeText, onSubmit }: SearchBarProps) {
   return (
-    <View className="flex-row items-center bg-gray-100 rounded-full px-4 py-2 my-3">
-      <Ionicons name="search" size={20} color="#9CA3AF" />
+    <View className='flex-row items-center bg-gray-100 rounded-full px-4 py-2 my-3'>
+      <Ionicons name='search' size={20} color='#9CA3AF' />
       <TextInput
-        className="flex-1 ml-2 text-base"
+        className='flex-1 ml-2 text-base'
         placeholder={placeholder}
         value={value}
         onChangeText={onChangeText}
         onSubmitEditing={onSubmit}
-        returnKeyType="search"
+        returnKeyType='search'
       />
       {value.length > 0 && (
         <TouchableOpacity onPress={() => onChangeText('')}>
-          <Ionicons name="close-circle" size={20} color="#9CA3AF" />
+          <Ionicons name='close-circle' size={20} color='#9CA3AF' />
         </TouchableOpacity>
       )}
     </View>
   );
-} 
+}

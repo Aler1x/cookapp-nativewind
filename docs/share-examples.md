@@ -5,7 +5,7 @@ The `share` function in `lib/share.ts` provides a flexible way to share differen
 ## Basic Usage
 
 ```typescript
-import { share } from "~/lib/share";
+import { share } from '~/lib/share';
 
 // Share text
 await share('text', 'Hello, world!');
@@ -25,17 +25,17 @@ await share('image', 'file:///path/to/image.jpg');
 ```typescript
 // Share with a custom dialog title
 await share('text', 'Check out this content!', {
-  dialogTitle: 'Share with friends'
+  dialogTitle: 'Share with friends',
 });
 
 // Share with a subject (for email)
 await share('text', 'Important information', {
-  subject: 'Please read this'
+  subject: 'Please read this',
 });
 
 // Share with excluded activity types
 await share('url', 'https://example.com', {
-  excludedActivityTypes: ['com.apple.UIKit.activity.Print']
+  excludedActivityTypes: ['com.apple.UIKit.activity.Print'],
 });
 ```
 
@@ -64,4 +64,4 @@ if (result.success) {
 2. **Recipes**: Share recipe details with friends
 3. **Profile Information**: Share user profile or contact details
 4. **Images**: Share images from your app
-5. **Deep Links**: Share links that open specific screens in your app 
+5. **Deep Links**: Share links that open specific screens in your app
