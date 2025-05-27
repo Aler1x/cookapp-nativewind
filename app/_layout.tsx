@@ -21,11 +21,17 @@ import { tokenCache } from '@clerk/clerk-expo/token-cache';
 import Toast from 'react-native-toast-message';
 import { toaster } from '~/components/toaster';
 import DesktopBlocker from '~/components/DesktopBlocker';
+import { useUnits } from '~/stores/units';
 
 SplashScreen.preventAutoHideAsync();
 
 export default function Layout() {
   const { isDarkColorScheme } = useColorScheme();
+  const { prefetchIfNeeded } = useUnits();
+
+  useEffect(() => {
+    prefetchIfNeeded().catch(console.error);
+  }, [prefetchIfNeeded]);
 
   const [loaded, error] = useFonts({
     Comfortaa_300Light,

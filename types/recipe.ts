@@ -22,7 +22,7 @@ export interface RecipeDetails {
   categories: Category[];
   ingredients: Ingredient[];
   steps: Step[];
-  isPublic: boolean; // if false, oh nevermind it never gonna be false
+  isPublic: boolean; // if false, oh never mind it never gonna be false
   sourceUrl: string;
 }
 

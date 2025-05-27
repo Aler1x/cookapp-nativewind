@@ -15,6 +15,8 @@ import {
   ChevronRight,
   BotMessageSquare,
   Heart,
+  Share2,
+  Clipboard,
 } from 'lucide-react-native';
 import GoogleIcon from './google';
 import AppleIcon from './apple';
@@ -36,6 +38,9 @@ iconWithClassName(UserPen);
 iconWithClassName(ChevronRight);
 iconWithClassName(BotMessageSquare);
 iconWithClassName(Heart);
+iconWithClassName(Share2);
+iconWithClassName(Clipboard);
+
 export {
   MoonStar,
   Sun,
@@ -55,4 +60,6 @@ export {
   ChevronRight,
   BotMessageSquare,
   Heart,
+  Share2,
+  Clipboard,
 };

@@ -1,4 +1,4 @@
-type PreferenceType = 'diet' | 'cousine' | 'unfavourite_ingredient' | 'allergy';
+type PreferenceType = 'diet' | 'cuisine' | 'unfavorite_ingredient' | 'allergy';
 
 export interface CategoryPreference {
   id: string;
@@ -8,7 +8,7 @@ export interface CategoryPreference {
   preferenceType: PreferenceType;
 }
 
-export interface IgredientPreference {
+export interface IngredientPreference {
   id: string;
   name: string;
   ingredientId: number;
@@ -16,15 +16,15 @@ export interface IgredientPreference {
   preferenceType: PreferenceType;
 }
 
-export type AllergicIngredientPreference = CategoryPreference | IgredientPreference;
+export type AllergicIngredientPreference = CategoryPreference | IngredientPreference;
 
-export type UnfavouriveIgredientPreference = IgredientPreference;
+export type UnfavoriteIngredientPreference = IngredientPreference;
 
-export type Preference = CategoryPreference | UnfavouriveIgredientPreference | AllergicIngredientPreference;
+export type Preference = CategoryPreference | UnfavoriteIngredientPreference | AllergicIngredientPreference;
 
 export type Preferences = {
   diets: CategoryPreference[];
   allergies: AllergicIngredientPreference[];
-  unfavouriteIngrediets: UnfavouriveIgredientPreference[];
-  cousinePreferences: CategoryPreference[];
+  unfavoriteIngredients: UnfavoriteIngredientPreference[];
+  cuisinePreferences: CategoryPreference[];
 };

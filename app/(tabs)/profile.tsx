@@ -45,9 +45,9 @@ export default function Page() {
     <>
       {!isSignedIn && <AuthPage />}
       {isSignedIn && (
-        <SafeAreaView className='flex-1 px-4 py-4 gap-4'>
+        <SafeAreaView className='flex-1 gap-4' style={{ padding: 16 }}>
           <Text className='text-3xl font-bold'>Profile</Text>
-          <View className='flex-row items-center justify-between px-4'>
+          <View className='flex-row items-center justify-between'>
             <View className='flex-row items-center gap-4'>
               <Image source={user?.imageUrl} className='w-16 h-16 rounded-full' />
               <View>
@@ -55,11 +55,24 @@ export default function Page() {
                 <Text className='text-sm text-gray-500 font-regular'>{user?.emailAddresses[0].emailAddress}</Text>
               </View>
             </View>
-            <Button variant='outline' size='icon' className='size-10'>
+            <Button variant='outline' size='icon' className='w-10 h-10'>
               <UserPen size={24} />
             </Button>
           </View>
           <View>
+            <TouchableOpacity className='flex-row items-center justify-between bg-[hsl(170,33%,76%)] rounded-3xl py-4 px-6 mb-4'>
+              <View className='flex-row items-center gap-4'>
+                <View className='w-12 h-12 bg-white rounded-full items-center justify-center'>
+                  <Text className='text-2xl'>🍙</Text>
+                </View>
+                <View>
+                  <Text className='text-lg font-comfortaa-semibold text-gray-800'>Buy Premium</Text>
+                  <Text className='text-sm text-gray-600'>Unlock all features</Text>
+                </View>
+              </View>
+              <ChevronRight size={24} color='#374151' />
+            </TouchableOpacity>
+
             {/* <Link href='/profile/settings' variant='ghost' className='items-center justify-between border-b'>
               <View className='flex-row items-center gap-4'>
                 <View className='w-10 h-10 bg-gray-200 rounded-lg items-center justify-center'>

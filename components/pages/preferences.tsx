@@ -4,12 +4,7 @@ import { Text } from '~/components/ui/text';
 import { Button } from '~/components/ui/button';
 import { ScrollView, TouchableOpacity, Modal, TextInput } from 'react-native';
 import { X } from 'lucide-react-native';
-import {
-  Preferences,
-  CategoryPreference,
-  AllergicIngredientPreference,
-  UnfavouriveIgredientPreference,
-} from '~/types/profile';
+import { Preferences } from '~/types/profile';
 
 // Mock data - this would come from your backend
 const mockPreferences: Preferences = {
@@ -30,19 +25,19 @@ const mockPreferences: Preferences = {
     { id: '12', name: 'Walnuts', categoryId: 12, selected: false, preferenceType: 'allergy' },
     { id: '13', name: 'Cashews', categoryId: 13, selected: false, preferenceType: 'allergy' },
   ],
-  unfavouriteIngrediets: [
-    { id: '14', name: 'Onions', ingredientId: 14, selected: false, preferenceType: 'unfavourite_ingredient' },
-    { id: '15', name: 'Garlic', ingredientId: 15, selected: false, preferenceType: 'unfavourite_ingredient' },
+  unfavoriteIngredients: [
+    { id: '14', name: 'Onions', ingredientId: 14, selected: false, preferenceType: 'unfavorite_ingredient' },
+    { id: '15', name: 'Garlic', ingredientId: 15, selected: false, preferenceType: 'unfavorite_ingredient' },
   ],
-  cousinePreferences: [
-    { id: '16', name: 'Pasta', categoryId: 16, selected: true, preferenceType: 'cousine' },
-    { id: '17', name: 'Soup', categoryId: 17, selected: false, preferenceType: 'cousine' },
-    { id: '18', name: 'Salad', categoryId: 18, selected: false, preferenceType: 'cousine' },
-    { id: '19', name: 'Pizza', categoryId: 19, selected: false, preferenceType: 'cousine' },
-    { id: '20', name: 'Bowl', categoryId: 20, selected: false, preferenceType: 'cousine' },
-    { id: '21', name: 'Dessert', categoryId: 21, selected: false, preferenceType: 'cousine' },
-    { id: '22', name: 'Stew', categoryId: 22, selected: false, preferenceType: 'cousine' },
-    { id: '23', name: 'Sandwiches', categoryId: 23, selected: false, preferenceType: 'cousine' },
+  cuisinePreferences: [
+    { id: '16', name: 'Pasta', categoryId: 16, selected: true, preferenceType: 'cuisine' },
+    { id: '17', name: 'Soup', categoryId: 17, selected: false, preferenceType: 'cuisine' },
+    { id: '18', name: 'Salad', categoryId: 18, selected: false, preferenceType: 'cuisine' },
+    { id: '19', name: 'Pizza', categoryId: 19, selected: false, preferenceType: 'cuisine' },
+    { id: '20', name: 'Bowl', categoryId: 20, selected: false, preferenceType: 'cuisine' },
+    { id: '21', name: 'Dessert', categoryId: 21, selected: false, preferenceType: 'cuisine' },
+    { id: '22', name: 'Stew', categoryId: 22, selected: false, preferenceType: 'cuisine' },
+    { id: '23', name: 'Sandwiches', categoryId: 23, selected: false, preferenceType: 'cuisine' },
   ],
 };
 
@@ -131,12 +126,12 @@ export default function PreferencesPage({
   const [preferences, setPreferences] = useState<Preferences>(initialPreferences);
   const [showAllDiets, setShowAllDiets] = useState(false);
   const [showAllAllergies, setShowAllAllergies] = useState(false);
-  const [showAllUnfavorites, setShowAllUnfavorites] = useState(false);
-  const [showAllCousines, setShowAllCousines] = useState(false);
+  const [showAllUnfavorite, setShowAllUnfavorite] = useState(false);
+  const [showAllCuisines, setShowAllCuisines] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [newItemText, setNewItemText] = useState('');
   const [currentSection, setCurrentSection] = useState<
-    'diets' | 'allergies' | 'unfavouriteIngrediets' | 'cousinePreferences'
+    'diets' | 'allergies' | 'unfavoriteIngredients' | 'cuisinePreferences'
   >('diets');
 
   const togglePreference = (section: keyof Preferences, id: string) => {
@@ -150,12 +145,12 @@ export default function PreferencesPage({
     setPreferences((prev) => ({
       diets: prev.diets.map((item) => ({ ...item, selected: false })),
       allergies: prev.allergies.map((item) => ({ ...item, selected: false })),
-      unfavouriteIngrediets: prev.unfavouriteIngrediets.map((item) => ({ ...item, selected: false })),
-      cousinePreferences: prev.cousinePreferences.map((item) => ({ ...item, selected: false })),
+      unfavoriteIngredients: prev.unfavoriteIngredients.map((item) => ({ ...item, selected: false })),
+      cuisinePreferences: prev.cuisinePreferences.map((item) => ({ ...item, selected: false })),
     }));
   };
 
-  const openAddModal = (section: 'diets' | 'allergies' | 'unfavouriteIngrediets' | 'cousinePreferences') => {
+  const openAddModal = (section: 'diets' | 'allergies' | 'unfavoriteIngredients' | 'cuisinePreferences') => {
     setCurrentSection(section);
     setModalVisible(true);
   };
@@ -226,23 +221,23 @@ export default function PreferencesPage({
         {/* Unfavorite Ingredients */}
         <PreferenceSection
           title='Unfavorite ingredients'
-          items={preferences.unfavouriteIngrediets}
+          items={preferences.unfavoriteIngredients}
           visibleCount={6}
-          showAll={showAllUnfavorites}
-          onToggleShowAll={() => setShowAllUnfavorites(!showAllUnfavorites)}
-          onToggleItem={(id) => togglePreference('unfavouriteIngrediets', id)}
-          onAddNew={() => openAddModal('unfavouriteIngrediets')}
+          showAll={showAllUnfavorite}
+          onToggleShowAll={() => setShowAllUnfavorite(!showAllUnfavorite)}
+          onToggleItem={(id) => togglePreference('unfavoriteIngredients', id)}
+          onAddNew={() => openAddModal('unfavoriteIngredients')}
         />
 
         {/* Favorite Dishes */}
         <PreferenceSection
           title='Favorite dishes'
-          items={preferences.cousinePreferences}
+          items={preferences.cuisinePreferences}
           visibleCount={6}
-          showAll={showAllCousines}
-          onToggleShowAll={() => setShowAllCousines(!showAllCousines)}
-          onToggleItem={(id) => togglePreference('cousinePreferences', id)}
-          onAddNew={() => openAddModal('cousinePreferences')}
+          showAll={showAllCuisines}
+          onToggleShowAll={() => setShowAllCuisines(!showAllCuisines)}
+          onToggleItem={(id) => togglePreference('cuisinePreferences', id)}
+          onAddNew={() => openAddModal('cuisinePreferences')}
         />
       </ScrollView>
 

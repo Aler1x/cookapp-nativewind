@@ -8,7 +8,7 @@ import RecipeCard from '~/components/recipe-card';
 import CategoryBadge from '~/components/category-badge';
 import SearchBar from '~/components/search-bar';
 import { RecipePage } from '~/mockup/recipe-data';
-import { Recipe } from '~/types';
+import { Recipe } from '~/types/recipe';
 import { Link } from '~/components/ui/button-link';
 
 // Category types for the filter badges

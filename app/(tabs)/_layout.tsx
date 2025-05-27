@@ -29,6 +29,15 @@ export default function RootLayout() {
             borderTopLeftRadius: 60,
             borderTopRightRadius: 60,
           },
+          web: {
+            backgroundColor: isDarkColorScheme ? NAV_THEME.dark.colors.background : NAV_THEME.light.colors.background,
+            paddingTop: 30,
+            paddingBottom: 65,
+            paddingLeft: 10,
+            paddingRight: 10,
+            borderTopLeftRadius: 60,
+            borderTopRightRadius: 60,
+          },
           default: {
             backgroundColor: isDarkColorScheme ? NAV_THEME.dark.colors.background : NAV_THEME.light.colors.background,
             borderTopWidth: 1,
