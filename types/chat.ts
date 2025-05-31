@@ -3,10 +3,10 @@ export type ChatFeature = {
   icon: React.ReactNode;
   label: string;
   description: string;
-}
+};
 
 export type Message = {
   id: number;
   message: string;
   isUser: boolean;
-}
+};

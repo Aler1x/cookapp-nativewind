@@ -4,18 +4,18 @@ import { Text } from '~/components/ui/text';
 import { Image } from '~/components/ui/image';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button } from '~/components/ui/button';
-import { TouchableOpacity } from 'react-native';
+import { TouchableOpacity, Pressable } from 'react-native';
 import { useAuth, useUser } from '@clerk/clerk-expo';
-import { useRouter, useLocalSearchParams } from 'expo-router';
+import { useRouter, useLocalSearchParams, Link } from 'expo-router';
 import AuthPage from '~/components/pages/auth';
 import FullscreenModal from '~/components/ui/fullscreen-modal';
 import PreferencesPage from '~/components/modals/preferences';
-import { UserPen, ChevronRight, Heart, CookingPot } from '~/assets/icons';
+import { UserPen, ChevronRight, Heart, CookingPot, Settings as SettingsIcon } from '~/assets/icons';
 import { Preferences } from '~/types/profile';
 import PremiumPage from '~/components/modals/premium';
 import Toast from 'react-native-toast-message';
 
-export default function Page() {
+export default function ProfilePage() {
   const { signOut, isLoaded, isSignedIn } = useAuth();
   const { user } = useUser();
   const router = useRouter();
@@ -105,7 +105,7 @@ export default function Page() {
             </View>
 
             {process.env.EXPO_PUBLIC_LOCAL === 'true' && (
-              <Button variant='outline' size='icon' className='w-10 h-10' onPress={handleCopyToken}>
+              <Button variant='outline' size='icon' className='w-10 h-10 border-gray-500' onPress={handleCopyToken}>
                 <UserPen size={24} />
               </Button>
             )}
@@ -143,14 +143,16 @@ export default function Page() {
               </TouchableOpacity>
             )}
 
-            {/* <Link href='/profile/settings' variant='ghost' className='items-center justify-between border-b'>
-              <View className='flex-row items-center gap-4'>
-                <View className='w-10 h-10 bg-gray-200 rounded-lg items-center justify-center'>
-                  <Settings size={20} color="#666" />
+            {/* <Link href='/profile/settings' asChild>
+              <Pressable className='flex-row items-center justify-between border-b border-gray-500 py-6 px-4'>
+                <View className='flex-row items-center gap-4'>
+                  <View className='w-14 h-14 bg-gray-200 rounded-2xl items-center justify-center'>
+                    <SettingsIcon size={24} color='#666' />
+                  </View>
+                  <Text className='text-lg font-semibold'>Settings</Text>
                 </View>
-                <Text className='text-lg font-comfortaa-semibold'>Settings</Text>
-              </View>
-              <ChevronRight size={24} color="#666" />
+                <ChevronRight size={24} color='#666' />
+              </Pressable>
             </Link> */}
 
             <TouchableOpacity
@@ -158,12 +160,24 @@ export default function Page() {
               className='flex-row items-center justify-between border-b border-gray-500 py-6 px-4'>
               <View className='flex-row items-center gap-4'>
                 <View className='w-14 h-14 bg-gray-200 rounded-2xl items-center justify-center'>
-                  <Heart size={20} color='#666' />
+                  <Heart size={24} color='#666' />
                 </View>
-                <Text className='text-lg font-comfortaa-semibold'>Preferences</Text>
+                <Text className='text-lg font-semibold'>Preferences</Text>
               </View>
               <ChevronRight size={24} color='#666' />
             </TouchableOpacity>
+
+            <Link href='/profile/my-recipes' asChild>
+              <Pressable className='flex-row items-center justify-between border-b border-gray-500 py-6 px-4'>
+                <View className='flex-row items-center gap-4'>
+                  <View className='w-14 h-14 bg-gray-200 rounded-2xl items-center justify-center'>
+                    <CookingPot size={24} color='#666' />
+                  </View>
+                  <Text className='text-lg font-semibold'>My Recipes</Text>
+                </View>
+                <ChevronRight size={24} color='#666' />
+              </Pressable>
+            </Link>
           </View>
 
           <FullscreenModal visible={showPremium} onClose={() => setShowPremium(false)}>

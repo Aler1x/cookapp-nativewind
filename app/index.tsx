@@ -6,7 +6,7 @@ import React, { useEffect } from 'react';
 import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useColorScheme } from '~/lib/useColorScheme';
-import { NAV_THEME } from '~/lib/constants';
+import { THEME } from '~/lib/constants';
 import { useUser } from '@clerk/clerk-expo';
 
 const LandingScreen = () => {
@@ -31,7 +31,7 @@ const LandingScreen = () => {
       <SafeAreaView
         style={{
           flex: 1,
-          backgroundColor: isDarkColorScheme ? NAV_THEME.dark.colors.background : NAV_THEME.light.colors.background,
+          backgroundColor: isDarkColorScheme ? THEME.dark.colors.background : THEME.light.colors.background,
         }}>
         <View className='flex-1 justify-center items-center px-6'>
           <Text className='text-4xl mb-4 font-bold'>CookApp</Text>
@@ -46,7 +46,7 @@ const LandingScreen = () => {
     <SafeAreaView
       className='flex-1'
       style={{
-        backgroundColor: isDarkColorScheme ? NAV_THEME.dark.colors.background : NAV_THEME.light.colors.background,
+        backgroundColor: isDarkColorScheme ? THEME.dark.colors.background : THEME.light.colors.background,
       }}>
       <ScrollView className='flex-1 min-h-screen'>
         {/* Mobile Header */}

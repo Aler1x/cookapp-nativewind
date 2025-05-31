@@ -9,7 +9,14 @@ type FullscreenModalProps = Omit<ModalProps, 'children'> & {
   animationType?: 'slide' | 'fade';
 };
 
-export default function FullscreenModal({ visible, onClose, children, animationType = 'slide', presentationStyle = 'fullScreen', ...modalProps }: FullscreenModalProps) {
+export default function FullscreenModal({
+  visible,
+  onClose,
+  children,
+  animationType = 'slide',
+  presentationStyle = 'fullScreen',
+  ...modalProps
+}: FullscreenModalProps) {
   return (
     <Modal
       visible={visible}

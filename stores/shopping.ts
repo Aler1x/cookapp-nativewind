@@ -207,7 +207,7 @@ export const useShoppingListStore = create<ShoppingListStore>()(
           .map((item) => {
             // Try to get the proper unit display name
             const unit = get().normalizeUnit(item.unit);
-            const displayUnit = (item.amount === 1 || unit.endsWith('s')) ? unit : unit + 's';
+            const displayUnit = item.amount === 1 || unit.endsWith('s') ? unit : unit + 's';
             return `${item.amount} ${displayUnit} ${item.name}`;
           })
           .join('\n');

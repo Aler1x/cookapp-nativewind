@@ -3,7 +3,7 @@ import { Text } from '~/components/ui/text';
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useColorScheme } from '~/lib/useColorScheme';
-import { NAV_THEME } from '~/lib/constants';
+import { THEME } from '~/lib/constants';
 
 interface DesktopBlockerProps {
   children: React.ReactNode;
@@ -30,7 +30,7 @@ const DesktopBlocker: React.FC<DesktopBlockerProps> = ({ children }) => {
       <SafeAreaView
         style={{
           flex: 1,
-          backgroundColor: isDarkColorScheme ? NAV_THEME.dark.colors.background : NAV_THEME.light.colors.background,
+          backgroundColor: isDarkColorScheme ? THEME.dark.colors.background : THEME.light.colors.background,
         }}>
         <View className='flex-1 justify-center items-center px-8'>
           <View className='max-w-md items-center'>
@@ -38,12 +38,12 @@ const DesktopBlocker: React.FC<DesktopBlockerProps> = ({ children }) => {
             <View
               className='w-20 h-20 rounded-full mb-8 justify-center items-center'
               style={{
-                backgroundColor: isDarkColorScheme ? NAV_THEME.dark.colors.primary : NAV_THEME.light.colors.primary,
+                backgroundColor: isDarkColorScheme ? THEME.dark.colors.primary : THEME.light.colors.primary,
               }}>
               <Text
                 className='text-2xl'
                 style={{
-                  color: isDarkColorScheme ? NAV_THEME.dark.colors.background : NAV_THEME.light.colors.background,
+                  color: isDarkColorScheme ? THEME.dark.colors.background : THEME.light.colors.background,
                   fontFamily: 'Comfortaa_700Bold',
                 }}>
                 🍳
@@ -54,7 +54,7 @@ const DesktopBlocker: React.FC<DesktopBlockerProps> = ({ children }) => {
             <Text
               className='text-4xl text-center mb-6'
               style={{
-                color: isDarkColorScheme ? NAV_THEME.dark.colors.foreground : NAV_THEME.light.colors.foreground,
+                color: isDarkColorScheme ? THEME.dark.colors.foreground : THEME.light.colors.foreground,
                 fontFamily: 'Comfortaa_700Bold',
               }}>
               CookApp
@@ -63,7 +63,7 @@ const DesktopBlocker: React.FC<DesktopBlockerProps> = ({ children }) => {
             <Text
               className='text-xl font-semibold text-center mb-4'
               style={{
-                color: isDarkColorScheme ? NAV_THEME.dark.colors.foreground : NAV_THEME.light.colors.foreground,
+                color: isDarkColorScheme ? THEME.dark.colors.foreground : THEME.light.colors.foreground,
                 fontFamily: 'Comfortaa_600SemiBold',
               }}>
               Mobile Only Experience
@@ -72,7 +72,7 @@ const DesktopBlocker: React.FC<DesktopBlockerProps> = ({ children }) => {
             <Text
               className='text-lg text-center mb-8 opacity-80 leading-relaxed'
               style={{
-                color: isDarkColorScheme ? NAV_THEME.dark.colors.foreground : NAV_THEME.light.colors.foreground,
+                color: isDarkColorScheme ? THEME.dark.colors.foreground : THEME.light.colors.foreground,
                 fontFamily: 'Comfortaa_400Regular',
               }}>
               CookApp is designed exclusively for mobile devices. Please access this app from your smartphone or tablet
@@ -83,13 +83,13 @@ const DesktopBlocker: React.FC<DesktopBlockerProps> = ({ children }) => {
             <View
               className='w-full p-6 rounded-xl border border-opacity-20 mb-6'
               style={{
-                borderColor: isDarkColorScheme ? NAV_THEME.dark.colors.border : NAV_THEME.light.colors.border,
-                backgroundColor: isDarkColorScheme ? NAV_THEME.dark.colors.card : NAV_THEME.light.colors.card,
+                borderColor: isDarkColorScheme ? THEME.dark.colors.border : THEME.light.colors.border,
+                backgroundColor: isDarkColorScheme ? THEME.dark.colors.card : THEME.light.colors.card,
               }}>
               <Text
                 className='text-lg font-semibold mb-3 text-center'
                 style={{
-                  color: isDarkColorScheme ? NAV_THEME.dark.colors.foreground : NAV_THEME.light.colors.foreground,
+                  color: isDarkColorScheme ? THEME.dark.colors.foreground : THEME.light.colors.foreground,
                   fontFamily: 'Comfortaa_600SemiBold',
                 }}>
                 How to Access CookApp:
@@ -99,7 +99,7 @@ const DesktopBlocker: React.FC<DesktopBlockerProps> = ({ children }) => {
                 <Text
                   className='text-base opacity-90'
                   style={{
-                    color: isDarkColorScheme ? NAV_THEME.dark.colors.foreground : NAV_THEME.light.colors.foreground,
+                    color: isDarkColorScheme ? THEME.dark.colors.foreground : THEME.light.colors.foreground,
                     fontFamily: 'Comfortaa_400Regular',
                   }}>
                   📱 Open this URL on your mobile device
@@ -107,7 +107,7 @@ const DesktopBlocker: React.FC<DesktopBlockerProps> = ({ children }) => {
                 <Text
                   className='text-base opacity-90'
                   style={{
-                    color: isDarkColorScheme ? NAV_THEME.dark.colors.foreground : NAV_THEME.light.colors.foreground,
+                    color: isDarkColorScheme ? THEME.dark.colors.foreground : THEME.light.colors.foreground,
                     fontFamily: 'Comfortaa_400Regular',
                   }}>
                   📧 Send yourself the link via email/text
@@ -119,7 +119,7 @@ const DesktopBlocker: React.FC<DesktopBlockerProps> = ({ children }) => {
             <Text
               className='text-sm opacity-60 text-center'
               style={{
-                color: isDarkColorScheme ? NAV_THEME.dark.colors.foreground : NAV_THEME.light.colors.foreground,
+                color: isDarkColorScheme ? THEME.dark.colors.foreground : THEME.light.colors.foreground,
                 fontFamily: 'Comfortaa_300Light',
               }}>
               Optimized for mobile cooking experiences

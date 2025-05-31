@@ -1,7 +1,7 @@
 import { Tabs } from 'expo-router';
 import { Platform } from 'react-native';
 import { useColorScheme } from '~/lib/useColorScheme';
-import { NAV_THEME } from '~/lib/constants';
+import { THEME } from '~/lib/constants';
 import { BotMessageSquare, LibraryBig, ShoppingBasket, CircleUserRound, Search } from '~/assets/icons';
 
 export default function RootLayout() {
@@ -11,12 +11,12 @@ export default function RootLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: isDarkColorScheme ? NAV_THEME.dark.colors.foreground : NAV_THEME.light.colors.foreground,
+        tabBarActiveTintColor: isDarkColorScheme ? THEME.dark.colors.foreground : THEME.light.colors.foreground,
         tabBarShowLabel: false,
         tabBarStyle: Platform.select({
           ios: {
             position: 'absolute',
-            backgroundColor: isDarkColorScheme ? NAV_THEME.dark.colors.background : NAV_THEME.light.colors.background,
+            backgroundColor: isDarkColorScheme ? THEME.dark.colors.background : THEME.light.colors.background,
             borderTopWidth: 1,
             borderLeftWidth: 0,
             borderRightWidth: 0,
@@ -29,7 +29,7 @@ export default function RootLayout() {
             borderTopRightRadius: 60,
           },
           web: {
-            backgroundColor: isDarkColorScheme ? NAV_THEME.dark.colors.background : NAV_THEME.light.colors.background,
+            backgroundColor: isDarkColorScheme ? THEME.dark.colors.background : THEME.light.colors.background,
             paddingTop: 30,
             paddingBottom: 65,
             paddingLeft: 10,
@@ -38,7 +38,7 @@ export default function RootLayout() {
             borderTopRightRadius: 60,
           },
           default: {
-            backgroundColor: isDarkColorScheme ? NAV_THEME.dark.colors.background : NAV_THEME.light.colors.background,
+            backgroundColor: isDarkColorScheme ? THEME.dark.colors.background : THEME.light.colors.background,
             borderTopWidth: 1,
             borderLeftWidth: 0,
             borderRightWidth: 0,

@@ -1,45 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View } from '~/components/ui/view';
 import { Text } from '~/components/ui/text';
 import { Button } from '~/components/ui/button';
-import { ScrollView, TouchableOpacity, Modal, TextInput, Pressable } from 'react-native';
+import { ScrollView, TouchableOpacity, TextInput } from 'react-native';
 import { X } from '~/assets/icons';
 import { Preferences } from '~/types/profile';
-
-// Mock data - this would come from your backend
-const mockPreferences: Preferences = {
-  diets: [
-    { id: '1', name: 'Vegetarian', categoryId: 1, selected: true, preferenceType: 'diet' },
-    { id: '2', name: 'Gluten Free', categoryId: 2, selected: false, preferenceType: 'diet' },
-    { id: '3', name: 'Lactose Free', categoryId: 3, selected: false, preferenceType: 'diet' },
-    { id: '4', name: 'Low Fat', categoryId: 4, selected: false, preferenceType: 'diet' },
-    { id: '5', name: 'Sugar Free', categoryId: 5, selected: false, preferenceType: 'diet' },
-    { id: '6', name: 'Appetizers', categoryId: 6, selected: false, preferenceType: 'diet' },
-  ],
-  allergies: [
-    { id: '7', name: 'Cows milk', categoryId: 7, selected: false, preferenceType: 'allergy' },
-    { id: '8', name: 'Eggs', categoryId: 8, selected: false, preferenceType: 'allergy' },
-    { id: '9', name: 'Peanut', categoryId: 9, selected: false, preferenceType: 'allergy' },
-    { id: '10', name: 'Soy', categoryId: 10, selected: false, preferenceType: 'allergy' },
-    { id: '11', name: 'Prawns', categoryId: 11, selected: false, preferenceType: 'allergy' },
-    { id: '12', name: 'Walnuts', categoryId: 12, selected: false, preferenceType: 'allergy' },
-    { id: '13', name: 'Cashews', categoryId: 13, selected: false, preferenceType: 'allergy' },
-  ],
-  unfavoriteIngredients: [
-    { id: '14', name: 'Onions', ingredientId: 14, selected: false, preferenceType: 'unfavorite_ingredient' },
-    { id: '15', name: 'Garlic', ingredientId: 15, selected: false, preferenceType: 'unfavorite_ingredient' },
-  ],
-  cuisinePreferences: [
-    { id: '16', name: 'Pasta', categoryId: 16, selected: true, preferenceType: 'cuisine' },
-    { id: '17', name: 'Soup', categoryId: 17, selected: false, preferenceType: 'cuisine' },
-    { id: '18', name: 'Salad', categoryId: 18, selected: false, preferenceType: 'cuisine' },
-    { id: '19', name: 'Pizza', categoryId: 19, selected: false, preferenceType: 'cuisine' },
-    { id: '20', name: 'Bowl', categoryId: 20, selected: false, preferenceType: 'cuisine' },
-    { id: '21', name: 'Dessert', categoryId: 21, selected: false, preferenceType: 'cuisine' },
-    { id: '22', name: 'Stew', categoryId: 22, selected: false, preferenceType: 'cuisine' },
-    { id: '23', name: 'Sandwiches', categoryId: 23, selected: false, preferenceType: 'cuisine' },
-  ],
-};
+import BasicModal from '../ui/basic-modal';
+import { useFetch } from '~/lib/fetch';
+import { API_ENDPOINTS_PREFIX } from '~/lib/constants';
 
 interface PreferencePillProps {
   name: string;
@@ -53,7 +21,7 @@ function PreferencePill({ name, selected, onPress }: PreferencePillProps) {
       onPress={onPress}
       className={`px-4 py-2 rounded-full mr-2 mb-2 border ${selected ? 'bg-primary border-primary' : 'bg-transparent border-gray-300'
         }`}>
-      <Text className={`text-sm ${selected ? 'text-white font-medium' : 'text-gray-700'}`}>{name}</Text>
+      <Text className={`text-sm ${selected ? 'font-medium' : 'text-gray-700'}`}>{name}</Text>
     </TouchableOpacity>
   );
 }
@@ -79,14 +47,14 @@ function PreferenceSection({
   onAddNew,
   showAddNew = true,
 }: PreferenceSectionProps) {
-  const displayItems = showAll ? items : items.slice(0, visibleCount);
-  const hasMore = items.length > visibleCount;
+  const displayItems = showAll ? items : items?.slice(0, visibleCount);
+  const hasMore = items && items.length > visibleCount;
 
   return (
     <View className='mb-6'>
       <Text className='text-lg font-semibold mb-3'>{title}</Text>
       <View className='flex-row flex-wrap'>
-        {displayItems.map((item) => (
+        {displayItems?.map((item) => (
           <PreferencePill
             key={item.id}
             name={item.name}
@@ -120,9 +88,8 @@ interface PreferencesPageProps {
 export default function PreferencesPage({
   onClose,
   onSave,
-  initialPreferences = mockPreferences,
 }: PreferencesPageProps) {
-  const [preferences, setPreferences] = useState<Preferences>(initialPreferences);
+  const [preferences, setPreferences] = useState<Preferences | null>(null);
   const [showAllDiets, setShowAllDiets] = useState(false);
   const [showAllAllergies, setShowAllAllergies] = useState(false);
   const [showAllUnfavorite, setShowAllUnfavorite] = useState(false);
@@ -133,11 +100,25 @@ export default function PreferencesPage({
     'diets' | 'allergies' | 'unfavoriteIngredients' | 'cuisinePreferences'
   >('diets');
 
+  const $fetch = useFetch();
+
+  useEffect(() => {
+    const fetchPreferences = async () => {
+      const preferences = await $fetch<{ data: Preferences }>(`${API_ENDPOINTS_PREFIX.node}/preferences`);
+      console.log(preferences);
+      setPreferences(preferences.data);
+    };
+    fetchPreferences();
+  }, [$fetch]);
+
   const togglePreference = (section: keyof Preferences, id: string) => {
-    setPreferences((prev) => ({
-      ...prev,
-      [section]: prev[section].map((item) => (item.id === id ? { ...item, selected: !item.selected } : item)),
-    }));
+    setPreferences((prev) => {
+      if (!prev) return prev;
+      const newPreferences = { ...prev };
+      newPreferences[section] = newPreferences[section].map((item) => (item.id === id ? { ...item, selected: !item.selected } : item));
+      console.log(newPreferences);
+      return newPreferences;
+    });
   };
 
   const clearAll = () => {
@@ -197,7 +178,7 @@ export default function PreferencesPage({
         {/* Diet Preferences */}
         <PreferenceSection
           title='Choose your diet'
-          items={preferences.diets}
+          items={preferences?.diets}
           visibleCount={6}
           showAll={showAllDiets}
           onToggleShowAll={() => setShowAllDiets(!showAllDiets)}
@@ -209,7 +190,7 @@ export default function PreferencesPage({
         {/* Allergies */}
         <PreferenceSection
           title='Do you have allergies?'
-          items={preferences.allergies}
+          items={preferences?.allergies}
           visibleCount={6}
           showAll={showAllAllergies}
           onToggleShowAll={() => setShowAllAllergies(!showAllAllergies)}
@@ -220,7 +201,7 @@ export default function PreferencesPage({
         {/* Unfavorite Ingredients */}
         <PreferenceSection
           title='Unfavorite ingredients'
-          items={preferences.unfavoriteIngredients}
+          items={preferences?.unfavoriteIngredients}
           visibleCount={6}
           showAll={showAllUnfavorite}
           onToggleShowAll={() => setShowAllUnfavorite(!showAllUnfavorite)}
@@ -231,7 +212,7 @@ export default function PreferencesPage({
         {/* Favorite Dishes */}
         <PreferenceSection
           title='Favorite dishes'
-          items={preferences.cuisinePreferences}
+          items={preferences?.cuisinePreferences}
           visibleCount={6}
           showAll={showAllCuisines}
           onToggleShowAll={() => setShowAllCuisines(!showAllCuisines)}
@@ -247,44 +228,32 @@ export default function PreferencesPage({
         </Button>
       </View>
 
-      {/* Modal background */}
-      {modalVisible && <Pressable className='flex-1 bg-black/50 absolute top-0 left-0 right-0 bottom-0 transition-opacity duration-300 z-10' onPress={() => console.log('Modal background pressed')} />}
-
       {/* Add New Item Modal */}
-      <Modal
-        visible={modalVisible}
-        animationType='slide'
-        presentationStyle='formSheet'
-        transparent={true}
-        onRequestClose={() => setModalVisible(false)}>
-        <View className='flex-1 justify-end'>
-          <View className='bg-background rounded-t-3xl p-6'>
-            <View className='flex-row items-center justify-between mb-4'>
-              <Text className='text-lg font-semibold'>Add new item</Text>
-              <TouchableOpacity onPress={() => setModalVisible(false)}>
-                <X size={24} color='#000' />
-              </TouchableOpacity>
-            </View>
-
-            <TextInput
-              className='border border-gray-300 rounded-lg px-4 py-3 mb-4 text-base'
-              placeholder='Enter item name...'
-              value={newItemText}
-              onChangeText={setNewItemText}
-              autoFocus
-            />
-
-            <View className='flex-row gap-3'>
-              <Button variant='outline' className='flex-1' onPress={() => setModalVisible(false)}>
-                <Text>Cancel</Text>
-              </Button>
-              <Button className='flex-1 bg-primary' onPress={addNewItem}>
-                <Text className='text-white'>Add</Text>
-              </Button>
-            </View>
-          </View>
+      <BasicModal isModalOpen={modalVisible} setIsModalOpen={setModalVisible}>
+        <View className='flex-row items-center justify-between mb-4'>
+          <Text className='text-lg font-semibold'>Add new item</Text>
+          <TouchableOpacity onPress={() => setModalVisible(false)}>
+            <X size={24} color='#000' />
+          </TouchableOpacity>
         </View>
-      </Modal>
+
+        <TextInput
+          className='border border-gray-300 rounded-lg px-4 py-3 mb-4 text-base'
+          placeholder='Enter item name...'
+          value={newItemText}
+          onChangeText={setNewItemText}
+          autoFocus
+        />
+
+        <View className='flex-row gap-3'>
+          <Button variant='outline' className='flex-1' onPress={() => setModalVisible(false)}>
+            <Text>Cancel</Text>
+          </Button>
+          <Button className='flex-1 bg-primary' onPress={addNewItem}>
+            <Text className='text-white'>Add</Text>
+          </Button>
+        </View>
+      </BasicModal>
     </View>
   );
 }

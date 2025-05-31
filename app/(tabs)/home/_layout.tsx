@@ -1,10 +1,7 @@
-import { Stack, useNavigation, useFocusEffect } from 'expo-router';
+import { Stack } from 'expo-router';
 import { View } from '~/components/ui/view';
-import { useCallback } from 'react';
 
 export default function Layout() {
-  const navigation = useNavigation();
-
   return (
     <Stack
       screenOptions={{

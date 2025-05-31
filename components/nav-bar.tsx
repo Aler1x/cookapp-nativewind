@@ -5,7 +5,7 @@ import { View } from './ui/view';
 import { Text } from './ui/text';
 import { CirclePlus, LibraryBig, ShoppingBasket, CircleUserRound, Search } from '~/assets/icons';
 import { useColorScheme } from '~/lib/useColorScheme';
-import { NAV_THEME } from '~/lib/constants';
+import { THEME } from '~/lib/constants';
 
 export default function NavBar() {
   const router = useRouter();
@@ -24,10 +24,7 @@ export default function NavBar() {
         onPress={() => redirectIfNotOnRoute('/(tabs)/search')}
         className='flex-1 items-center justify-center'>
         <View className='flex-row items-center gap-2'>
-          <Search
-            size={28}
-            color={isDarkColorScheme ? NAV_THEME.dark.colors.foreground : NAV_THEME.light.colors.foreground}
-          />
+          <Search size={28} color={isDarkColorScheme ? THEME.dark.colors.foreground : THEME.light.colors.foreground} />
         </View>
       </TouchableOpacity>
       <TouchableOpacity
@@ -36,7 +33,7 @@ export default function NavBar() {
         <View className='flex-row items-center gap-2'>
           <LibraryBig
             size={28}
-            color={isDarkColorScheme ? NAV_THEME.dark.colors.foreground : NAV_THEME.light.colors.foreground}
+            color={isDarkColorScheme ? THEME.dark.colors.foreground : THEME.light.colors.foreground}
           />
         </View>
       </TouchableOpacity>
@@ -46,7 +43,7 @@ export default function NavBar() {
         <View className='flex-row items-center gap-2'>
           <CirclePlus
             size={28}
-            color={isDarkColorScheme ? NAV_THEME.dark.colors.foreground : NAV_THEME.light.colors.foreground}
+            color={isDarkColorScheme ? THEME.dark.colors.foreground : THEME.light.colors.foreground}
           />
         </View>
       </TouchableOpacity>
@@ -56,7 +53,7 @@ export default function NavBar() {
         <View className='flex-col items-center gap-2'>
           <ShoppingBasket
             size={28}
-            color={isDarkColorScheme ? NAV_THEME.dark.colors.foreground : NAV_THEME.light.colors.foreground}
+            color={isDarkColorScheme ? THEME.dark.colors.foreground : THEME.light.colors.foreground}
           />
         </View>
       </TouchableOpacity>
@@ -66,7 +63,7 @@ export default function NavBar() {
         <View className='flex-row items-center gap-2'>
           <CircleUserRound
             size={28}
-            color={isDarkColorScheme ? NAV_THEME.dark.colors.foreground : NAV_THEME.light.colors.foreground}
+            color={isDarkColorScheme ? THEME.dark.colors.foreground : THEME.light.colors.foreground}
           />
         </View>
       </TouchableOpacity>

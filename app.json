@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "cookapp-nativewind",
-    "slug": "cookapp-nativewind",
+    "slug": "cookapp",
     "scheme": "cookapp-nativewind",
     "version": "1.0.0",
     "userInterfaceStyle": "automatic",
@@ -10,14 +10,17 @@
     "orientation": "default",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.yourcompany.cookapp-nativewind"
+      "bundleIdentifier": "com.the-ooh.cookapp-nativewind",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.yourcompany.cookappnativewind"
+      "package": "com.the-ooh.cookapp-nativewind"
     },
     "web": {
       "output": "static",
@@ -55,6 +58,15 @@
       ],
       "expo-web-browser",
       "expo-asset"
-    ]
+    ],
+    "extra": {
+      "router": {
+        "origin": "https://n"
+      },
+      "eas": {
+        "projectId": "ed3520ad-df52-44b4-8ad5-fa6d30256b15"
+      }
+    },
+    "owner": "alerix"
   }
 }

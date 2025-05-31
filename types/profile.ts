@@ -6,7 +6,7 @@ export type CategoryPreference = {
   categoryId: number;
   selected: boolean;
   preferenceType: PreferenceType;
-}
+};
 
 export type IngredientPreference = {
   id: string;
@@ -14,7 +14,7 @@ export type IngredientPreference = {
   ingredientId: number;
   selected: boolean;
   preferenceType: PreferenceType;
-}
+};
 
 export type AllergicIngredientPreference = CategoryPreference | IngredientPreference;
 

@@ -30,6 +30,8 @@ import {
   Check,
   X,
   Info,
+  ChevronLeft,
+  Croissant,
 } from 'lucide-react-native';
 import GoogleIcon from './google';
 import AppleIcon from './apple';
@@ -66,6 +68,8 @@ iconWithClassName(Download);
 iconWithClassName(Check);
 iconWithClassName(X);
 iconWithClassName(Info);
+iconWithClassName(ChevronLeft);
+iconWithClassName(Croissant);
 
 export {
   MoonStar,
@@ -101,4 +105,6 @@ export {
   Check,
   X,
   Info,
+  ChevronLeft,
+  Croissant,
 };

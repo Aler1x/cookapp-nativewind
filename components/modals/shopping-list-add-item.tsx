@@ -1,40 +1,36 @@
 import { Text } from '../ui/text';
 import { View } from '../ui/view';
 import { Input } from '../ui/input';
-import { InputWithDropdown } from '../ui/input-with-dropdown';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '../ui/select';
+import InputWithDropdown from '../ui/input-with-dropdown';
 import { Button } from '../ui/button';
-import { useState, useEffect, useCallback } from 'react';
-import { useShoppingListStore } from '~/stores/shopping-list';
-import { FlatList, Pressable, TouchableOpacity } from 'react-native';
-import type { Ingredient, Unit } from '~/types/recipe';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useShoppingListStore } from '~/stores/shopping';
 import { API_ENDPOINTS_PREFIX } from '~/lib/constants';
-import { useApiFetch } from '~/lib/fetch';
+import { useFetch } from '~/lib/fetch';
 import { useAuth } from '@clerk/clerk-expo';
+import { SearchItem } from '~/types/shopping';
 
-interface ShoppingListAddItemModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-const ShoppingListAddItemModal = ({ isOpen, onClose }: ShoppingListAddItemModalProps) => {
+const ShoppingListAddItemModal = () => {
   const [newItemName, setNewItemName] = useState('');
   const [newItemAmount, setNewItemAmount] = useState('');
   const [newItemUnit, setNewItemUnit] = useState<string>('');
 
   // Search states
-  const [productSuggestions, setProductSuggestions] = useState<Ingredient[]>([]);
-  const [unitSuggestions, setUnitSuggestions] = useState<Unit[]>([]);
+  const [productSuggestions, setProductSuggestions] = useState<SearchItem[]>([]);
+  const [unitSuggestions, setUnitSuggestions] = useState<SearchItem[]>([]);
   const [isSearchingProducts, setIsSearchingProducts] = useState(false);
   const [isSearchingUnits, setIsSearchingUnits] = useState(false);
   const [showProductSuggestions, setShowProductSuggestions] = useState(false);
   const [showUnitSuggestions, setShowUnitSuggestions] = useState(false);
+  // Replace selection flags with refs
+  const isSelectingProductRef = useRef(false);
+  const isSelectingUnitRef = useRef(false);
 
   const { addItem, normalizeUnit } = useShoppingListStore();
 
-  const { get } = useApiFetch();
-
   const { isSignedIn } = useAuth();
+
+  const $fetch = useFetch();
 
   // Debounce function
   const debounce = (func: Function, delay: number) => {
@@ -55,14 +51,10 @@ const ShoppingListAddItemModal = ({ isOpen, onClose }: ShoppingListAddItemModalP
 
     setIsSearchingProducts(true);
     try {
-      const response = await get(`${API_ENDPOINTS_PREFIX.spring}/products?name=${encodeURIComponent(query)}`);
-
-      if (response.ok) {
-        const products = response.data;
-        console.log('Products received:', products);
-        setProductSuggestions(products.slice(0, 5)); // Limit to 5 suggestions
-        setShowProductSuggestions(products.length > 0);
-        console.log('Show product suggestions:', products.length > 0);
+      const response = await $fetch<SearchItem[]>(`${API_ENDPOINTS_PREFIX.spring}/products?name=${encodeURIComponent(query)}`);
+      if (response) {
+        setProductSuggestions(response.slice(0, 3));
+        setShowProductSuggestions(response.length > 0);
       }
     } catch (error) {
       console.error('Error searching products:', error);
@@ -75,7 +67,7 @@ const ShoppingListAddItemModal = ({ isOpen, onClose }: ShoppingListAddItemModalP
 
   // Search units by name
   const searchUnits = async (query: string) => {
-    if (!isSignedIn || !query.trim() || query.length < 1) {
+    if (!isSignedIn || !query.trim() || query.length < 2) {
       setUnitSuggestions([]);
       setShowUnitSuggestions(false);
       return;
@@ -83,12 +75,10 @@ const ShoppingListAddItemModal = ({ isOpen, onClose }: ShoppingListAddItemModalP
 
     setIsSearchingUnits(true);
     try {
-      const response = await get(`${API_ENDPOINTS_PREFIX.spring}/units?name=${encodeURIComponent(query)}`);
-
-      if (response.ok) {
-        const units = response.data;
-        setUnitSuggestions(units.slice(0, 8)); // Limit to 8 suggestions
-        setShowUnitSuggestions(units.length > 0);
+      const response = await $fetch<SearchItem[]>(`${API_ENDPOINTS_PREFIX.spring}/units?name=${encodeURIComponent(query)}`);
+      if (response) {
+        setUnitSuggestions(response.slice(0, 3));
+        setShowUnitSuggestions(response.length > 0);
       }
     } catch (error) {
       console.error('Error searching units:', error);
@@ -100,37 +90,53 @@ const ShoppingListAddItemModal = ({ isOpen, onClose }: ShoppingListAddItemModalP
   };
 
   // Debounced search functions
-  const debouncedProductSearch = useCallback(debounce(searchProducts, 300), [isSignedIn]);
-  const debouncedUnitSearch = useCallback(debounce(searchUnits, 300), [isSignedIn]);
+  const debouncedProductSearch = useCallback(debounce(searchProducts, 500), []);
+  const debouncedUnitSearch = useCallback(debounce(searchUnits, 500), []);
 
   // Effect for product search
   useEffect(() => {
-    if (isSignedIn) {
-      debouncedProductSearch(newItemName);
-    } else {
-      setProductSuggestions([]);
-      setShowProductSuggestions(false);
+    if (!isSignedIn) {
+      return;
     }
+
+    if (isSelectingProductRef.current) {
+      // Reset the selecting flag and skip this effect run
+      isSelectingProductRef.current = false;
+      return;
+    }
+
+    console.log('Searching products', isSelectingProductRef.current);
+    debouncedProductSearch(newItemName);
   }, [newItemName, debouncedProductSearch, isSignedIn]);
 
   // Effect for unit search
   useEffect(() => {
-    if (isSignedIn) {
-      debouncedUnitSearch(newItemUnit);
-    } else {
-      setUnitSuggestions([]);
-      setShowUnitSuggestions(false);
+    if (!isSignedIn) {
+      return;
     }
+
+    if (isSelectingUnitRef.current) {
+      isSelectingUnitRef.current = false;
+      return;
+    }
+
+    debouncedUnitSearch(newItemUnit);
   }, [newItemUnit, debouncedUnitSearch, isSignedIn]);
 
-  const handleProductSelect = (item: { id: string; label: string; value: Ingredient }) => {
-    setNewItemName(item.value.name);
-    setShowProductSuggestions(false);
+  const getName = (item: SearchItem) => {
+    return typeof item.name === 'string' ? item.name : item.name.one;
   };
 
-  const handleUnitSelect = (item: { id: string; label: string; value: Unit }) => {
-    setNewItemUnit(item.value.name.one);
+  const handleProductSelect = (item: { id: string; label: string; value: SearchItem }) => {
+    setNewItemName(getName(item.value));
+    setShowProductSuggestions(false);
+    isSelectingProductRef.current = true;
+  };
+
+  const handleUnitSelect = (item: { id: string; label: string; value: SearchItem }) => {
+    setNewItemUnit(getName(item.value));
     setShowUnitSuggestions(false);
+    isSelectingUnitRef.current = true;
   };
 
   const resetForm = () => {
@@ -144,7 +150,7 @@ const ShoppingListAddItemModal = ({ isOpen, onClose }: ShoppingListAddItemModalP
   };
 
   const handleAddItem = () => {
-    if (newItemName.trim() && newItemAmount.trim() && newItemUnit.trim()) {
+    if (newItemName.trim() && newItemAmount.trim()) {
       const unitName = normalizeUnit(newItemUnit.trim());
 
       addItem({
@@ -152,95 +158,83 @@ const ShoppingListAddItemModal = ({ isOpen, onClose }: ShoppingListAddItemModalP
         amount: parseFloat(newItemAmount) || 1,
         unit: unitName,
       });
-      onClose();
       resetForm();
     }
   };
 
-  const handleCancel = () => {
-    onClose();
-    resetForm();
-  };
-
   return (
-    <Pressable className='flex-1 justify-end bg-black/50' onPress={onClose}>
-      {/* Modal with "prevent default" */}
-      <Pressable className='bg-background rounded-t-2xl p-6 w-full shadow-2xl' onPress={() => {}} style={{ maxHeight: '80%' }}>  
-        {/* Header */}
-        <Text className='text-2xl font-bold mb-4'>Add Item</Text>
+    <>
+      {/* Header */}
+      <Text className='text-2xl font-bold mb-4'> Add Item</Text>
 
-        {/* Product Name Input with Autocomplete */}
-        <InputWithDropdown
-          label="Item Name"
-          placeholder="Enter item name"
-          value={newItemName}
-          onChangeText={(text) => {
-            setNewItemName(text);
-            if (!text.trim()) {
-              setShowProductSuggestions(false);
-            }
-          }}
-          items={productSuggestions.map(product => ({
-            id: product.id,
-            label: product.name,
-            value: product
-          }))}
-          onItemSelect={handleProductSelect}
-          showDropdown={showProductSuggestions}
-          isLoading={isSearchingProducts}
-          autoFocus
-          className='mb-4 relative'
+      {/* Product Name Input with Autocomplete */}
+      <InputWithDropdown
+        label='Item Name'
+        placeholder='Enter item name'
+        value={newItemName}
+        onChangeText={(text) => {
+          setNewItemName(text);
+          if (!text.trim()) {
+            setShowProductSuggestions(false);
+          }
+        }}
+        items={productSuggestions.map((product) => ({
+          id: product.id,
+          label: getName(product),
+          value: product,
+        }))}
+        onItemSelect={handleProductSelect}
+        showDropdown={showProductSuggestions}
+        isLoading={isSearchingProducts}
+        autoFocus
+        className='mb-4 relative'
+        onBottom={true}
+      />
+
+      {/* Amount Input */}
+      <View className='mb-4'>
+        <Text className='text-sm font-medium mb-2'>Amount</Text>
+        <Input
+          className='border border-gray-300 rounded-lg px-3 py-2'
+          placeholder='Enter amount'
+          value={newItemAmount}
+          onChangeText={setNewItemAmount}
+          keyboardType='numeric'
         />
+      </View>
 
-        {/* Amount Input */}
-        <View className='mb-4'>
-          <Text className='text-sm font-medium mb-2'>Amount</Text>
-          <Input
-            className='border border-gray-300 rounded-lg px-3 py-2'
-            placeholder='Enter amount'
-            value={newItemAmount}
-            onChangeText={setNewItemAmount}
-            keyboardType='numeric'
-          />
-        </View>
+      {/* Unit Input with Autocomplete */}
+      <InputWithDropdown
+        label='Unit'
+        placeholder='Enter unit (e.g., cups, lbs, pieces)'
+        value={newItemUnit}
+        onChangeText={(text) => {
+          setNewItemUnit(text);
+          if (!text.trim()) {
+            setShowUnitSuggestions(false);
+          }
+        }}
+        items={unitSuggestions.map((unit) => ({
+          id: unit.id,
+          label: getName(unit),
+          value: unit,
+        }))}
+        onItemSelect={handleUnitSelect}
+        showDropdown={showUnitSuggestions}
+        isLoading={isSearchingUnits}
+        className='mb-6 relative'
+      />
 
-        {/* Unit Input with Autocomplete */}
-        <InputWithDropdown
-          label="Unit"
-          placeholder="Enter unit (e.g., cups, lbs, pieces)"
-          value={newItemUnit}
-          onChangeText={(text) => {
-            setNewItemUnit(text);
-            if (!text.trim()) {
-              setShowUnitSuggestions(false);
-            }
-          }}
-          items={unitSuggestions.map(unit => ({
-            id: unit.id,
-            label: unit.name.one,
-            sublabel: unit.name.many !== unit.name.one ? `(${unit.name.many})` : undefined,
-            value: unit
-          }))}
-          onItemSelect={handleUnitSelect}
-          showDropdown={showUnitSuggestions}
-          isLoading={isSearchingUnits}
-          className='mb-6 relative'
-        />
-
-        {/* Action Buttons */}
-        <View className='flex-row gap-3'>
-          <Button variant='outline' className='flex-1' onPress={handleCancel}>
-            <Text>Cancel</Text>
-          </Button>
-          <Button
-            className='flex-1'
-            onPress={handleAddItem}
-            disabled={!newItemName.trim() || !newItemAmount.trim() || !newItemUnit.trim()}>
-            <Text>Add</Text>
-          </Button>
-        </View>
-      </Pressable>
-    </Pressable>
+      {/* Action Buttons */}
+      <View className='flex-row gap-3'>
+        <Button
+          className='flex-1'
+          onPress={handleAddItem}
+          disabled={!newItemName.trim() || !newItemAmount.trim() || !newItemUnit.trim()}>
+          <Text>Add</Text>
+        </Button>
+      </View>
+    </>
   );
 };
 

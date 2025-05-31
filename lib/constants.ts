@@ -17,7 +17,7 @@ const fonts = {
   },
 };
 
-export const NAV_THEME = {
+export const THEME = {
   light: {
     dark: false,
     colors: {

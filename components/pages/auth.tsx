@@ -77,15 +77,15 @@ export default function AuthPage() {
 
   return (
     <SafeAreaView className='flex-1 justify-center items-center bg-background gap-4'>
-      <Text className='text-xl'>Sign in</Text>
-      <Button onPress={onGooglePress} className='w-52 rounded-full bg-black'>
+      <Text className='text-xl font-bold'>Sign in</Text>
+      <Button onPress={onGooglePress} className='w-60 rounded-full bg-black'>
         <View className='flex-row items-center gap-2'>
           <GoogleIcon width={20} height={20} />
           <Text className='text-white'>Sign in with Google</Text>
         </View>
       </Button>
 
-      <Button onPress={onApplePress} className='w-52 rounded-full bg-black'>
+      <Button onPress={onApplePress} className='w-60 rounded-full bg-black'>
         <View className='flex-row items-center gap-2'>
           <AppleIcon width={20} height={20} />
           <Text className='text-white'>Sign in with Apple</Text>

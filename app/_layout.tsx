@@ -1,7 +1,7 @@
 import { ThemeProvider } from '@react-navigation/native';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { NAV_THEME } from '~/lib/constants';
+import { THEME } from '~/lib/constants';
 import { useColorScheme } from '~/lib/useColorScheme';
 import { PortalHost } from '@rn-primitives/portal';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -51,15 +51,13 @@ export default function Layout() {
       <ClerkProvider tokenCache={tokenCache} afterSignOutUrl='/'>
         <ClerkLoaded>
           <SafeAreaProvider>
-            <ThemeProvider value={isDarkColorScheme ? NAV_THEME.dark : NAV_THEME.light}>
+            <ThemeProvider value={isDarkColorScheme ? THEME.dark : THEME.light}>
               <StatusBar style={isDarkColorScheme ? 'light' : 'dark'} />
               <Stack
                 screenOptions={{
                   headerShown: false,
                   contentStyle: {
-                    backgroundColor: isDarkColorScheme
-                      ? NAV_THEME.dark.colors.background
-                      : NAV_THEME.light.colors.background,
+                    backgroundColor: isDarkColorScheme ? THEME.dark.colors.background : THEME.light.colors.background,
                   },
                 }}>
                 <Stack.Screen name='(tabs)' />

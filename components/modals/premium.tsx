@@ -76,7 +76,12 @@ function PricingTier({
         ))}
       </View>
 
-      <Button variant={isPopular ? 'default' : 'outline'} size='lg' className='w-full' disabled={isCurrentPlan} onPress={onPress}>
+      <Button
+        variant={isPopular ? 'default' : 'outline'}
+        size='lg'
+        className='w-full'
+        disabled={isCurrentPlan}
+        onPress={onPress}>
         <Text className={isPopular ? 'text-primary-foreground' : 'text-foreground'}>
           {isCurrentPlan ? 'Current Plan' : 'Get Started'}
         </Text>

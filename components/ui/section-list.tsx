@@ -1,5 +1,5 @@
-import { SectionList as RNSectionList, SectionListRenderItem } from "react-native";
-import type { ReactElement } from "react";
+import { SectionList as RNSectionList, SectionListRenderItem } from 'react-native';
+import type { ReactElement } from 'react';
 
 interface SectionListProps<T> {
   sections: { title: string; data: T[] }[];
@@ -8,10 +8,12 @@ interface SectionListProps<T> {
 }
 
 export default function SectionList<T>({ sections, renderItem, renderSectionHeader, ...props }: SectionListProps<T>) {
-  return <RNSectionList
-    sections={sections}
-    renderItem={renderItem}
-    renderSectionHeader={(info) => renderSectionHeader(info.section)}
-    {...props}
-  />;
-} 
+  return (
+    <RNSectionList
+      sections={sections}
+      renderItem={renderItem}
+      renderSectionHeader={(info) => renderSectionHeader(info.section)}
+      {...props}
+    />
+  );
+}

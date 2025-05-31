@@ -5,7 +5,7 @@ export type CollectionDetails = {
   userId: string;
   name: string;
   recipes: Recipe[];
-}
+};
 
 export type Collection = {
   id: string;
@@ -13,4 +13,4 @@ export type Collection = {
   recipes: {
     imagesUrl: string[];
   };
-}
+};

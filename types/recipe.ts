@@ -24,7 +24,8 @@ export type RecipeDetails = {
   steps: Step[];
   isPublic: boolean; // if false, oh never mind it never gonna be false
   sourceUrl: string;
-}
+  rating: number;
+};
 
 export type Recipe = {
   id: string;
@@ -35,13 +36,14 @@ export type Recipe = {
   duration: number; // in minutes
   servings: number;
   category: Category;
-}
+  rating: number;
+};
 
 export type Step = {
   id: string;
   description: string;
   stepNumber: number;
-}
+};
 
 export type Ingredient = {
   id: string;
@@ -50,7 +52,7 @@ export type Ingredient = {
     amount: number;
     unit: Unit;
   };
-}
+};
 
 export type Unit = {
   id: string;
@@ -59,7 +61,7 @@ export type Unit = {
     many: string;
   };
   type: string; // wtf
-}
+};
 
 export type Category = {
   id: string;
@@ -70,13 +72,13 @@ export type Category = {
     name: string;
   };
   imageUrl: string;
-}
+};
 
-export type Page = {
+export type RecipesPage = {
   data: Recipe[];
   meta: {
     page: number;
-    pages: number;
-    total: number; // items
+    totalPages: number;
+    totalItems: number;
   };
-}
+};

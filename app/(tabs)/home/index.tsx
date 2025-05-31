@@ -11,6 +11,8 @@ export default function HomePage() {
         <View className='mt-4 mb-2 max-w-[220px]'>
           <Text className='text-2xl font-bold'>What do you want to cook today?</Text>
         </View>
+
+        <View className='flex-1'></View>
       </ScrollView>
     </SafeAreaView>
   );
