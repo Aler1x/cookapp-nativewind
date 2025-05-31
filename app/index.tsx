@@ -7,6 +7,7 @@ import { router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useColorScheme } from '~/lib/useColorScheme';
 import { NAV_THEME } from '~/lib/constants';
+import { useUser } from '@clerk/clerk-expo';
 
 const LandingScreen = () => {
   const { isDarkColorScheme } = useColorScheme();
@@ -21,6 +22,8 @@ const LandingScreen = () => {
       return () => clearTimeout(timer);
     }
   }, []);
+
+  const { user } = useUser();
 
   // For native mobile, show loading screen
   if (Platform.OS !== 'web') {
@@ -69,6 +72,15 @@ const LandingScreen = () => {
               <Button onPress={() => router.push('/(tabs)/home')} className='w-full py-4 rounded-full shadow-lg mb-4'>
                 <Text className='text-lg font-semibold text-center'>Start Cooking</Text>
               </Button>
+
+              {user && (
+                <Button
+                  variant='outline'
+                  onPress={() => router.push('/(tabs)/profile?showPremium=true')}
+                  className='w-full py-4 rounded-full mb-4'>
+                  <Text className='text-lg font-semibold text-center'>View Premium Features</Text>
+                </Button>
+              )}
             </View>
           </View>
         </View>

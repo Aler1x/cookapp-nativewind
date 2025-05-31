@@ -2,8 +2,21 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ShoppingListItem } from '~/types/shopping';
-import { ShoppingListStore } from '~/types/storage';
-import { useUnitsStore } from './units';
+
+export interface ShoppingListStore {
+  items: ShoppingListItem[];
+  addItem: (item: Omit<ShoppingListItem, 'id' | 'isChecked'>) => void;
+  removeItem: (id: string) => void;
+  toggleItem: (id: string) => void;
+  updateItemAmount: (id: string, amount: number) => void;
+  clearCheckedItems: () => void;
+  clearAllItems: () => void;
+  getUncheckedItems: () => ShoppingListItem[];
+  getCheckedItems: () => ShoppingListItem[];
+  formatShoppingListForSharing: () => string;
+
+  normalizeUnit: (unit: string) => string;
+}
 
 // Helper function to generate unique IDs
 const generateId = () => Math.random().toString(36).substr(2, 9);
@@ -13,17 +26,116 @@ export const useShoppingListStore = create<ShoppingListStore>()(
     (set, get) => ({
       items: [],
 
+      normalizeUnit: (unit: string): string => {
+        const unitLower = unit.toLowerCase().trim();
+        const unitMap: { [key: string]: string } = {
+          // Volume - Imperial
+          cup: 'cup',
+          c: 'cup',
+          'fl oz': 'fl oz',
+          'fluid ounce': 'fl oz',
+          'fluid ounces': 'fl oz',
+          quart: 'quart',
+          quarts: 'quarts',
+          pint: 'pint',
+          gallon: 'gallon',
+
+          // Volume - Metric
+          ml: 'ml',
+          milliliter: 'ml',
+          milliliters: 'ml',
+          l: 'l',
+          liter: 'l',
+          liters: 'l',
+          litre: 'l',
+          litres: 'l',
+          cl: 'cl',
+          centiliter: 'cl',
+          centiliters: 'cl',
+
+          // Weight - Imperial
+          oz: 'oz',
+          ounce: 'oz',
+          ounces: 'oz',
+          lb: 'lb',
+          lbs: 'lbs',
+          pound: 'lb',
+          pounds: 'lbs',
+
+          // Weight - Metric
+          g: 'g',
+          gram: 'g',
+          grams: 'g',
+          kg: 'kg',
+          kilogram: 'kg',
+          kilograms: 'kg',
+
+          // Small measurements
+          tsp: 'tsp',
+          teaspoon: 'tsp',
+          teaspoons: 'tsp',
+          tbsp: 'tbsp',
+          tablespoon: 'tbsp',
+          tablespoons: 'tbsp',
+          dash: 'dash',
+          pinch: 'pinch',
+          drop: 'drop',
+          drops: 'drops',
+
+          // Count/pieces
+          slice: 'slice',
+          slices: 'slices',
+          piece: 'piece',
+          pieces: 'piece',
+          whole: 'piece',
+          each: 'piece',
+          clove: 'clove',
+          sprig: 'sprig',
+          sprigs: 'sprigs',
+          bulb: 'bulb',
+          head: 'head',
+          stalk: 'stalk',
+          stalks: 'stalks',
+          leaf: 'leaf',
+          leaves: 'leaves',
+          stick: 'stick',
+          strip: 'strip',
+          strips: 'strips',
+          cob: 'cob',
+          cobs: 'cobs',
+          capsule: 'capsule',
+          bar: 'bar',
+
+          // Packaging
+          package: 'package',
+          sheet: 'sheet',
+          'tea bag': 'tea bag',
+          bag: 'bag',
+          scoop: 'scoop',
+          loaf: 'loaf',
+          loaves: 'loaves',
+          bundle: 'bundle',
+
+          // Length
+          meter: 'meter',
+          meters: 'meters',
+          metre: 'meter',
+          metres: 'meters',
+        };
+
+        return unitMap[unitLower] || unit;
+      },
+
       addItem: (item) => {
         set((state) => {
           // Use the units store for normalization
-          const unitsState = useUnitsStore.getState();
-          const normalizedUnit = unitsState.normalizeUnit(item.unit);
+          const normalizedUnit = get().normalizeUnit(item.unit);
 
           // Check if item with same name and unit already exists
           const existingItemIndex = state.items.findIndex(
             (existingItem) =>
               existingItem.name.toLowerCase() === item.name.toLowerCase() &&
-              unitsState.normalizeUnit(existingItem.unit) === normalizedUnit
+              get().normalizeUnit(existingItem.unit) === normalizedUnit
           );
 
           if (existingItemIndex !== -1) {
@@ -75,30 +187,6 @@ export const useShoppingListStore = create<ShoppingListStore>()(
         set({ items: [] });
       },
 
-      // Enhanced recipe ingredient addition with better unit handling
-      addIngredientsFromRecipe: (ingredients, recipeId, recipeName) => {
-        const unitsState = useUnitsStore.getState();
-
-        ingredients.forEach((ingredient) => {
-          const amount = ingredient.measurements?.amount || 1;
-          let unit = 'piece'; // default fallback
-
-          // Try to get the unit from the ingredient's unit object
-          if (ingredient.measurements?.unit?.id) {
-            const foundUnit = unitsState.getUnitById(ingredient.measurements.unit.id);
-            unit = foundUnit ? foundUnit.name.one : ingredient.measurements.unit.name?.one || 'piece';
-          } else if (ingredient.measurements?.unit?.name?.one) {
-            unit = ingredient.measurements.unit.name.one;
-          }
-
-          get().addItem({
-            name: ingredient.name,
-            amount,
-            unit,
-          });
-        });
-      },
-
       getUncheckedItems: () => {
         return get()
           .items.filter((item) => !item.isChecked)
@@ -113,16 +201,13 @@ export const useShoppingListStore = create<ShoppingListStore>()(
 
       // Enhanced formatting with proper unit display
       formatShoppingListForSharing: () => {
-        const unitsState = useUnitsStore.getState();
-
         return get()
           .items.filter((item) => !item.isChecked)
           .sort((a, b) => a.name.localeCompare(b.name))
           .map((item) => {
             // Try to get the proper unit display name
-            const unit = unitsState.getUnitByName(item.unit);
-            const displayUnit = item.amount === 1 ? unit?.name.one || item.unit : unit?.name.many || item.unit;
-
+            const unit = get().normalizeUnit(item.unit);
+            const displayUnit = (item.amount === 1 || unit.endsWith('s')) ? unit : unit + 's';
             return `${item.amount} ${displayUnit} ${item.name}`;
           })
           .join('\n');

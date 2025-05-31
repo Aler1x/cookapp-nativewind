@@ -45,3 +45,15 @@ export const NAV_THEME = {
     fonts: fonts,
   },
 };
+
+/**
+ * API prefixes for different environments
+ * - spring: /api (crud)
+ * - node: /personalization (some weird ai stuff)
+ * - python: /chatbot (less weird ai stuff)
+ */
+export const API_ENDPOINTS_PREFIX = {
+  spring: '/api',
+  node: '/personalization',
+  python: '/chatbot',
+};

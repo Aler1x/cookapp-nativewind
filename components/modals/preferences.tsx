@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { View } from '~/components/ui/view';
 import { Text } from '~/components/ui/text';
 import { Button } from '~/components/ui/button';
-import { ScrollView, TouchableOpacity, Modal, TextInput } from 'react-native';
-import { X } from 'lucide-react-native';
+import { ScrollView, TouchableOpacity, Modal, TextInput, Pressable } from 'react-native';
+import { X } from '~/assets/icons';
 import { Preferences } from '~/types/profile';
 
 // Mock data - this would come from your backend
@@ -51,9 +51,8 @@ function PreferencePill({ name, selected, onPress }: PreferencePillProps) {
   return (
     <TouchableOpacity
       onPress={onPress}
-      className={`px-4 py-2 rounded-full mr-2 mb-2 border ${
-        selected ? 'bg-primary border-primary' : 'bg-transparent border-gray-300'
-      }`}>
+      className={`px-4 py-2 rounded-full mr-2 mb-2 border ${selected ? 'bg-primary border-primary' : 'bg-transparent border-gray-300'
+        }`}>
       <Text className={`text-sm ${selected ? 'text-white font-medium' : 'text-gray-700'}`}>{name}</Text>
     </TouchableOpacity>
   );
@@ -177,12 +176,12 @@ export default function PreferencesPage({
   return (
     <View className='flex-1 bg-background'>
       {/* Header */}
-      <View className='flex-row items-center justify-between px-4 py-4 border-b border-gray-200'>
-        <TouchableOpacity onPress={onClose}>
-          <X size={24} color='#000' />
-        </TouchableOpacity>
+      <View className='flex-row items-center justify-between px-6 py-6 border-b border-gray-200'>
         <TouchableOpacity onPress={clearAll}>
           <Text className='text-gray-500'>Clear all</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={onClose}>
+          <X size={24} color='#000' />
         </TouchableOpacity>
       </View>
 
@@ -248,14 +247,18 @@ export default function PreferencesPage({
         </Button>
       </View>
 
+      {/* Modal background */}
+      {modalVisible && <Pressable className='flex-1 bg-black/50 absolute top-0 left-0 right-0 bottom-0 transition-opacity duration-300 z-10' onPress={() => console.log('Modal background pressed')} />}
+
       {/* Add New Item Modal */}
       <Modal
         visible={modalVisible}
         animationType='slide'
+        presentationStyle='formSheet'
         transparent={true}
         onRequestClose={() => setModalVisible(false)}>
-        <View className='flex-1 justify-end bg-black/50'>
-          <View className='bg-white rounded-t-3xl p-6'>
+        <View className='flex-1 justify-end'>
+          <View className='bg-background rounded-t-3xl p-6'>
             <View className='flex-row items-center justify-between mb-4'>
               <Text className='text-lg font-semibold'>Add new item</Text>
               <TouchableOpacity onPress={() => setModalVisible(false)}>

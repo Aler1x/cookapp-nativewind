@@ -17,6 +17,19 @@ import {
   Heart,
   Share2,
   Clipboard,
+  CookingPot,
+  Crown,
+  Star,
+  Zap,
+  Shield,
+  Sparkles,
+  ChefHat,
+  BookOpen,
+  Users,
+  Download,
+  Check,
+  X,
+  Info,
 } from 'lucide-react-native';
 import GoogleIcon from './google';
 import AppleIcon from './apple';
@@ -40,6 +53,19 @@ iconWithClassName(BotMessageSquare);
 iconWithClassName(Heart);
 iconWithClassName(Share2);
 iconWithClassName(Clipboard);
+iconWithClassName(CookingPot);
+iconWithClassName(Crown);
+iconWithClassName(Star);
+iconWithClassName(Zap);
+iconWithClassName(Shield);
+iconWithClassName(Sparkles);
+iconWithClassName(ChefHat);
+iconWithClassName(BookOpen);
+iconWithClassName(Users);
+iconWithClassName(Download);
+iconWithClassName(Check);
+iconWithClassName(X);
+iconWithClassName(Info);
 
 export {
   MoonStar,
@@ -62,4 +88,17 @@ export {
   Heart,
   Share2,
   Clipboard,
+  CookingPot,
+  Crown,
+  Star,
+  Zap,
+  Shield,
+  Sparkles,
+  ChefHat,
+  BookOpen,
+  Users,
+  Download,
+  Check,
+  X,
+  Info,
 };

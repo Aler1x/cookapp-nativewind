@@ -1,4 +1,4 @@
-import { Platform } from 'react-native';
+import { Button, Platform } from 'react-native';
 
 // import { HelloWave } from '@/components/HelloWave';
 import { Image } from '~/components/ui/image';
@@ -7,6 +7,7 @@ import { View } from '~/components/ui/view';
 import { Text } from '~/components/ui/text';
 import { useBottomTabOverflow } from '~/components/TabBarBackground';
 import { useColorScheme } from '~/lib/useColorScheme';
+import { router } from 'expo-router';
 const HEADER_HEIGHT = 250;
 
 export default function HomeScreen() {
@@ -88,6 +89,9 @@ export default function HomeScreen() {
               <Text className='font-semibold'>app</Text> to <Text className='font-semibold'>app-example</Text>.
             </Text>
           </View>
+        </View>
+        <View className='p-4'>
+          <Button title='Go home' onPress={() => router.push('/')} />
         </View>
       </Animated.ScrollView>
     </View>

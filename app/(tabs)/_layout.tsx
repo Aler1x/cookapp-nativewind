@@ -13,7 +13,6 @@ export default function RootLayout() {
         headerShown: false,
         tabBarActiveTintColor: isDarkColorScheme ? NAV_THEME.dark.colors.foreground : NAV_THEME.light.colors.foreground,
         tabBarShowLabel: false,
-        tabBarHideOnKeyboard: true,
         tabBarStyle: Platform.select({
           ios: {
             position: 'absolute',

@@ -3,7 +3,7 @@ import { View } from '~/components/ui/view';
 import { Text } from '~/components/ui/text';
 import { Button } from '~/components/ui/button';
 import FullscreenModal from '~/components/ui/fullscreen-modal';
-import PreferencesPage from '~/components/pages/preferences';
+import PreferencesPage from '~/components/modals/preferences';
 import { Preferences } from '~/types/profile';
 
 export default function FullScreenModal() {

@@ -1,4 +1,4 @@
-export interface RecipeDetails {
+export type RecipeDetails = {
   id: string;
   title: string;
   slug: string; // Used for the URL of the recipe
@@ -26,7 +26,7 @@ export interface RecipeDetails {
   sourceUrl: string;
 }
 
-export interface Recipe {
+export type Recipe = {
   id: string;
   title: string;
   difficulty: 'easy' | 'medium' | 'hard';
@@ -37,13 +37,13 @@ export interface Recipe {
   category: Category;
 }
 
-export interface Step {
+export type Step = {
   id: string;
   description: string;
   stepNumber: number;
 }
 
-export interface Ingredient {
+export type Ingredient = {
   id: string;
   name: string;
   measurements: {
@@ -52,7 +52,7 @@ export interface Ingredient {
   };
 }
 
-export interface Unit {
+export type Unit = {
   id: string;
   name: {
     one: string;
@@ -61,7 +61,7 @@ export interface Unit {
   type: string; // wtf
 }
 
-export interface Category {
+export type Category = {
   id: string;
   name: string;
   slug: string;
@@ -72,7 +72,7 @@ export interface Category {
   imageUrl: string;
 }
 
-export interface Page {
+export type Page = {
   data: Recipe[];
   meta: {
     page: number;

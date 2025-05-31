@@ -1,6 +1,6 @@
 type PreferenceType = 'diet' | 'cuisine' | 'unfavorite_ingredient' | 'allergy';
 
-export interface CategoryPreference {
+export type CategoryPreference = {
   id: string;
   name: string;
   categoryId: number;
@@ -8,7 +8,7 @@ export interface CategoryPreference {
   preferenceType: PreferenceType;
 }
 
-export interface IngredientPreference {
+export type IngredientPreference = {
   id: string;
   name: string;
   ingredientId: number;

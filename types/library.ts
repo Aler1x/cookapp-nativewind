@@ -1,13 +1,13 @@
 import { Recipe } from './recipe';
 
-export interface CollectionDetails {
+export type CollectionDetails = {
   id: string;
   userId: string;
   name: string;
   recipes: Recipe[];
 }
 
-export interface Collection {
+export type Collection = {
   id: string;
   name: string;
   recipes: {

@@ -1,18 +1,19 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View } from '~/components/ui/view';
 import { Text } from '~/components/ui/text';
 import { Image } from '~/components/ui/image';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Link } from '~/components/ui/button-link';
 import { Button } from '~/components/ui/button';
 import { TouchableOpacity } from 'react-native';
 import { useAuth, useUser } from '@clerk/clerk-expo';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import AuthPage from '~/components/pages/auth';
 import FullscreenModal from '~/components/ui/fullscreen-modal';
-import PreferencesPage from '~/components/pages/preferences';
-import { UserPen, ChevronRight, Settings, Heart } from '~/assets/icons';
+import PreferencesPage from '~/components/modals/preferences';
+import { UserPen, ChevronRight, Heart, CookingPot } from '~/assets/icons';
 import { Preferences } from '~/types/profile';
+import PremiumPage from '~/components/modals/premium';
+import Toast from 'react-native-toast-message';
 
 export default function Page() {
   const { signOut, isLoaded, isSignedIn } = useAuth();
@@ -20,6 +21,15 @@ export default function Page() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [showPreferences, setShowPreferences] = useState(false);
+  const [showPremium, setShowPremium] = useState(false);
+
+  const { showPremium: showPremiumParam } = useLocalSearchParams();
+
+  useEffect(() => {
+    if (showPremiumParam) {
+      setShowPremium(true);
+    }
+  }, [showPremiumParam]);
 
   const handleSignOut = async () => {
     if (!isLoaded) return;
@@ -41,6 +51,39 @@ export default function Page() {
     setShowPreferences(false);
   };
 
+  const { getToken } = useAuth();
+
+  const handleCopyToken = async () => {
+    if (!isSignedIn) {
+      return;
+    }
+
+    const token = await getToken();
+    if (token) {
+      navigator.clipboard.writeText(token);
+    }
+
+    Toast.show({
+      text1: 'Token copied to clipboard',
+    });
+  };
+
+  const handleClickPlan = (plan: string) => {
+    user?.update({
+      unsafeMetadata: {
+        isPremium: true,
+        plan: plan,
+      },
+    });
+
+    Toast.show({
+      text1: `You are now on the ${plan} plan`,
+      type: 'success',
+    });
+
+    setShowPremium(false);
+  };
+
   return (
     <>
       {!isSignedIn && <AuthPage />}
@@ -52,26 +95,53 @@ export default function Page() {
               <Image source={user?.imageUrl} className='w-16 h-16 rounded-full' />
               <View>
                 <Text className='text-lg font-semibold'>{user?.fullName}</Text>
-                <Text className='text-sm text-gray-500 font-regular'>{user?.emailAddresses[0].emailAddress}</Text>
+                <Text
+                  className='text-sm text-gray-500 font-regular max-w-[60vw]'
+                  numberOfLines={1}
+                  ellipsizeMode='middle'>
+                  {user?.emailAddresses[0].emailAddress}
+                </Text>
               </View>
             </View>
-            <Button variant='outline' size='icon' className='w-10 h-10'>
-              <UserPen size={24} />
-            </Button>
+
+            {process.env.EXPO_PUBLIC_LOCAL === 'true' && (
+              <Button variant='outline' size='icon' className='w-10 h-10' onPress={handleCopyToken}>
+                <UserPen size={24} />
+              </Button>
+            )}
           </View>
           <View>
-            <TouchableOpacity className='flex-row items-center justify-between bg-[hsl(170,33%,76%)] rounded-3xl py-4 px-6 mb-4'>
-              <View className='flex-row items-center gap-4'>
-                <View className='w-12 h-12 bg-white rounded-full items-center justify-center'>
-                  <Text className='text-2xl'>🍙</Text>
-                </View>
-                <View>
-                  <Text className='text-lg font-comfortaa-semibold text-gray-800'>Buy Premium</Text>
-                  <Text className='text-sm text-gray-600'>Unlock all features</Text>
+            {user?.unsafeMetadata.isPremium ? (
+              <View className='flex-row items-center justify-between bg-[hsl(170,33%,76%)] rounded-3xl py-4 px-6 mb-4'>
+                <View className='flex-row items-center gap-4'>
+                  <View className='w-12 h-12 bg-white rounded-full items-center justify-center'>
+                    <CookingPot size={24} color='#4b5563' />
+                  </View>
+                  <View>
+                    <Text className='text-lg font-bold text-gray-800 text-wrap max-w-[60vw]'>
+                      Your Premium Plan is Active
+                    </Text>
+                    <Text className='text-sm text-gray-600 text-wrap max-w-[60vw]'>
+                      You have access to all features
+                    </Text>
+                  </View>
                 </View>
               </View>
-              <ChevronRight size={24} color='#374151' />
-            </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                className='flex-row items-center justify-between bg-[hsl(170,33%,76%)] rounded-3xl py-4 px-6 mb-4'
+                onPress={() => setShowPremium(true)}>
+                <View className='flex-row items-center gap-4'>
+                  <View className='w-12 h-12 bg-white rounded-full items-center justify-center'>
+                    <CookingPot size={24} color='#4b5563' />
+                  </View>
+                  <View>
+                    <Text className='text-lg font-bold text-gray-800 text-wrap max-w-[60vw]'>Buy Premium</Text>
+                    <Text className='text-sm text-gray-600 text-wrap max-w-[60vw]'>Unlock all features</Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            )}
 
             {/* <Link href='/profile/settings' variant='ghost' className='items-center justify-between border-b'>
               <View className='flex-row items-center gap-4'>
@@ -95,6 +165,10 @@ export default function Page() {
               <ChevronRight size={24} color='#666' />
             </TouchableOpacity>
           </View>
+
+          <FullscreenModal visible={showPremium} onClose={() => setShowPremium(false)}>
+            <PremiumPage onClose={() => setShowPremium(false)} onClickPlan={handleClickPlan} />
+          </FullscreenModal>
 
           <FullscreenModal visible={showPreferences} onClose={() => setShowPreferences(false)}>
             <PreferencesPage onClose={() => setShowPreferences(false)} onSave={handleSavePreferences} />

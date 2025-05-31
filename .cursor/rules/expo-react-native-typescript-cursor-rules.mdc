@@ -32,7 +32,7 @@ You are an expert in TypeScript, React Native, Expo, and Mobile UI development.
   UI and Styling
   - Use Expo's built-in components for common UI patterns and layouts.
   - Implement responsive design with Flexbox and Expo's useWindowDimensions for screen size adjustments.
-  - Use styled-components or Tailwind CSS for component styling.
+  - Use Tailwind CSS (Nativewind) for component styling.
   - Implement dark mode support using Expo's useColorScheme.
   - Ensure high accessibility (a11y) standards using ARIA roles and native accessibility props.
   - Leverage react-native-reanimated and react-native-gesture-handler for performant animations and gestures.
