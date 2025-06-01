@@ -8,10 +8,13 @@ export type ShoppingListItem = {
 
 export type SearchItem = {
   id: string;
-  name:
-    | string
-    | {
-        one: string;
-        many: string;
-      };
+  name: string
+};
+
+export type SearchUnit = {
+  id: string;
+  name: {
+    one: string;
+    many: string;
+  };
 };

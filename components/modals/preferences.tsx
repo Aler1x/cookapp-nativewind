@@ -1,13 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { View } from '~/components/ui/view';
 import { Text } from '~/components/ui/text';
 import { Button } from '~/components/ui/button';
-import { ScrollView, TouchableOpacity, TextInput } from 'react-native';
+import { ScrollView, TouchableOpacity, TextInput, ActivityIndicator } from 'react-native';
 import { X } from '~/assets/icons';
 import { Preferences } from '~/types/profile';
 import BasicModal from '../ui/basic-modal';
-import { useFetch } from '~/lib/fetch';
-import { API_ENDPOINTS_PREFIX } from '~/lib/constants';
+import { debounce, useFetch } from '~/lib/fetch';
+import { API_ENDPOINTS_PREFIX, THEME } from '~/lib/constants';
+import InputWithDropdown from '../ui/input-with-dropdown';
+import { SearchItem } from '~/types/shopping';
 
 interface PreferencePillProps {
   name: string;
@@ -52,7 +54,10 @@ function PreferenceSection({
 
   return (
     <View className='mb-6'>
-      <Text className='text-lg font-semibold mb-3'>{title}</Text>
+      <View className='flex-row items-center justify-between'>
+        <Text className='text-lg font-semibold mb-3'>{title}</Text>
+        {!items && <ActivityIndicator size='small' color={THEME.light.colors.primary} />}
+      </View>
       <View className='flex-row flex-wrap'>
         {displayItems?.map((item) => (
           <PreferencePill
@@ -105,7 +110,6 @@ export default function PreferencesPage({
   useEffect(() => {
     const fetchPreferences = async () => {
       const preferences = await $fetch<{ data: Preferences }>(`${API_ENDPOINTS_PREFIX.node}/preferences`);
-      console.log(preferences);
       setPreferences(preferences.data);
     };
     fetchPreferences();
@@ -135,12 +139,44 @@ export default function PreferencesPage({
     setModalVisible(true);
   };
 
-  const addNewItem = () => {
+  const addNewItem = (selectedItem?: SearchItem) => {
     if (newItemText.trim()) {
       console.log('Adding new item:', newItemText, 'to section:', currentSection);
       // Here you would typically make an API call to add the new preference
       setNewItemText('');
+      setProducts([]);
       setModalVisible(false);
+
+      const itemId = selectedItem?.id || newItemText;
+      const itemName = selectedItem?.name || newItemText;
+      const ingredientId = selectedItem ? parseInt(selectedItem.id) : 0;
+
+      switch (currentSection) {
+        case 'allergies':
+          setPreferences((prev) => ({
+            ...prev,
+            allergies: [...prev.allergies, {
+              id: itemId,
+              name: itemName,
+              ingredientId: ingredientId,
+              selected: true,
+              preferenceType: 'allergy' as const
+            }]
+          }));
+          break;
+        case 'unfavoriteIngredients':
+          setPreferences((prev) => ({
+            ...prev,
+            unfavoriteIngredients: [...prev.unfavoriteIngredients, {
+              id: itemId,
+              name: itemName,
+              ingredientId: ingredientId,
+              selected: true,
+              preferenceType: 'unfavorite_ingredient' as const
+            }]
+          }));
+          break;
+      }
     }
   };
 
@@ -152,6 +188,23 @@ export default function PreferencesPage({
     if (onClose) {
       onClose();
     }
+  };
+  const [products, setProducts] = useState<SearchItem[] | null>(null)
+
+  const fetchProducts = useCallback(debounce(async (query: string) => {
+    const categories = await $fetch<{ data: SearchItem[] }>(`${API_ENDPOINTS_PREFIX.node}/ingredients/search?query=${query}`);
+    setProducts(categories.data.slice(0, 3));
+  }, 500), []);
+
+  useEffect(() => {
+    if (newItemText) {
+      fetchProducts(newItemText);
+    }
+  }, [newItemText, fetchProducts]);
+
+  const handleProductSelect = (item: { id: string; label: string; value: SearchItem }) => {
+    setNewItemText(item.value.name);
+    addNewItem(item.value);
   };
 
   return (
@@ -218,6 +271,7 @@ export default function PreferencesPage({
           onToggleShowAll={() => setShowAllCuisines(!showAllCuisines)}
           onToggleItem={(id) => togglePreference('cuisinePreferences', id)}
           onAddNew={() => openAddModal('cuisinePreferences')}
+          showAddNew={false}
         />
       </ScrollView>
 
@@ -237,19 +291,26 @@ export default function PreferencesPage({
           </TouchableOpacity>
         </View>
 
-        <TextInput
-          className='border border-gray-300 rounded-lg px-4 py-3 mb-4 text-base'
+        <InputWithDropdown
+          label='Item'
           placeholder='Enter item name...'
           value={newItemText}
           onChangeText={setNewItemText}
-          autoFocus
+          onItemSelect={handleProductSelect}
+          items={products?.map((product) => ({
+            id: product.id,
+            label: product.name,
+            value: product,
+          })) || []}
+          showDropdown={products && products.length > 0}
+          onBottom={false}
         />
 
         <View className='flex-row gap-3'>
           <Button variant='outline' className='flex-1' onPress={() => setModalVisible(false)}>
             <Text>Cancel</Text>
           </Button>
-          <Button className='flex-1 bg-primary' onPress={addNewItem}>
+          <Button className='flex-1 bg-primary' onPress={() => addNewItem()}>
             <Text className='text-white'>Add</Text>
           </Button>
         </View>

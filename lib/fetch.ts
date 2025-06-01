@@ -16,6 +16,14 @@ export type PaginatedResponse<T> = {
   meta: PaginationMeta;
 };
 
+export function debounce(func: (...args: any[]) => void, wait: number) {
+  let timeout: NodeJS.Timeout;
+  return (...args: any[]) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), wait);
+  };
+}
+
 export function useFetch() {
   const { getToken, isSignedIn } = useAuth();
 

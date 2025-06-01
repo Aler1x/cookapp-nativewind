@@ -12,7 +12,9 @@ export default function HomePage() {
           <Text className='text-2xl font-bold'>What do you want to cook today?</Text>
         </View>
 
-        <View className='flex-1'></View>
+        <View className='flex-1'>
+          
+        </View>
       </ScrollView>
     </SafeAreaView>
   );

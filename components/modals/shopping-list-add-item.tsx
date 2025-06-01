@@ -8,7 +8,7 @@ import { useShoppingListStore } from '~/stores/shopping';
 import { API_ENDPOINTS_PREFIX } from '~/lib/constants';
 import { useFetch } from '~/lib/fetch';
 import { useAuth } from '@clerk/clerk-expo';
-import { SearchItem } from '~/types/shopping';
+import { SearchItem, SearchUnit } from '~/types/shopping';
 
 const ShoppingListAddItemModal = () => {
   const [newItemName, setNewItemName] = useState('');
@@ -17,7 +17,7 @@ const ShoppingListAddItemModal = () => {
 
   // Search states
   const [productSuggestions, setProductSuggestions] = useState<SearchItem[]>([]);
-  const [unitSuggestions, setUnitSuggestions] = useState<SearchItem[]>([]);
+  const [unitSuggestions, setUnitSuggestions] = useState<SearchUnit[]>([]);
   const [isSearchingProducts, setIsSearchingProducts] = useState(false);
   const [isSearchingUnits, setIsSearchingUnits] = useState(false);
   const [showProductSuggestions, setShowProductSuggestions] = useState(false);
@@ -75,7 +75,7 @@ const ShoppingListAddItemModal = () => {
 
     setIsSearchingUnits(true);
     try {
-      const response = await $fetch<SearchItem[]>(`${API_ENDPOINTS_PREFIX.spring}/units?name=${encodeURIComponent(query)}`);
+      const response = await $fetch<SearchUnit[]>(`${API_ENDPOINTS_PREFIX.spring}/units?name=${encodeURIComponent(query)}`);
       if (response) {
         setUnitSuggestions(response.slice(0, 3));
         setShowUnitSuggestions(response.length > 0);
@@ -105,7 +105,6 @@ const ShoppingListAddItemModal = () => {
       return;
     }
 
-    console.log('Searching products', isSelectingProductRef.current);
     debouncedProductSearch(newItemName);
   }, [newItemName, debouncedProductSearch, isSignedIn]);
 
@@ -123,18 +122,14 @@ const ShoppingListAddItemModal = () => {
     debouncedUnitSearch(newItemUnit);
   }, [newItemUnit, debouncedUnitSearch, isSignedIn]);
 
-  const getName = (item: SearchItem) => {
-    return typeof item.name === 'string' ? item.name : item.name.one;
-  };
-
   const handleProductSelect = (item: { id: string; label: string; value: SearchItem }) => {
-    setNewItemName(getName(item.value));
+    setNewItemName(item.value.name);
     setShowProductSuggestions(false);
     isSelectingProductRef.current = true;
   };
 
-  const handleUnitSelect = (item: { id: string; label: string; value: SearchItem }) => {
-    setNewItemUnit(getName(item.value));
+  const handleUnitSelect = (item: { id: string; label: string; value: SearchUnit }) => {
+    setNewItemUnit(item.value.name.one);
     setShowUnitSuggestions(false);
     isSelectingUnitRef.current = true;
   };
@@ -180,7 +175,7 @@ const ShoppingListAddItemModal = () => {
         }}
         items={productSuggestions.map((product) => ({
           id: product.id,
-          label: getName(product),
+          label: product.name,
           value: product,
         }))}
         onItemSelect={handleProductSelect}
@@ -216,7 +211,7 @@ const ShoppingListAddItemModal = () => {
         }}
         items={unitSuggestions.map((unit) => ({
           id: unit.id,
-          label: getName(unit),
+          label: unit.name.one,
           value: unit,
         }))}
         onItemSelect={handleUnitSelect}
