@@ -1,22 +1,36 @@
 const fonts = {
   regular: {
-    fontFamily: 'Inter_400Regular',
+    fontFamily: 'Comfortaa_400Regular',
     fontWeight: '400' as const,
   },
   medium: {
-    fontFamily: 'Inter_500Medium',
+    fontFamily: 'Comfortaa_500Medium',
     fontWeight: '500' as const,
   },
   bold: {
-    fontFamily: 'Inter_700Bold',
+    fontFamily: 'Comfortaa_700Bold',
     fontWeight: '700' as const,
   },
   heavy: {
-    fontFamily: 'Inter_900Black',
-    fontWeight: '800' as const,
+    fontFamily: 'Comfortaa_700Bold',
+    fontWeight: '700' as const,
   },
 };
 
+
+/**
+ * Theme for the app
+ * 
+ * @description
+ * 
+ * - light: light theme
+ * - dark: dark theme
+ * 
+ * - colors: colors for the app
+ * - fonts: fonts for the app
+ * 
+ * - dark: boolean indicating if the theme is dark
+ */
 export const THEME = {
   light: {
     dark: false,
@@ -56,4 +70,5 @@ export const API_ENDPOINTS_PREFIX = {
   spring: '/api',
   node: '/personalization',
   python: '/chatbot',
+  public: '/public',
 };

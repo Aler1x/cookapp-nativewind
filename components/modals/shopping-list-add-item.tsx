@@ -6,7 +6,8 @@ import { Button } from '../ui/button';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useShoppingListStore } from '~/stores/shopping';
 import { API_ENDPOINTS_PREFIX } from '~/lib/constants';
-import { useFetch } from '~/lib/fetch';
+import { useFetch } from '~/hooks/useFetch';
+import { debounce } from '~/lib/debounce';
 import { useAuth } from '@clerk/clerk-expo';
 import { SearchItem, SearchUnit } from '~/types/shopping';
 
@@ -31,15 +32,6 @@ const ShoppingListAddItemModal = () => {
   const { isSignedIn } = useAuth();
 
   const $fetch = useFetch();
-
-  // Debounce function
-  const debounce = (func: Function, delay: number) => {
-    let timeoutId: NodeJS.Timeout;
-    return (...args: any[]) => {
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => func.apply(null, args), delay);
-    };
-  };
 
   // Search products by name
   const searchProducts = async (query: string) => {
@@ -160,7 +152,7 @@ const ShoppingListAddItemModal = () => {
   return (
     <>
       {/* Header */}
-      <Text className='text-2xl font-bold mb-4'> Add Item</Text>
+      <Text className='text-2xl font-bold mb-4'>Add Item</Text>
 
       {/* Product Name Input with Autocomplete */}
       <InputWithDropdown

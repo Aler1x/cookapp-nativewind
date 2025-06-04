@@ -2,8 +2,6 @@
 
 ## Project Overview
 
-[![runs with Expo Go](https://img.shields.io/badge/Runs%20with%20Expo%20Go-000.svg?style=flat-square&logo=EXPO&labelColor=f3f3f3&logoColor=000)](https://expo.dev/client)
-
 CookApp is a modern mobile cooking application built with Expo and React Native.
 The app helps users discover, create, save, and share cooking recipes with a 
 beautiful, responsive UI powered by NativeWind (Tailwind CSS for React Native).

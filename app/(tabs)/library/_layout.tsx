@@ -1,5 +1,4 @@
 import { Stack } from 'expo-router';
-import { View } from '~/components/ui/view';
 
 export default function Layout() {
   return (
@@ -7,10 +6,8 @@ export default function Layout() {
       screenOptions={{
         headerShown: false,
       }}
-      >
+    >
       <Stack.Screen name='index' />
-      <Stack.Screen name='results' />
-      <Stack.Screen name='filters' options={{ presentation: 'modal' }} />
     </Stack>
   );
 }

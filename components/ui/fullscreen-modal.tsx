@@ -1,5 +1,6 @@
 import React from 'react';
 import { Modal, ModalProps } from 'react-native';
+import { View } from '~/components/ui/view';
 
 type FullscreenModalProps = Omit<ModalProps, 'children'> & {
   visible: boolean;
@@ -24,7 +25,9 @@ export default function FullscreenModal({
       presentationStyle={presentationStyle}
       onRequestClose={onClose}
       {...modalProps}>
-      {children}
+      <View className='flex-1'>
+        {children}
+      </View>
     </Modal>
   );
 }

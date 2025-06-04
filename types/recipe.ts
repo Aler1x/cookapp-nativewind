@@ -1,19 +1,18 @@
-export type RecipeDetails = {
+export interface RecipeFull {
   id: string;
   title: string;
   slug: string; // Used for the URL of the recipe
   difficulty: 'easy' | 'medium' | 'hard';
   mainImageUrl: string;
-  description: string;
-  source: 'ManuallyCreated' | 'AIGenerated' | 'External' | 'Original'; // wtf is last one?
-  author?: {
-    // optional, because on db it don't link to user so it's probably always null
+  description?: string;
+  source: 'MANUALLY_CREATED' | 'AI' | 'EXTERNAL' | 'ORIGINAL'; // wtf is last one?
+  author?: { // optional, because on db it don't link to user so it's probably null
     id: string;
     name: string;
   };
   duration: number; // in minutes
   servings: number;
-  nutrition?: {
+  nutritions?: {
     calories: number;
     fat: number;
     protein: number;
@@ -22,10 +21,10 @@ export type RecipeDetails = {
   categories: Category[];
   ingredients: Ingredient[];
   steps: Step[];
-  isPublic: boolean; // if false, oh never mind it never gonna be false
+  isPublic: boolean; // if false, oh nevermind it never gonna be false
   sourceUrl: string;
-  rating: number;
-};
+  rating?: number;
+}
 
 export type Recipe = {
   id: string;
@@ -33,10 +32,10 @@ export type Recipe = {
   difficulty: 'easy' | 'medium' | 'hard';
   slug: string;
   mainImageUrl: string;
-  duration: number; // in minutes
+  durationTotal: number; // in minutes
   servings: number;
   category: Category;
-  rating: number;
+  rating?: number;
 };
 
 export type Step = {
@@ -60,7 +59,7 @@ export type Unit = {
     one: string;
     many: string;
   };
-  type: string; // wtf
+  type: string;
 };
 
 export type Category = {

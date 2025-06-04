@@ -14,7 +14,6 @@ export interface ShoppingListStore {
   getUncheckedItems: () => ShoppingListItem[];
   getCheckedItems: () => ShoppingListItem[];
   formatShoppingListForSharing: () => string;
-
   normalizeUnit: (unit: string) => string;
 }
 
@@ -28,6 +27,9 @@ export const useShoppingListStore = create<ShoppingListStore>()(
 
       normalizeUnit: (unit: string): string => {
         const unitLower = unit.toLowerCase().trim();
+        if (unitLower === '') {
+          return '';
+        }
         const unitMap: { [key: string]: string } = {
           // Volume - Imperial
           cup: 'cup',

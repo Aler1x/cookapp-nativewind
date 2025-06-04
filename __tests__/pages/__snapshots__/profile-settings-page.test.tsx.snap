@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SettingsPage matches snapshot 1`] = `
+<RNCSafeAreaView
+  className="flex-1 items-center justify-center"
+  edges={
+    {
+      "bottom": "additive",
+      "left": "additive",
+      "right": "additive",
+      "top": "additive",
+    }
+  }
+>
+  <Text
+    className="text-base text-foreground web:select-text tracking-[0.05em]"
+    style={
+      [
+        {
+          "fontFamily": "Comfortaa_400Regular",
+        },
+        undefined,
+      ]
+    }
+  >
+    Settings
+  </Text>
+</RNCSafeAreaView>
+`;

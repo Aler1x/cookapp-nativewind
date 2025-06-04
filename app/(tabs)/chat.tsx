@@ -3,15 +3,13 @@ import { Text } from '~/components/ui/text';
 import { Button } from '~/components/ui/button';
 import { useState } from 'react';
 import { ScrollView, TouchableOpacity, Platform, KeyboardAvoidingView } from 'react-native';
-import ChatBubble from '~/components/ui/chat-bubble';
+import ChatBubble from '~/components/chat-bubble';
 import { Info, Send } from '~/assets/icons';
 import ChatWhatICan from '~/components/modals/chat-what-i-can';
 import { Textarea } from '~/components/ui/textarea';
 import { Message } from '~/types/chat';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BasicModal from '~/components/ui/basic-modal';
-import { useFetch } from '~/lib/fetch';
-import { API_ENDPOINTS_PREFIX } from '~/lib/constants';
 
 export default function ChatPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -33,7 +31,7 @@ export default function ChatPage() {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
         <View className='w-full flex-row items-center justify-between p-4'>
-          <Text className='text-2xl font-bold text-center'>CookBot</Text>
+          <Text className='text-2xl font-bold'>CookBot</Text>
           <TouchableOpacity
             className='p-2'
             onPress={() => {

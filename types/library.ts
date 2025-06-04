@@ -1,16 +1,14 @@
 import { Recipe } from './recipe';
 
-export type CollectionDetails = {
+export type Collection = {
   id: string;
   userId: string;
   name: string;
   recipes: Recipe[];
 };
 
-export type Collection = {
+export type CollectionPage = {
   id: string;
   name: string;
-  recipes: {
-    imagesUrl: string[];
-  };
+  recipes: string[];
 };

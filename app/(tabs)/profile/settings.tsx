@@ -5,8 +5,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Page() {
   return (
-    <SafeAreaView className='flex-1 items-center justify-center'>
-      <Text>Settings</Text>
+    <SafeAreaView className='flex-1 bg-background'>
+      <Text className='text-3xl font-bold'>Settings</Text>
+
     </SafeAreaView>
   );
 }

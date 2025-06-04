@@ -72,9 +72,7 @@ export default function ShoppingListPage() {
 
   return (
     <SafeAreaView className='flex-1' style={{ padding: 16, paddingBottom: 4 }}>
-      <Text className='text-2xl' style={{ fontFamily: 'Comfortaa_700Bold' }}>
-        Shopping List
-      </Text>
+      <Text className='text-3xl font-bold'>Shopping List</Text>
 
       {items.length > 0 && (
         <SectionList
