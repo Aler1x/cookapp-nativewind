@@ -9,8 +9,35 @@ import {
   ShoppingBasket,
   CircleUserRound,
   CirclePlus,
-} from "lucide-react-native";
-import { iconWithClassName } from "~/lib/iconWithClassName";
+  SearchIcon,
+  LogOut,
+  UserPen,
+  ChevronRight,
+  BotMessageSquare,
+  Heart,
+  Share2,
+  Clipboard,
+  CookingPot,
+  Crown,
+  Star,
+  Zap,
+  Shield,
+  Sparkles,
+  ChefHat,
+  BookOpen,
+  Users,
+  Download,
+  Check,
+  X,
+  Info,
+  ChevronLeft,
+  Croissant,
+  PlusIcon,
+  Palette,
+} from 'lucide-react-native';
+import GoogleIcon from './google';
+import AppleIcon from './apple';
+import { iconWithClassName } from '~/lib/iconWithClassName';
 
 iconWithClassName(MoonStar);
 iconWithClassName(Sun);
@@ -22,6 +49,31 @@ iconWithClassName(LibraryBig);
 iconWithClassName(ShoppingBasket);
 iconWithClassName(CircleUserRound);
 iconWithClassName(CirclePlus);
+iconWithClassName(SearchIcon);
+iconWithClassName(LogOut);
+iconWithClassName(UserPen);
+iconWithClassName(ChevronRight);
+iconWithClassName(BotMessageSquare);
+iconWithClassName(Heart);
+iconWithClassName(Share2);
+iconWithClassName(Clipboard);
+iconWithClassName(CookingPot);
+iconWithClassName(Crown);
+iconWithClassName(Star);
+iconWithClassName(Zap);
+iconWithClassName(Shield);
+iconWithClassName(Sparkles);
+iconWithClassName(ChefHat);
+iconWithClassName(BookOpen);
+iconWithClassName(Users);
+iconWithClassName(Download);
+iconWithClassName(Check);
+iconWithClassName(X);
+iconWithClassName(Info);
+iconWithClassName(ChevronLeft);
+iconWithClassName(Croissant);
+iconWithClassName(PlusIcon);
+iconWithClassName(Palette);
 
 export {
   MoonStar,
@@ -34,4 +86,31 @@ export {
   ShoppingBasket,
   CircleUserRound,
   CirclePlus,
+  GoogleIcon,
+  AppleIcon,
+  SearchIcon,
+  LogOut,
+  UserPen,
+  ChevronRight,
+  BotMessageSquare,
+  Heart,
+  Share2,
+  Clipboard,
+  CookingPot,
+  Crown,
+  Star,
+  Zap,
+  Shield,
+  Sparkles,
+  ChefHat,
+  BookOpen,
+  Users,
+  Download,
+  Check,
+  X,
+  Info,
+  ChevronLeft,
+  Croissant,
+  PlusIcon,
+  Palette,
 };

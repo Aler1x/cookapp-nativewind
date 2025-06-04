@@ -12,10 +12,11 @@ const buttonVariants = cva(
         default: 'bg-primary web:hover:opacity-90 active:opacity-90',
         destructive: 'bg-destructive web:hover:opacity-90 active:opacity-90',
         outline:
-          'border border-input bg-background web:hover:bg-accent web:hover:text-accent-foreground active:bg-accent',
+          'border border-input bg-background web:hover:bg-accent web:hover:text-accent-foreground active:bg-accent border-primary border-2',
         secondary: 'bg-secondary web:hover:opacity-80 active:opacity-80',
         ghost: 'web:hover:bg-accent web:hover:text-accent-foreground active:bg-accent',
-        link: 'web:underline-offset-4 web:hover:underline web:focus:underline ',
+        link: 'web:underline-offset-4 web:hover:underline web:focus:underline',
+        black: 'bg-black rounded-full',
       },
       size: {
         default: 'h-10 px-4 py-2 native:h-12 native:px-5 native:py-3',
@@ -42,6 +43,7 @@ const buttonTextVariants = cva(
         secondary: 'text-secondary-foreground group-active:text-secondary-foreground',
         ghost: 'group-active:text-accent-foreground',
         link: 'text-primary group-active:underline',
+        black: 'text-white',
       },
       size: {
         default: '',
@@ -57,15 +59,17 @@ const buttonTextVariants = cva(
   }
 );
 
-type ButtonProps = React.ComponentPropsWithoutRef<typeof Pressable> &
-  VariantProps<typeof buttonVariants>;
+type ButtonProps = React.ComponentPropsWithoutRef<typeof Pressable> & VariantProps<typeof buttonVariants>;
 
 const Button = React.forwardRef<React.ElementRef<typeof Pressable>, ButtonProps>(
   ({ className, variant, size, ...props }, ref) => {
     return (
       <TextClassContext.Provider
-        value={buttonTextVariants({ variant, size, className: 'web:pointer-events-none' })}
-      >
+        value={buttonTextVariants({
+          variant,
+          size,
+          className: 'web:pointer-events-none',
+        })}>
         <Pressable
           className={cn(
             props.disabled && 'opacity-50 web:pointer-events-none',

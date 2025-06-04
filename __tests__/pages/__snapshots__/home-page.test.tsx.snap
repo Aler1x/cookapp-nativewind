@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`HomePage matches snapshot 1`] = `
+<RNCSafeAreaView
+  className="flex-1 bg-background"
+  edges={
+    {
+      "bottom": "additive",
+      "left": "additive",
+      "right": "additive",
+      "top": "additive",
+    }
+  }
+>
+  <RCTScrollView
+    className="flex-1 px-4"
+  >
+    <View>
+      <View
+        className="mt-4 mb-2 max-w-[220px]"
+      >
+        <Text
+          className="text-foreground web:select-text tracking-[0.05em] text-2xl"
+          style={
+            [
+              {
+                "fontFamily": "Comfortaa_700Bold",
+              },
+              undefined,
+            ]
+          }
+        >
+          What do you want to cook today?
+        </Text>
+      </View>
+      <View
+        className="flex-1"
+      />
+    </View>
+  </RCTScrollView>
+</RNCSafeAreaView>
+`;

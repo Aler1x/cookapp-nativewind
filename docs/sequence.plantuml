@@ -1,0 +1,72 @@
+@startuml
+actor User
+participant "Mobile App\n(Expo/React Native)" as App
+participant "Clerk Auth" as Clerk
+participant "API Gateway" as API
+database "Backend Services" as Backend
+
+== Authentication Flow ==
+User -> App: Open application
+App -> Clerk: Request authentication status
+Clerk --> App: Return auth status
+alt Not authenticated
+    User -> App: Tap "Sign In"
+    App -> Clerk: Initiate authentication
+    Clerk -> User: Present auth options
+    User -> Clerk: Provide credentials
+    Clerk --> App: Return auth token
+end
+
+== Recipe Browsing ==
+User -> App: Browse recipes
+App -> API: Request recipe list
+API -> Backend: Fetch recipes
+Backend --> API: Return recipes
+API --> App: Return formatted recipes
+App --> User: Display recipe list
+
+== Recipe Details ==
+User -> App: Select recipe
+App -> API: Request recipe details
+API -> Backend: Fetch recipe details
+Backend --> API: Return recipe details
+API --> App: Return formatted recipe details
+App --> User: Display recipe details
+
+== Adding to Collections ==
+User -> App: Add recipe to collection
+App -> API: Send collection update
+API -> Backend: Update user collections
+Backend --> API: Confirm update
+API --> App: Return success status
+App --> User: Show confirmation
+
+== Creating New Recipe ==
+User -> App: Create new recipe
+App -> App: Validate recipe data
+App -> API: Send new recipe data
+API -> Backend: Store new recipe
+Backend --> API: Return new recipe ID
+API --> App: Confirm creation
+App --> User: Show success message
+
+== Using Chat Bot ==
+User -> App: Open chat interface
+App -> API: Initialize chat session
+API --> App: Return session token
+User -> App: Send question
+App -> API: Forward question to bot service
+API -> Backend: Process question
+Backend --> API: Return response
+API --> App: Return formatted response
+App --> User: Display bot answer
+
+== Searching Recipes ==
+User -> App: Enter search term
+App -> API: Send search query
+API -> Backend: Process search
+Backend --> API: Return search results
+API --> App: Return formatted results
+App --> User: Display search results
+
+@enduml

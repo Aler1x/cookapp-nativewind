@@ -1,11 +1,11 @@
-import { ThemeProvider, Theme } from "@react-navigation/native";
-import { Stack } from "expo-router";
-import { StatusBar } from "expo-status-bar";
-import { NAV_THEME } from "~/lib/constants";
-import { useColorScheme } from "~/lib/useColorScheme";
-import { PortalHost } from "@rn-primitives/portal";
-import { SafeAreaProvider } from "react-native-safe-area-context";
-import * as SplashScreen from "expo-splash-screen";
+import { ThemeProvider } from '@react-navigation/native';
+import { Stack } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
+import { THEME } from '~/lib/constants';
+import { useColorScheme } from '~/lib/useColorScheme';
+import { PortalHost } from '@rn-primitives/portal';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import * as SplashScreen from 'expo-splash-screen';
 import {
   useFonts,
   Comfortaa_300Light,
@@ -13,9 +13,14 @@ import {
   Comfortaa_500Medium,
   Comfortaa_600SemiBold,
   Comfortaa_700Bold,
-} from "@expo-google-fonts/comfortaa";
-import "~/app/global.css";
+} from '@expo-google-fonts/comfortaa';
+import '~/app/global.css';
 import { useEffect } from 'react';
+import { ClerkProvider, ClerkLoaded } from '@clerk/clerk-expo';
+import { tokenCache } from '@clerk/clerk-expo/token-cache';
+import Toast from 'react-native-toast-message';
+import { toaster } from '~/components/toaster';
+import DesktopBlocker from '~/components/DesktopBlocker';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -42,23 +47,38 @@ export default function Layout() {
   }
 
   return (
-    <SafeAreaProvider>
-      <ThemeProvider
-        value={isDarkColorScheme ? NAV_THEME.dark : NAV_THEME.light}
-      >
-        <Stack
-          screenOptions={{
-            headerShown: false,
-          }}
-        >
-          {/* <Stack.Screen name="(auth)" /> */}
-          <Stack.Screen name="(tabs)" />
-          <Stack.Screen name="+not-found" />
-        </Stack>
+    <DesktopBlocker>
+      <ClerkProvider tokenCache={tokenCache} afterSignOutUrl='/'>
+        <ClerkLoaded>
+          <SafeAreaProvider>
+            <ThemeProvider value={isDarkColorScheme ? THEME.dark : THEME.light}>
+              <StatusBar style={isDarkColorScheme ? 'light' : 'dark'} />
+              <Stack
+                screenOptions={{
+                  headerShown: false,
+                  contentStyle: {
+                    backgroundColor: isDarkColorScheme ? THEME.dark.colors.background : THEME.light.colors.background,
+                  },
+                }}>
+                <Stack.Screen name='(tabs)' />
+                <Stack.Screen name='index' />
+                <Stack.Screen name='+not-found' />
+                <Stack.Screen
+                  name='stack-modal'
+                  options={{
+                    presentation: 'modal',
+                    animation: 'slide_from_bottom',
+                  }}
+                />
+              </Stack>
 
-        <PortalHost />
-        <StatusBar style="auto" />
-      </ThemeProvider>
-    </SafeAreaProvider>
+              <PortalHost />
+
+              <Toast topOffset={50} config={toaster} />
+            </ThemeProvider>
+          </SafeAreaProvider>
+        </ClerkLoaded>
+      </ClerkProvider>
+    </DesktopBlocker>
   );
 }

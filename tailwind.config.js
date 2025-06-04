@@ -1,4 +1,4 @@
-const { hairlineWidth } = require('nativewind/theme');
+const { hairlineWidth } = require('nativewind/theme')
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -54,7 +54,7 @@ module.exports = {
           from: { height: 'var(--radix-accordion-content-height)' },
           to: { height: '0' },
         },
-        'wave': {
+        wave: {
           '0%': { transform: 'rotate(0deg)' },
           '50%': { transform: 'rotate(20deg)' },
           '100%': { transform: 'rotate(0deg)' },
@@ -63,16 +63,9 @@ module.exports = {
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
-        'wave': 'wave 1s ease-in-out infinite',
-      },
-      fontFamily: {
-        'comfortaa-light': ['Comfortaa_300Light'],
-        comfortaa: ['Comfortaa_400Regular'],
-        'comfortaa-medium': ['Comfortaa_500Medium'],
-        'comfortaa-semibold': ['Comfortaa_600SemiBold'],
-        'comfortaa-bold': ['Comfortaa_700Bold']
+        wave: 'wave 1s ease-in-out infinite',
       },
     },
   },
   plugins: [require('tailwindcss-animate')],
-};
+}

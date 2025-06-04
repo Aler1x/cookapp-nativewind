@@ -1,21 +1,26 @@
 {
   "expo": {
     "name": "cookapp-nativewind",
-    "slug": "cookapp-nativewind",
-    "scheme": "cookapp",
+    "slug": "cookapp",
+    "scheme": "cookapp-nativewind",
     "version": "1.0.0",
     "userInterfaceStyle": "automatic",
     "icon": "./assets/images/icon.png",
     "newArchEnabled": true,
     "orientation": "default",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.the-ooh.cookapp-nativewind",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.the-ooh.cookapp-nativewind"
     },
     "web": {
       "output": "static",
@@ -50,7 +55,18 @@
             "./node_modules/@expo-google-fonts/comfortaa/Comfortaa_700Bold.ttf"
           ]
         }
-      ]
-    ]
+      ],
+      "expo-web-browser",
+      "expo-asset"
+    ],
+    "extra": {
+      "router": {
+        "origin": "https://n"
+      },
+      "eas": {
+        "projectId": "ed3520ad-df52-44b4-8ad5-fa6d30256b15"
+      }
+    },
+    "owner": "alerix"
   }
 }

@@ -3,6 +3,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import * as React from 'react';
 import { cn } from '~/lib/utils';
 import { TextClassContext } from './text';
+import { cssInterop } from 'nativewind';
 
 // Reuse the same variants as the button component
 const linkVariants = cva(
@@ -62,21 +63,19 @@ export interface StyledLinkProps extends LinkProps, VariantProps<typeof linkVari
   className?: string;
 }
 
-export function Link({ 
-  children, 
-  className,
-  variant,
-  size,
-  ...props 
-}: StyledLinkProps) {
+cssInterop(ExpoLink, {
+  className: 'style',
+});
+
+export function Link({ children, className, variant, size, ...props }: StyledLinkProps) {
   return (
     <TextClassContext.Provider
-      value={linkTextVariants({ variant, size, className: 'web:pointer-events-none' })}
-    >
-      <ExpoLink
-        className={cn(linkVariants({ variant, size, className }))}
-        {...props}
-      >
+      value={linkTextVariants({
+        variant,
+        size,
+        className: 'web:pointer-events-none',
+      })}>
+      <ExpoLink className={cn(linkVariants({ variant, size, className }))} {...props}>
         {children}
       </ExpoLink>
     </TextClassContext.Provider>

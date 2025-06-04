@@ -1,0 +1,42 @@
+@startuml
+' Define nodes and components
+node "User Devices" {
+  component "Mobile App (Expo/React Native)" as MobileApp
+}
+
+cloud "Cloud Services" {
+  component "Cloudflare r2" as CloudflareR2
+  component "Clerk" as Clerk
+}
+
+cloud "AI Clouds" {
+  component "OpenAI" as OpenAI
+  component "Gemini" as Gemini
+  component "Deepgram" as Deepgram
+}
+
+node "Backend Services" {
+component "API Gateway" as Gateway
+  component "Spring (Java) Server" as SpringServer
+  component "Chat Bot Service" as ChatBot
+  component "Personalization and External Recipe Sources" as PersonalizationService
+}
+
+database "Database" as DB
+
+' Define connections
+MobileApp --> Gateway : "HTTPS"
+Gateway --> Clerk : "HTTPS"
+MobileApp --> Clerk : "HTTPS"
+MobileApp --> CloudflareR2 : "HTTPS"
+Gateway --> SpringServer : "HTTP"
+SpringServer --> DB : "JDBC"
+ChatBot --> SpringServer : "HTTP"
+ChatBot --> PersonalizationService : "HTTP"
+Gateway --> PersonalizationService : "HTTP"
+Gateway --> ChatBot : "HTTP"
+PersonalizationService --> DB : ""
+PersonalizationService --> Gemini : "Api Calls"
+PersonalizationService --> Deepgram : "Api Calls"
+ChatBot --> OpenAI : "API Calls"
+@enduml

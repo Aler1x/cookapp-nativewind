@@ -6,20 +6,12 @@ import { cn } from '~/lib/utils';
 
 const ViewClassContext = React.createContext<string | undefined>(undefined);
 
-const View = React.forwardRef<ViewRef, SlottableViewProps>(
-  ({ className, asChild = false, ...props }, ref) => {
-    const viewClass = React.useContext(ViewClassContext);
-    const Component = asChild ? Slot.View : RNView;
+const View = React.forwardRef<ViewRef, SlottableViewProps>(({ className, asChild = false, ...props }, ref) => {
+  const viewClass = React.useContext(ViewClassContext);
+  const Component = asChild ? Slot.View : RNView;
 
-    return (
-      <Component
-        className={cn(viewClass, className)}
-        ref={ref}
-        {...props}
-      />
-    );
-  }
-);
+  return <Component className={cn(viewClass, className)} ref={ref} {...props} />;
+});
 View.displayName = 'View';
 
 export { View, ViewClassContext };

@@ -1,0 +1,127 @@
+@startuml Recipe App Activity Diagram
+
+start
+
+:User opens app;
+
+:Load Home Screen;
+
+fork
+  :View recommended recipes;  
+fork again
+  :Click search field;
+  :Enter search query;
+  :View search results;
+fork again
+  :Click filters button;
+  :Select filters;
+  :Click "Show Results";
+  :View filtered recipes;
+  note right: Can apply quick filters (quick, popular, Italian, etc.)
+fork end
+
+:Select recipe;
+:Open Recipe Page;
+
+fork
+  :View Ingredients Tab;
+  repeat
+    :Click on ingredient;
+    :Add to shopping list;
+  repeat while (More ingredients to add?) is (yes)
+fork again
+  :View Steps Tab;
+  :Read cooking instructions;
+fork end
+
+:Navigate via bottom nav bar;
+
+fork
+  :Go to Library Tab;
+  fork
+    :View Saved & Liked Items;
+    :Optionally remove items;
+  fork again
+    :View Collections;
+    fork
+      :Create new collection;
+      :Enter collection title;
+      :Save collection;
+    fork again
+      :Select existing collection;
+      fork
+        :Add recipe to collection;
+      fork again
+        :Remove recipe from collection;
+      fork again
+        :Edit collection title;
+      fork again
+        :Delete collection;
+      fork end
+    fork end
+  fork end
+fork again
+  :Go to Chatbot Tab;
+  if (User signed in?) then (yes)
+    fork
+      :Ask bot to create recipe;
+      :Get recipe suggestion;
+    fork again
+      :Ask bot to find recipes by parameters;
+      :Get matching recipes;
+    fork again
+      :Ask cooking questions;
+      :Get text answers;
+    fork again
+      :Wipe chat history;
+    fork end
+  else (no)
+    :See sign-in prompt;
+  endif
+fork again
+  :Go to Shopping List Tab;
+  fork
+    :View current shopping list;
+    fork
+      :Mark items as bought;
+    fork again
+      :Remove items from list;
+    fork again
+      :Wipe entire list;
+    fork end
+  fork again
+    :Add item manually;
+    :Fill item details in modal;
+    :Save item to list;
+  fork end
+fork again
+  :Go to Profile Tab;
+  if (User signed in?) then (yes)
+    fork
+      :View profile information;
+    fork again
+      :Change preferences;
+      :Select dietary preferences;
+      note right: vegan, vegetarian, pescetarian
+      :Save preferences;
+    fork again
+      :View created recipes;
+    fork again
+      :Create new recipe;
+      :Add recipe details;
+      note right: ingredients, photos, steps, time, calories, tags
+      :Save recipe;
+    fork again
+      :Change display name;
+    fork again
+      :Logout;
+    fork end
+  else (no)
+    :Sign in;
+    :Authenticate user;
+  endif
+fork end
+
+stop
+
+@enduml
