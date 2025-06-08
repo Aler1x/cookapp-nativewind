@@ -21,9 +21,8 @@ function PreferencePill({ name, selected, onPress }: PreferencePillProps) {
   return (
     <TouchableOpacity
       onPress={onPress}
-      className={`px-4 py-2 rounded-full mr-2 mb-2 border ${
-        selected ? 'bg-primary border-primary' : 'bg-transparent border-gray-300'
-      }`}>
+      className={`px-4 py-2 rounded-full mr-2 mb-2 border ${selected ? 'bg-primary border-primary' : 'bg-transparent border-gray-300'
+        }`}>
       <Text className={`text-sm ${selected ? 'font-medium' : 'text-gray-700'}`}>{name}</Text>
     </TouchableOpacity>
   );
@@ -256,7 +255,7 @@ export default function PreferencesPage({ onClose }: PreferencesPageProps) {
   );
 
   return (
-    <KeyboardAvoidingView className='flex-1 bg-background' behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+    <View className='flex-1 bg-background'>
       {/* Header */}
       <View className='flex-row items-center justify-between px-6 py-6 border-b border-gray-200'>
         <TouchableOpacity onPress={clearAll}>
@@ -366,6 +365,6 @@ export default function PreferencesPage({ onClose }: PreferencesPageProps) {
           </Button>
         </View>
       </BasicModal>
-    </KeyboardAvoidingView>
+    </View>
   );
 }

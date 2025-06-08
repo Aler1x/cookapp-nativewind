@@ -39,7 +39,7 @@ const ShoppingListAddItemModal = ({ showAddItemModal, setShowAddItemModal }: Sho
           `${API_ENDPOINTS_PREFIX.node}/ingredients/search`,
           {
             method: 'POST',
-            body: JSON.stringify({ query, limit: 3 }),
+            body: JSON.stringify({ query, limit: 3, embeddingModel: 'openai' }),
           }
         );
 
@@ -71,9 +71,9 @@ const ShoppingListAddItemModal = ({ showAddItemModal, setShowAddItemModal }: Sho
           `${API_ENDPOINTS_PREFIX.spring}/units?name=${encodeURIComponent(query)}&limit=5`
         );
         if (response) {
-          return response.map((unit) => ({
+          return response.slice(0, 3).map((unit) => ({
             id: unit.id, // Use name as id so setSelected gets the string value
-            value: unit.name.one,
+            value: `${unit.name.one} (${unit.name.many})`,
           }));
         }
         return [];

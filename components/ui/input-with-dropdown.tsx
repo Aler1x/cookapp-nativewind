@@ -71,6 +71,7 @@ const SelectList: React.FC<SelectListProps> = ({
   allowFreeText = false,
 }) => {
   const oldOption = React.useRef(null);
+  const textInputRef = React.useRef<TextInput>(null);
   const [_firstRender, _setFirstRender] = React.useState<boolean>(true);
   const [dropdown, setDropdown] = React.useState<boolean>(dropdownShown);
   const [selectedVal, setSelectedVal] = React.useState<any>('');
@@ -111,7 +112,12 @@ const SelectList: React.FC<SelectListProps> = ({
       toValue: height,
       duration: 500,
       useNativeDriver: false,
-    }).start();
+    }).start(() => {
+      // Focus the text input after animation completes
+      setTimeout(() => {
+        textInputRef.current?.focus();
+      }, 100);
+    });
   }, [height, animatedValue]);
 
   const slideup = React.useCallback(() => {
@@ -179,12 +185,16 @@ const SelectList: React.FC<SelectListProps> = ({
       {dropdown && search ? (
         <View style={[styles.wrapper, boxStyles]}>
           <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
-            <Search size={20} color={THEME.light.colors.primary} />
+            <Search size={20} color={THEME.light.colors.primary} style={{ marginRight: 10 }} />
 
             <TextInput
+              ref={textInputRef}
               placeholder={searchPlaceholder}
               value={searchQuery}
               onChangeText={handleSearchChange}
+              onBlur={() => {
+                slideup();
+              }}
               style={[{ padding: 0, height: 20, flex: 1, fontFamily }, inputStyles]}
             />
             <TouchableOpacity
@@ -201,8 +211,8 @@ const SelectList: React.FC<SelectListProps> = ({
           style={[styles.wrapper, boxStyles]}
           onPress={() => {
             if (!dropdown) {
-              Keyboard.dismiss();
               slidedown();
+              
             } else {
               slideup();
             }
@@ -216,7 +226,12 @@ const SelectList: React.FC<SelectListProps> = ({
 
       {dropdown ? (
         <Animated.View style={[{ maxHeight: animatedValue }, styles.dropdown, dropdownStyles]}>
-          <ScrollView contentContainerStyle={{ paddingVertical: 10, overflow: 'hidden' }} nestedScrollEnabled={true}>
+          <ScrollView
+            contentContainerStyle={{ paddingVertical: 10, overflow: 'hidden' }}
+            keyboardDismissMode='none'
+            keyboardShouldPersistTaps='always'
+            nestedScrollEnabled={true}
+            >
             {isLoading ? (
               <View style={[styles.option, dropdownItemStyles]}>
                 <Text style={[{ fontFamily }, dropdownTextStyles]}>Loading...</Text>

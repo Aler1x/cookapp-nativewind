@@ -94,7 +94,7 @@ export default function BasicModal({
         ]}
         onPress={handleBackdropPress}>
         <AnimatedPressable
-          className={cn('bg-background rounded-t-2xl w-full shadow-2xl p-6 max-h-[80%]', className)}
+          className={cn('bg-background rounded-t-2xl w-full shadow-2xl p-6', className)}
           style={modalAnimatedStyle}
           onPress={handleModalPress}>
           {children}

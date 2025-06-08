@@ -12,7 +12,13 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.the-ooh.cookapp-nativewind",
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "CFBundleURLTypes": [
+          {
+            "CFBundleURLName": "cookapp-nativewind",
+            "CFBundleURLSchemes": ["cookapp-nativewind"]
+          }
+        ]
       }
     },
     "android": {
@@ -20,7 +26,18 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.the-ooh.cookapp-nativewind"
+      "package": "com.the-ooh.cookapp-nativewind",
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "data": [
+            {
+              "scheme": "cookapp-nativewind"
+            }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ]
     },
     "web": {
       "output": "static",
@@ -57,7 +74,8 @@
         }
       ],
       "expo-web-browser",
-      "expo-asset"
+      "expo-asset",
+      "expo-notifications"
     ],
     "extra": {
       "router": {

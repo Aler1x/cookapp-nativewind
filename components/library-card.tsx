@@ -12,20 +12,20 @@ interface LibraryCardProps {
 }
 
 const fallbackColors = [
-  'bg-red-200',
-  'bg-blue-200',
-  'bg-green-200',
-  'bg-yellow-200',
-  'bg-purple-200',
-  'bg-pink-200',
-  'bg-indigo-200',
-  'bg-orange-200',
+  'bg-[#ADD6CF]',
+  'bg-[#92B693]',
+  'bg-[#F8E8C4]',
+  'bg-[#F0AF9E]',
+  'bg-[#E48364]',
 ];
 
 export default function LibraryCard({ collection, className }: LibraryCardProps) {
   const offsetAmount = 25; // Horizontal offset in pixels
   const handlePress = () => {
-    router.push(`/(tabs)/library/${collection.id}`);
+    router.push({
+      pathname: `/(tabs)/library/${collection.id}`,
+      params: { name: collection.name }
+    });
   };
 
   const getImagePreviews = () => {
@@ -52,7 +52,7 @@ export default function LibraryCard({ collection, className }: LibraryCardProps)
         );
       } else {
         // Show fallback color
-        const colorIndex = (collection.id.charCodeAt(0) + i) % fallbackColors.length;
+        const colorIndex = (collection.id + i) % fallbackColors.length;
         previews.push(
           <View
             key={i}
@@ -69,7 +69,7 @@ export default function LibraryCard({ collection, className }: LibraryCardProps)
     return previews;
   };
 
-  const recipeCount = collection.recipes?.length || 0;
+  const recipeCount = collection.recipeCount || 0;
 
   return (
     <TouchableOpacity onPress={handlePress} className={cn('w-[48%]', className)} activeOpacity={0.7}>
@@ -79,11 +79,11 @@ export default function LibraryCard({ collection, className }: LibraryCardProps)
       </View>
 
       {/* Collection info */}
-      <View className='flex-col space-y-2'>
+      <View className='flex-row items-center justify-between'>
         <Text className='font-semibold text-lg' numberOfLines={1}>
           {collection.name}
         </Text>
-        <Text className='text-muted-foreground text-sm'>
+        <Text className='text-muted-foreground text-sm font-medium'>
           {recipeCount} {recipeCount === 1 ? 'recipe' : 'recipes'}
         </Text>
       </View>

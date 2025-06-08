@@ -22,15 +22,18 @@ import Toast from 'react-native-toast-message';
 import { toaster } from '~/components/toaster';
 import DesktopBlocker from '~/components/DesktopBlocker';
 import { useKeepAwake } from 'expo-keep-awake';
+import { usePushNotifications } from '~/hooks/usePushNotifications';
+import { initializeStripe } from '~/lib/stripe';
 
 SplashScreen.preventAutoHideAsync();
 
 export default function Layout() {
-  if (__DEV__) {
-    useKeepAwake();
-  }
+  // useKeepAwake();
 
   const { isDarkColorScheme } = useColorScheme();
+
+  // Initialize push notifications
+  // usePushNotifications();
 
   const [loaded, error] = useFonts({
     Comfortaa_300Light,
@@ -46,6 +49,10 @@ export default function Layout() {
       SplashScreen.hideAsync();
     }
   }, [loaded, error]);
+
+  useEffect(() => {
+    initializeStripe();
+  }, []);
 
   if (!loaded && !error) {
     return null;

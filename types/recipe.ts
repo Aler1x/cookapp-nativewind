@@ -33,9 +33,9 @@ export type Recipe = {
   difficulty: 'easy' | 'medium' | 'hard';
   slug: string;
   mainImageUrl: string;
-  durationTotal: number; // in minutes
+  duration: number; // in minutes
   servings: number;
-  category: Category;
+  categories: Category[];
   rating?: number;
 };
 

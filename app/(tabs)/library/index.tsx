@@ -18,13 +18,7 @@ export default function LibraryPage() {
   const { isSignedIn } = useAuth();
   const $fetch = useFetch();
 
-  const [collections, setCollections] = useState<CollectionPage[]>([
-    {
-      id: '1',
-      name: 'Test Collection',
-      recipes: [],
-    },
-  ]);
+  const [collections, setCollections] = useState<CollectionPage[]>([]);
   const [isCreateNewCollectionModalOpen, setIsCreateNewCollectionModalOpen] = useState(false);
 
   // Create New Collection
@@ -33,10 +27,10 @@ export default function LibraryPage() {
   const fetchCollections = useCallback(async () => {
     try {
       const fetchedCollections = await $fetch<{ collections: CollectionPage[] }>(
-        `${API_ENDPOINTS_PREFIX.spring}/recipes/collection/`
+        `${API_ENDPOINTS_PREFIX.spring}/recipes/collection`
       );
-      // setCollections(fetchedCollections.collections);
-      console.log(fetchedCollections.collections);
+      console.log('fetchedCollections', fetchedCollections);
+      setCollections(fetchedCollections.collections);
     } catch (error) {
       console.error('Error fetching collections:', error);
       setCollections([]);
@@ -55,10 +49,8 @@ export default function LibraryPage() {
         await $fetch(`${API_ENDPOINTS_PREFIX.spring}/recipes/collection`, {
           method: 'POST',
           body: JSON.stringify({
-            id: 0,
             name: collectionName,
             description: '',
-            recipesIds: [],
           }),
         });
         console.log('New collection created:', collectionName);
@@ -95,10 +87,16 @@ export default function LibraryPage() {
             <View className='border-2 border-dashed border-muted-foreground/30 rounded-xl w-full h-32 items-center justify-center'>
               <PlusIcon className='w-10 h-10 text-muted-foreground' />
             </View>
-            <Text className='font-medium text-left'>Create New Collection</Text>
+            <Text className='font-medium text-left mt-2'>Create New Collection</Text>
           </TouchableOpacity>
 
-          {collections.map((collection) => (
+          {collections.length === 0 && (
+            <View className='flex-1 items-center justify-center'>
+              <Text className='text-muted-foreground text-sm font-medium'>No collections found</Text>
+            </View>
+          )}
+
+          {collections?.map((collection) => (
             <LibraryCard key={collection.id} collection={collection} className='mb-2' />
           ))}
         </View>

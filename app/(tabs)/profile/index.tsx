@@ -4,7 +4,7 @@ import { Text } from '~/components/ui/text';
 import { Image } from '~/components/ui/image';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button } from '~/components/ui/button';
-import { TouchableOpacity, Pressable, Linking } from 'react-native';
+import { TouchableOpacity, Pressable, Linking, KeyboardAvoidingView, Platform } from 'react-native';
 import { useAuth, useUser } from '@clerk/clerk-expo';
 import { useRouter, useLocalSearchParams, Link } from 'expo-router';
 import AuthPage from '~/components/pages/auth';
@@ -145,15 +145,15 @@ export default function ProfilePage() {
 
             {/* <Link href='/profile/settings' asChild>
               <Pressable className='flex-row items-center justify-between border-b border-gray-500 py-6 px-4'>
-                <View className='flex-row items-center gap-4'>
-                  <View className='w-14 h-14 bg-gray-200 rounded-2xl items-center justify-center'>
-                    <SettingsIcon size={24} color='#666' />
-                  </View>
-                  <Text className='text-lg font-semibold'>Settings</Text>
-                </View>
-                <ChevronRight size={24} color='#666' />
+              <View className='flex-row items-center gap-4'>
+              <View className='w-14 h-14 bg-gray-200 rounded-2xl items-center justify-center'>
+              <SettingsIcon size={24} color='#666' />
+              </View>
+              <Text className='text-lg font-semibold'>Settings</Text>
+              </View>
+              <ChevronRight size={24} color='#666' />
               </Pressable>
-            </Link> */}
+              </Link> */}
 
             <TouchableOpacity
               onPress={() => setShowPreferences(true)}
@@ -193,17 +193,17 @@ export default function ProfilePage() {
 
             {/* {process.env.NODE_ENV === 'development' && (
               <Link href='/design/go-back' asChild>
-                <Pressable className='flex-row items-center justify-between border-b border-gray-500 py-6 px-4'>
-                  <View className='flex-row items-center gap-4'>
-                    <View className='w-14 h-14 bg-gray-200 rounded-2xl items-center justify-center'>
-                      <Palette size={24} color='#666' />
+              <Pressable className='flex-row items-center justify-between border-b border-gray-500 py-6 px-4'>
+              <View className='flex-row items-center gap-4'>
+              <View className='w-14 h-14 bg-gray-200 rounded-2xl items-center justify-center'>
+              <Palette size={24} color='#666' />
                     </View>
                     <Text className='text-lg font-semibold'>Design</Text>
                   </View>
                   <ChevronRight size={24} color='#666' />
-                </Pressable>
-              </Link>
-            )} */}
+                  </Pressable>
+                  </Link>
+                  )} */}
           </View>
 
           <FullscreenModal visible={showPremium} onClose={() => setShowPremium(false)}>

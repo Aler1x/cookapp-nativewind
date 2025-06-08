@@ -8,7 +8,8 @@ export type Collection = {
 };
 
 export type CollectionPage = {
-  id: string;
+  id: number;
   name: string;
+  recipeCount: number;
   recipes: string[];
 };
