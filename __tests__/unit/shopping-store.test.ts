@@ -17,7 +17,7 @@ describe('useShoppingListStore', () => {
   describe('normalizeUnit function', () => {
     it('normalizes volume units correctly', () => {
       const { result } = renderHook(() => useShoppingListStore());
-      
+
       expect(result.current.normalizeUnit('cup')).toBe('cup');
       expect(result.current.normalizeUnit('c')).toBe('cup');
       expect(result.current.normalizeUnit('fl oz')).toBe('fl oz');
@@ -30,7 +30,7 @@ describe('useShoppingListStore', () => {
 
     it('normalizes weight units correctly', () => {
       const { result } = renderHook(() => useShoppingListStore());
-      
+
       expect(result.current.normalizeUnit('oz')).toBe('oz');
       expect(result.current.normalizeUnit('ounce')).toBe('oz');
       expect(result.current.normalizeUnit('lb')).toBe('lb');
@@ -43,7 +43,7 @@ describe('useShoppingListStore', () => {
 
     it('normalizes small measurement units correctly', () => {
       const { result } = renderHook(() => useShoppingListStore());
-      
+
       expect(result.current.normalizeUnit('tsp')).toBe('tsp');
       expect(result.current.normalizeUnit('teaspoon')).toBe('tsp');
       expect(result.current.normalizeUnit('tbsp')).toBe('tbsp');
@@ -52,7 +52,7 @@ describe('useShoppingListStore', () => {
 
     it('handles case insensitive input', () => {
       const { result } = renderHook(() => useShoppingListStore());
-      
+
       expect(result.current.normalizeUnit('CUP')).toBe('cup');
       expect(result.current.normalizeUnit('Cup')).toBe('cup');
       expect(result.current.normalizeUnit('GRAM')).toBe('g');
@@ -60,7 +60,7 @@ describe('useShoppingListStore', () => {
 
     it('returns original unit if not found in map', () => {
       const { result } = renderHook(() => useShoppingListStore());
-      
+
       expect(result.current.normalizeUnit('unknown-unit')).toBe('unknown-unit');
     });
   });
@@ -68,12 +68,12 @@ describe('useShoppingListStore', () => {
   describe('addItem function', () => {
     it('adds new item to empty list', () => {
       const { result } = renderHook(() => useShoppingListStore());
-      
+
       act(() => {
         result.current.addItem({
           name: 'Apples',
           amount: 2,
-          unit: 'piece'
+          unit: 'piece',
         });
       });
 
@@ -82,24 +82,24 @@ describe('useShoppingListStore', () => {
         name: 'Apples',
         amount: 2,
         unit: 'piece',
-        isChecked: false
+        isChecked: false,
       });
       expect(result.current.items[0].id).toBeDefined();
     });
 
     it('merges amounts for items with same name and unit', () => {
       const { result } = renderHook(() => useShoppingListStore());
-      
+
       act(() => {
         result.current.addItem({
           name: 'Apples',
           amount: 2,
-          unit: 'piece'
+          unit: 'piece',
         });
         result.current.addItem({
           name: 'Apples',
           amount: 3,
-          unit: 'piece'
+          unit: 'piece',
         });
       });
 
@@ -109,17 +109,17 @@ describe('useShoppingListStore', () => {
 
     it('creates separate items for same name but different units', () => {
       const { result } = renderHook(() => useShoppingListStore());
-      
+
       act(() => {
         result.current.addItem({
           name: 'Milk',
           amount: 1,
-          unit: 'l'
+          unit: 'l',
         });
         result.current.addItem({
           name: 'Milk',
           amount: 500,
-          unit: 'ml'
+          unit: 'ml',
         });
       });
 
@@ -128,17 +128,17 @@ describe('useShoppingListStore', () => {
 
     it('normalizes units when adding items', () => {
       const { result } = renderHook(() => useShoppingListStore());
-      
+
       act(() => {
         result.current.addItem({
           name: 'Sugar',
           amount: 1,
-          unit: 'cup'
+          unit: 'cup',
         });
         result.current.addItem({
           name: 'Sugar',
           amount: 1,
-          unit: 'c' // Should be normalized to 'cup'
+          unit: 'c', // Should be normalized to 'cup'
         });
       });
 
@@ -151,12 +151,12 @@ describe('useShoppingListStore', () => {
   describe('removeItem function', () => {
     it('removes item by id', () => {
       const { result } = renderHook(() => useShoppingListStore());
-      
+
       act(() => {
         result.current.addItem({
           name: 'Apples',
           amount: 2,
-          unit: 'piece'
+          unit: 'piece',
         });
       });
 
@@ -171,17 +171,17 @@ describe('useShoppingListStore', () => {
 
     it('does not affect other items when removing', () => {
       const { result } = renderHook(() => useShoppingListStore());
-      
+
       act(() => {
         result.current.addItem({
           name: 'Apples',
           amount: 2,
-          unit: 'piece'
+          unit: 'piece',
         });
         result.current.addItem({
           name: 'Bananas',
           amount: 3,
-          unit: 'piece'
+          unit: 'piece',
         });
       });
 
@@ -199,12 +199,12 @@ describe('useShoppingListStore', () => {
   describe('toggleItem function', () => {
     it('toggles item checked state', () => {
       const { result } = renderHook(() => useShoppingListStore());
-      
+
       act(() => {
         result.current.addItem({
           name: 'Apples',
           amount: 2,
-          unit: 'piece'
+          unit: 'piece',
         });
       });
 
@@ -228,12 +228,12 @@ describe('useShoppingListStore', () => {
   describe('updateItemAmount function', () => {
     it('updates item amount', () => {
       const { result } = renderHook(() => useShoppingListStore());
-      
+
       act(() => {
         result.current.addItem({
           name: 'Apples',
           amount: 2,
-          unit: 'piece'
+          unit: 'piece',
         });
       });
 
@@ -250,17 +250,17 @@ describe('useShoppingListStore', () => {
   describe('clearCheckedItems function', () => {
     it('removes only checked items', () => {
       const { result } = renderHook(() => useShoppingListStore());
-      
+
       act(() => {
         result.current.addItem({
           name: 'Apples',
           amount: 2,
-          unit: 'piece'
+          unit: 'piece',
         });
         result.current.addItem({
           name: 'Bananas',
           amount: 3,
-          unit: 'piece'
+          unit: 'piece',
         });
       });
 
@@ -279,21 +279,21 @@ describe('useShoppingListStore', () => {
   describe('getUncheckedItems and getCheckedItems functions', () => {
     it('returns correct filtered and sorted items', () => {
       const { result } = renderHook(() => useShoppingListStore());
-      
+
       act(() => {
         result.current.addItem({
           name: 'Zebra',
           amount: 1,
-          unit: 'piece'
+          unit: 'piece',
         });
         result.current.addItem({
           name: 'Apple',
           amount: 2,
-          unit: 'piece'
+          unit: 'piece',
         });
       });
 
-      const zebraId = result.current.items.find(item => item.name === 'Zebra')?.id!;
+      const zebraId = result.current.items.find((item) => item.name === 'Zebra')?.id!;
 
       act(() => {
         result.current.toggleItem(zebraId); // Check Zebra
@@ -304,7 +304,7 @@ describe('useShoppingListStore', () => {
 
       expect(unchecked).toHaveLength(1);
       expect(unchecked[0].name).toBe('Apple');
-      
+
       expect(checked).toHaveLength(1);
       expect(checked[0].name).toBe('Zebra');
     });
@@ -313,52 +313,52 @@ describe('useShoppingListStore', () => {
   describe('formatShoppingListForSharing function', () => {
     it('formats unchecked items for sharing', () => {
       const { result } = renderHook(() => useShoppingListStore());
-      
+
       act(() => {
         result.current.addItem({
           name: 'Apple',
           amount: 2,
-          unit: 'piece'
+          unit: 'piece',
         });
         result.current.addItem({
           name: 'Milk',
           amount: 1,
-          unit: 'l'
+          unit: 'l',
         });
       });
 
       const formatted = result.current.formatShoppingListForSharing();
-      
+
       expect(formatted).toContain('2 pieces Apple');
       expect(formatted).toContain('1 l Milk');
     });
 
     it('excludes checked items from sharing format', () => {
       const { result } = renderHook(() => useShoppingListStore());
-      
+
       act(() => {
         result.current.addItem({
           name: 'Apple',
           amount: 2,
-          unit: 'piece'
+          unit: 'piece',
         });
         result.current.addItem({
           name: 'Milk',
           amount: 1,
-          unit: 'l'
+          unit: 'l',
         });
       });
 
-      const appleId = result.current.items.find(item => item.name === 'Apple')?.id!;
+      const appleId = result.current.items.find((item) => item.name === 'Apple')?.id!;
 
       act(() => {
         result.current.toggleItem(appleId); // Check Apple
       });
 
       const formatted = result.current.formatShoppingListForSharing();
-      
+
       expect(formatted).not.toContain('Apple');
       expect(formatted).toContain('1 l Milk');
     });
   });
-}); 
+});

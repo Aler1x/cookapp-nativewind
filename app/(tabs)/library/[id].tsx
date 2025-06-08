@@ -11,8 +11,6 @@ export default function LibraryDetailPage() {
   const $fetch = useFetch();
   const [collection, setCollection] = useState<Collection | null>(null);
 
-  
-
   return (
     <SafeAreaView className='flex-1 bg-background' style={{ padding: 16 }}>
       <Text className='text-3xl font-bold'>Collection {id}</Text>

@@ -19,7 +19,7 @@ export default function ChatPage() {
       id: 1,
       message: 'What do you want to cook today?',
       isUser: false,
-    }
+    },
   ]);
 
   // const $fetch = useFetch();

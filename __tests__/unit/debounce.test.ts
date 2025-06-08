@@ -38,12 +38,12 @@ describe('debounce function', () => {
 
     debouncedFn();
     jest.advanceTimersByTime(500);
-    
+
     debouncedFn(); // This should reset the timer
     jest.advanceTimersByTime(500);
-    
+
     expect(mockFn).not.toHaveBeenCalled();
-    
+
     jest.advanceTimersByTime(500);
     expect(mockFn).toHaveBeenCalledTimes(1);
   });
@@ -119,16 +119,16 @@ describe('debounce function', () => {
     const debouncedFn = debounce(mockFn, 1000);
 
     debouncedFn();
-    
+
     expect(() => {
       jest.advanceTimersByTime(1000);
     }).toThrow('Test error');
-    
+
     expect(mockFn).toHaveBeenCalledTimes(1);
   });
 
   it('preserves function context when called with different this values', () => {
-    const mockFn = jest.fn(function(this: any) {
+    const mockFn = jest.fn(function (this: any) {
       return this;
     });
     const debouncedFn = debounce(mockFn, 1000);

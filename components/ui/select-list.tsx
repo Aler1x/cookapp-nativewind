@@ -1,8 +1,10 @@
+import { ChevronDown, Search, X } from 'lucide-react-native';
 import React, { JSX } from 'react';
 import {
   View,
   Text,
   StyleSheet,
+  Image,
   TouchableOpacity,
   ScrollView,
   Animated,
@@ -11,41 +13,121 @@ import {
   TextStyle,
   ViewStyle,
 } from 'react-native';
-import { ChevronDown, Search, X } from 'lucide-react-native';
 import { THEME } from '~/lib/constants';
-import { debounce } from '~/lib/debounce';
-
-const DEFAULT_DATA: SelectListData[] = [];
-
-export type SelectListData = {
-  id: any;
-  value: any;
-  disabled?: boolean;
-};
 
 export interface SelectListProps {
-  setSelected: (value: any) => void;
+  /**
+   * Fn to set Selected option value which will be stored in your local state
+   */
+  setSelected: Function;
+
+  /**
+   * Placeholder text that will be displayed in the select box
+   */
   placeholder?: string;
+
+  /**
+   * Additional styles for select box
+   */
   boxStyles?: ViewStyle;
+
+  /**
+   *  	Additional styles for text of select box
+   */
   inputStyles?: TextStyle;
+
+  /**
+   *  	Additional styles for dropdown scrollview
+   */
   dropdownStyles?: ViewStyle;
+
+  /**
+   *  Additional styles for dropdown list item
+   */
   dropdownItemStyles?: ViewStyle;
+
+  /**
+   * Additional styles for list items text
+   */
   dropdownTextStyles?: TextStyle;
+
+  /**
+   * Maximum height of the dropdown wrapper to occupy
+   */
   maxHeight?: number;
-  data?: SelectListData[];
-  defaultOption?: { id: any; value: any };
+
+  /**
+   * Data which will be iterated as options of select list
+   */
+  data: Array<{}>;
+
+  /**
+   * The default option of the select list
+   */
+  defaultOption?: { key: any; value: any };
+
+  /**
+   * Pass any JSX to this prop like Text, Image or Icon to show instead of search icon
+   */
+  searchicon?: JSX.Element;
+
+  /**
+   *  Pass any JSX to this prop like Text, Image or Icon to show instead of chevron icon
+   */
+  arrowicon?: JSX.Element;
+
+  /**
+   * set to false if you dont want to use search functionality
+   */
   search?: boolean;
+
+  /**
+   * set to false if you dont want to use search functionality
+   */
   searchPlaceholder?: string;
+
+  /**
+   * Trigger an action when option is selected
+   */
   onSelect?: () => void;
+
+  /**
+   * set fontFamily of whole component Text
+   */
   fontFamily?: string;
+
+  /**
+   * set this to change the default search failure text
+   */
   notFoundText?: string;
+
+  /**
+   * Additional styles for disabled list item
+   */
   disabledItemStyles?: ViewStyle;
+
+  /**
+   * Additional styles for disabled list items text
+   */
   disabledTextStyles?: TextStyle;
-  value?: any;
+
+  /**
+   * What to store inside your local state (key or value)
+   */
+  save?: 'key' | 'value';
+
+  /**
+   * Control the dropdown with this prop
+   */
   dropdownShown?: boolean;
-  fetchItems: (query: string) => Promise<SelectListData[]>;
-  allowFreeText?: boolean;
+
+  /**
+   *  Pass any JSX to this prop like Text, Image or Icon to show instead of close icon
+   */
+  closeicon?: JSX.Element;
 }
+
+type L1Keys = { key?: any; value?: any; disabled?: boolean | undefined };
 
 const SelectList: React.FC<SelectListProps> = ({
   setSelected,
@@ -56,71 +138,44 @@ const SelectList: React.FC<SelectListProps> = ({
   dropdownItemStyles,
   dropdownTextStyles,
   maxHeight,
-  data = DEFAULT_DATA, // buttplug
+  data,
   defaultOption,
+  searchicon = false,
+  arrowicon = false,
+  closeicon = false,
   search = true,
   searchPlaceholder = 'search',
   notFoundText = 'No data found',
   disabledItemStyles,
   disabledTextStyles,
   onSelect = () => {},
-  value,
+  save = 'key',
   dropdownShown = false,
   fontFamily,
-  fetchItems,
-  allowFreeText = false,
 }) => {
   const oldOption = React.useRef(null);
   const [_firstRender, _setFirstRender] = React.useState<boolean>(true);
   const [dropdown, setDropdown] = React.useState<boolean>(dropdownShown);
-  const [selectedVal, setSelectedVal] = React.useState<any>('');
+  const [selectedval, setSelectedVal] = React.useState<any>('');
   const [height, setHeight] = React.useState<number>(200);
-  const animatedValue = React.useRef(new Animated.Value(0)).current;
-  const [filteredData, setFilteredData] = React.useState<SelectListData[]>(data);
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
-  const [searchQuery, setSearchQuery] = React.useState<string>('');
+  const animatedvalue = React.useRef(new Animated.Value(0)).current;
+  const [filtereddata, setFilteredData] = React.useState(data);
 
-  // Store fetchItems in a ref to avoid dependency issues
-  const fetchItemsRef = React.useRef(fetchItems);
-  React.useEffect(() => {
-    fetchItemsRef.current = fetchItems;
-  }, [fetchItems]);
-
-  // Create debounced fetch function
-  const debouncedFetch = React.useCallback(
-    debounce(async (query: string) => {
-      if (!fetchItemsRef.current || !search || !query || query.length < 2) return;
-
-      setIsLoading(true);
-      try {
-        const results = await fetchItemsRef.current(query);
-        setFilteredData(results);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        setFilteredData([]);
-      } finally {
-        setIsLoading(false);
-      }
-    }, 500),
-    [search]
-  );
-
-  const slidedown = React.useCallback(() => {
+  const slidedown = () => {
     setDropdown(true);
-    Animated.timing(animatedValue, {
+    Animated.timing(animatedvalue, {
       toValue: height,
       duration: 500,
       useNativeDriver: false,
     }).start();
-  }, [height, animatedValue]);
-
-  const slideup = React.useCallback(() => {
-    Animated.timing(animatedValue, {
+  };
+  const slideup = () => {
+    Animated.timing(animatedvalue, {
       toValue: 0,
       duration: 500,
       useNativeDriver: false,
     }).start(() => setDropdown(false));
-  }, [animatedValue]);
+  };
 
   React.useEffect(() => {
     if (maxHeight) setHeight(maxHeight);
@@ -136,17 +191,18 @@ const SelectList: React.FC<SelectListProps> = ({
       return;
     }
     onSelect();
-  }, [selectedVal]);
+  }, [selectedval]);
 
   React.useEffect(() => {
-    if (!_firstRender && defaultOption && oldOption.current != defaultOption.id) {
-      oldOption.current = defaultOption.id;
-      setSelected(defaultOption.id);
+    if (!_firstRender && defaultOption && oldOption.current != defaultOption.key) {
+      // oldOption.current != null
+      oldOption.current = defaultOption.key;
+      setSelected(defaultOption.key);
       setSelectedVal(defaultOption.value);
     }
-    if (defaultOption && _firstRender && defaultOption.id != undefined) {
-      oldOption.current = defaultOption.id;
-      setSelected(defaultOption.id);
+    if (defaultOption && _firstRender && defaultOption.key != undefined) {
+      oldOption.current = defaultOption.key;
+      setSelected(defaultOption.key);
       setSelectedVal(defaultOption.value);
     }
   }, [defaultOption]);
@@ -158,40 +214,26 @@ const SelectList: React.FC<SelectListProps> = ({
     }
   }, [dropdownShown]);
 
-  // Handle search input changes
-  const handleSearchChange = (query: string) => {
-    setSearchQuery(query);
-    debouncedFetch(query);
-    if (allowFreeText) {
-      setSelected(query);
-    }
-  };
-
-  // Initialize with empty search on first dropdown open
-  React.useEffect(() => {
-    if (dropdown && search && fetchItemsRef.current && searchQuery === '') {
-      debouncedFetch('');
-    }
-  }, [dropdown, search, searchQuery, debouncedFetch]);
-
   return (
     <View>
       {dropdown && search ? (
         <View style={[styles.wrapper, boxStyles]}>
           <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
-            <Search size={20} color={THEME.light.colors.primary} />
+            <Search size={20} color={THEME.light.colors.primary} style={{ marginRight: 10 }} />
 
             <TextInput
               placeholder={searchPlaceholder}
-              value={searchQuery}
-              onChangeText={handleSearchChange}
+              onChangeText={(val) => {
+                let result = data.filter((item: L1Keys) => {
+                  val.toLowerCase();
+                  let row = item.value.toLowerCase();
+                  return row.search(val.toLowerCase()) > -1;
+                });
+                setFilteredData(result);
+              }}
               style={[{ padding: 0, height: 20, flex: 1, fontFamily }, inputStyles]}
             />
-            <TouchableOpacity
-              onPress={() => {
-                setSearchQuery('');
-                slideup();
-              }}>
+            <TouchableOpacity onPress={() => slideup()}>
               <X size={20} color={THEME.light.colors.primary} />
             </TouchableOpacity>
           </View>
@@ -208,28 +250,25 @@ const SelectList: React.FC<SelectListProps> = ({
             }
           }}>
           <Text style={[{ fontFamily }, inputStyles]}>
-            {selectedVal == '' ? (placeholder ? placeholder : 'Select option') : selectedVal}
+            {selectedval == '' ? (placeholder ? placeholder : 'Select option') : selectedval}
           </Text>
           <ChevronDown size={20} color={THEME.light.colors.primary} />
         </TouchableOpacity>
       )}
 
       {dropdown ? (
-        <Animated.View style={[{ maxHeight: animatedValue }, styles.dropdown, dropdownStyles]}>
+        <Animated.View style={[{ maxHeight: animatedvalue }, styles.dropdown, dropdownStyles]}>
           <ScrollView contentContainerStyle={{ paddingVertical: 10, overflow: 'hidden' }} nestedScrollEnabled={true}>
-            {isLoading ? (
-              <View style={[styles.option, dropdownItemStyles]}>
-                <Text style={[{ fontFamily }, dropdownTextStyles]}>Loading...</Text>
-              </View>
-            ) : filteredData.length >= 1 ? (
-              filteredData.map((item: SelectListData, index: number) => {
-                let value = item.value;
+            {filtereddata.length >= 1 ? (
+              filtereddata.map((item: L1Keys, index: number) => {
+                let key = item.key ?? item.value ?? item;
+                let value = item.value ?? item;
                 let disabled = item.disabled ?? false;
                 if (disabled) {
                   return (
                     <TouchableOpacity
                       style={[styles.disabledoption, disabledItemStyles]}
-                      key={item.id || index}
+                      key={index}
                       onPress={() => {}}>
                       <Text style={[{ color: '#c4c5c6', fontFamily }, disabledTextStyles]}>{value}</Text>
                     </TouchableOpacity>
@@ -238,12 +277,19 @@ const SelectList: React.FC<SelectListProps> = ({
                   return (
                     <TouchableOpacity
                       style={[styles.option, dropdownItemStyles]}
-                      key={item.id || index}
+                      key={index}
                       onPress={() => {
-                        setSelected(item);
+                        if (save === 'value') {
+                          setSelected(value);
+                        } else {
+                          setSelected(key);
+                        }
+
                         setSelectedVal(value);
                         slideup();
-                        setSearchQuery('');
+                        setTimeout(() => {
+                          setFilteredData(data);
+                        }, 800);
                       }}>
                       <Text style={[{ fontFamily }, dropdownTextStyles]}>{value}</Text>
                     </TouchableOpacity>
@@ -257,7 +303,7 @@ const SelectList: React.FC<SelectListProps> = ({
                   setSelected(undefined);
                   setSelectedVal('');
                   slideup();
-                  setSearchQuery('');
+                  setTimeout(() => setFilteredData(data), 800);
                 }}>
                 <Text style={[{ fontFamily }, dropdownTextStyles]}>{notFoundText}</Text>
               </TouchableOpacity>

@@ -1,7 +1,7 @@
 ---
-description: Expo React Native TypeScript Cursor Rules
+description: 
 globs: 
-alwaysApply: false
+alwaysApply: true
 ---
 You are an expert in TypeScript, React Native, Expo, and Mobile UI development.
 

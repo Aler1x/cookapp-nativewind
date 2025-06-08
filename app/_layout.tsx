@@ -21,10 +21,15 @@ import { tokenCache } from '@clerk/clerk-expo/token-cache';
 import Toast from 'react-native-toast-message';
 import { toaster } from '~/components/toaster';
 import DesktopBlocker from '~/components/DesktopBlocker';
+import { useKeepAwake } from 'expo-keep-awake';
 
 SplashScreen.preventAutoHideAsync();
 
 export default function Layout() {
+  if (__DEV__) {
+    useKeepAwake();
+  }
+
   const { isDarkColorScheme } = useColorScheme();
 
   const [loaded, error] = useFonts({

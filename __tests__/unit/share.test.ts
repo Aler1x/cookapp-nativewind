@@ -35,10 +35,10 @@ const originalWindow = (global as any).window;
 describe('Share Module', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     // Reset Platform.OS
     Platform.OS = 'ios' as any;
-    
+
     // Reset navigator mock
     (global as any).navigator = {
       share: mockNavigatorShare,
@@ -47,7 +47,7 @@ describe('Share Module', () => {
         writeText: mockNavigatorClipboardWriteText,
       },
     };
-    
+
     // Reset document mock
     (global as any).document = {
       createElement: jest.fn().mockReturnValue({
@@ -62,7 +62,7 @@ describe('Share Module', () => {
       },
       execCommand: mockDocumentExecCommand,
     };
-    
+
     // Reset window mock
     (global as any).window = {
       open: mockWindowOpen,
@@ -110,10 +110,7 @@ describe('Share Module', () => {
 
       const result = await share('url', 'https://example.com');
 
-      expect(mockShare).toHaveBeenCalledWith(
-        { url: 'https://example.com' },
-        expect.any(Object)
-      );
+      expect(mockShare).toHaveBeenCalledWith({ url: 'https://example.com' }, expect.any(Object));
       expect(result).toEqual({ success: true });
     });
 
@@ -124,10 +121,7 @@ describe('Share Module', () => {
 
       const result = await share('text', ['Line 1', 'Line 2', 'Line 3']);
 
-      expect(mockShare).toHaveBeenCalledWith(
-        { message: 'Line 1\nLine 2\nLine 3' },
-        expect.any(Object)
-      );
+      expect(mockShare).toHaveBeenCalledWith({ message: 'Line 1\nLine 2\nLine 3' }, expect.any(Object));
       expect(result).toEqual({ success: true });
     });
 
@@ -335,46 +329,31 @@ describe('Share Module', () => {
     it('handles text type correctly', async () => {
       await share('text', 'Sample text');
 
-      expect(mockShare).toHaveBeenCalledWith(
-        { message: 'Sample text' },
-        expect.any(Object)
-      );
+      expect(mockShare).toHaveBeenCalledWith({ message: 'Sample text' }, expect.any(Object));
     });
 
     it('handles url type correctly', async () => {
       await share('url', 'https://example.com');
 
-      expect(mockShare).toHaveBeenCalledWith(
-        { url: 'https://example.com' },
-        expect.any(Object)
-      );
+      expect(mockShare).toHaveBeenCalledWith({ url: 'https://example.com' }, expect.any(Object));
     });
 
     it('handles image type correctly', async () => {
       await share('image', 'file://path/to/image.jpg');
 
-      expect(mockShare).toHaveBeenCalledWith(
-        { url: 'file://path/to/image.jpg' },
-        expect.any(Object)
-      );
+      expect(mockShare).toHaveBeenCalledWith({ url: 'file://path/to/image.jpg' }, expect.any(Object));
     });
 
     it('handles file type correctly', async () => {
       await share('file', 'file://path/to/document.pdf');
 
-      expect(mockShare).toHaveBeenCalledWith(
-        { url: 'file://path/to/document.pdf' },
-        expect.any(Object)
-      );
+      expect(mockShare).toHaveBeenCalledWith({ url: 'file://path/to/document.pdf' }, expect.any(Object));
     });
 
     it('defaults to text for unknown types', async () => {
       await share('unknown' as any, 'Unknown content');
 
-      expect(mockShare).toHaveBeenCalledWith(
-        { message: 'Unknown content' },
-        expect.any(Object)
-      );
+      expect(mockShare).toHaveBeenCalledWith({ message: 'Unknown content' }, expect.any(Object));
     });
   });
 
@@ -395,7 +374,7 @@ describe('Share Module', () => {
     it('handles clipboard write errors on web', async () => {
       Platform.OS = 'web' as any;
       (global as any).navigator.share = undefined;
-      
+
       const clipboardError = new Error('Clipboard access denied');
       mockNavigatorClipboardWriteText.mockRejectedValue(clipboardError);
 
@@ -405,4 +384,4 @@ describe('Share Module', () => {
       expect(result.error).toBeDefined();
     });
   });
-}); 
+});

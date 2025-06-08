@@ -4,13 +4,13 @@ import { Text } from '~/components/ui/text';
 import { Image } from '~/components/ui/image';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button } from '~/components/ui/button';
-import { TouchableOpacity, Pressable } from 'react-native';
+import { TouchableOpacity, Pressable, Linking } from 'react-native';
 import { useAuth, useUser } from '@clerk/clerk-expo';
 import { useRouter, useLocalSearchParams, Link } from 'expo-router';
 import AuthPage from '~/components/pages/auth';
 import FullscreenModal from '~/components/ui/fullscreen-modal';
 import PreferencesPage from '~/components/modals/preferences';
-import { UserPen, ChevronRight, Heart, CookingPot, Palette } from '~/assets/icons';
+import { UserPen, ChevronRight, Heart, CookingPot, Palette, HelpCircle } from '~/assets/icons';
 import { Preferences } from '~/types/profile';
 import PremiumPage from '~/components/modals/premium';
 import Toast from 'react-native-toast-message';
@@ -104,7 +104,7 @@ export default function ProfilePage() {
               </View>
             </View>
 
-            {process.env.EXPO_PUBLIC_LOCAL === 'true' && (
+            {process.env.NODE_ENV === 'development' && (
               <Button variant='outline' size='icon' className='w-10 h-10 border-gray-500' onPress={handleCopyToken}>
                 <UserPen size={24} />
               </Button>
@@ -179,7 +179,19 @@ export default function ProfilePage() {
               </Pressable>
             </Link>
 
-            {process.env.EXPO_PUBLIC_LOCAL === 'true' && (
+            <TouchableOpacity
+              onPress={() => Linking.openURL('mailto:support@cookapp.ai?subject=Support Request')}
+              className='flex-row items-center justify-between border-b border-gray-500 py-6 px-4'>
+              <View className='flex-row items-center gap-4'>
+                <View className='w-14 h-14 bg-gray-200 rounded-2xl items-center justify-center'>
+                  <HelpCircle size={24} color='#666' />
+                </View>
+                <Text className='text-lg font-semibold'>Support</Text>
+              </View>
+              <ChevronRight size={24} color='#666' />
+            </TouchableOpacity>
+
+            {/* {process.env.NODE_ENV === 'development' && (
               <Link href='/design/go-back' asChild>
                 <Pressable className='flex-row items-center justify-between border-b border-gray-500 py-6 px-4'>
                   <View className='flex-row items-center gap-4'>
@@ -191,7 +203,7 @@ export default function ProfilePage() {
                   <ChevronRight size={24} color='#666' />
                 </Pressable>
               </Link>
-            )}
+            )} */}
           </View>
 
           <FullscreenModal visible={showPremium} onClose={() => setShowPremium(false)}>
@@ -199,7 +211,7 @@ export default function ProfilePage() {
           </FullscreenModal>
 
           <FullscreenModal visible={showPreferences} onClose={() => setShowPreferences(false)}>
-            <PreferencesPage onClose={() => setShowPreferences(false)} onSave={handleSavePreferences} />
+            <PreferencesPage onClose={() => setShowPreferences(false)} />
           </FullscreenModal>
         </SafeAreaView>
       )}

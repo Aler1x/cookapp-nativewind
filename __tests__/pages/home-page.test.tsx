@@ -56,4 +56,4 @@ describe('HomePage', () => {
     const tree = render(<HomePage />).toJSON();
     expect(tree).toMatchSnapshot();
   });
-}); 
+});

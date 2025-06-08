@@ -17,18 +17,17 @@ const fonts = {
   },
 };
 
-
 /**
  * Theme for the app
- * 
+ *
  * @description
- * 
+ *
  * - light: light theme
  * - dark: dark theme
- * 
+ *
  * - colors: colors for the app
  * - fonts: fonts for the app
- * 
+ *
  * - dark: boolean indicating if the theme is dark
  */
 export const THEME = {

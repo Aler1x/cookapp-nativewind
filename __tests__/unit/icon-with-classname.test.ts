@@ -38,7 +38,7 @@ describe('iconWithClassName', () => {
 
   it('works with different icon types', () => {
     const anotherIcon = jest.fn() as any;
-    
+
     iconWithClassName(mockIcon);
     iconWithClassName(anotherIcon);
 
@@ -100,4 +100,4 @@ describe('iconWithClassName', () => {
     const result = iconWithClassName(mockIcon);
     expect(result).toBeUndefined();
   });
-}); 
+});

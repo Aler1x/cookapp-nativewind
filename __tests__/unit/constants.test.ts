@@ -89,20 +89,20 @@ describe('Constants', () => {
 
     it('uses HSL color format for all colors', () => {
       const hslRegex = /^hsl\(/;
-      
-      Object.values(THEME.light.colors).forEach(color => {
+
+      Object.values(THEME.light.colors).forEach((color) => {
         expect(color).toMatch(hslRegex);
       });
-      
-      Object.values(THEME.dark.colors).forEach(color => {
+
+      Object.values(THEME.dark.colors).forEach((color) => {
         expect(color).toMatch(hslRegex);
       });
     });
 
     it('has all required Comfortaa font weights', () => {
       const expectedFonts = ['regular', 'medium', 'bold', 'heavy'];
-      
-      expectedFonts.forEach(weight => {
+
+      expectedFonts.forEach((weight) => {
         expect(THEME.light.fonts).toHaveProperty(weight);
         expect(THEME.dark.fonts).toHaveProperty(weight);
       });
@@ -119,7 +119,7 @@ describe('Constants', () => {
     });
 
     it('all prefixes start with forward slash', () => {
-      Object.values(API_ENDPOINTS_PREFIX).forEach(prefix => {
+      Object.values(API_ENDPOINTS_PREFIX).forEach((prefix) => {
         expect(prefix).toMatch(/^\//);
       });
     });
@@ -151,4 +151,4 @@ describe('Constants', () => {
       expect(THEME.dark.colors.primary).toBe('hsl(14 78% 34%)');
     });
   });
-}); 
+});

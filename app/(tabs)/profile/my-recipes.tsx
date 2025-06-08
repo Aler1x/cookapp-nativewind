@@ -9,10 +9,12 @@ import RecipeCard from '~/components/recipe-card';
 import { Text } from '~/components/ui/text';
 import { useAuth } from '@clerk/clerk-expo';
 import { API_ENDPOINTS_PREFIX } from '~/lib/constants';
+import BasicModal from '~/components/ui/basic-modal';
 
 export default function Page() {
   const { userId } = useAuth();
   const [recipes, setRecipes] = useState<RecipesPage | null>(null);
+  const [showAddRecipeModal, setShowAddRecipeModal] = useState(false);
   const $fetch = useFetch();
 
   useEffect(() => {
@@ -24,24 +26,23 @@ export default function Page() {
     fetchRecipes();
   }, [userId, $fetch]);
 
-
   return (
     <SafeAreaView className='flex-1 items-center justify-center' style={{ padding: 16 }}>
-      <FloatingButton onPress={() => {}}>
+      <FloatingButton onPress={() => setShowAddRecipeModal(true)}>
         <Plus size={24} />
       </FloatingButton>
 
       {recipes?.data?.length > 0 ? (
-        <View className='flex-1'>
-          {recipes?.data.map((recipe) => (
-            <RecipeCard key={recipe.id} recipe={recipe} size='small' />
-          ))}
-        </View>
+        <View className='flex-1'>{recipes?.data.map((recipe) => <RecipeCard key={recipe.id} recipe={recipe} />)}</View>
       ) : (
         <View className='flex-1 items-center justify-center'>
           <Text className='text-center font-medium'>No recipes found</Text>
         </View>
       )}
+
+      <BasicModal isModalOpen={showAddRecipeModal} setIsModalOpen={setShowAddRecipeModal}>
+        <Text>Add Recipe</Text>
+      </BasicModal>
     </SafeAreaView>
   );
 }

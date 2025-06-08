@@ -7,9 +7,8 @@ import { useFetch } from '~/hooks/useFetch';
 import { debounce } from '~/lib/debounce';
 import { useAuth } from '@clerk/clerk-expo';
 import { API_ENDPOINTS_PREFIX } from '~/lib/constants';
-import { Recipe,RecipesPage } from '~/types/recipe';
+import { Recipe, RecipesPage } from '~/types/recipe';
 import RecipeCard from '~/components/recipe-card';
-
 
 export default function HomePage() {
   const { isSignedIn } = useAuth();
@@ -34,7 +33,7 @@ export default function HomePage() {
     try {
       const fetchedRecipes = await $fetch<RecipesPage>(`${API_ENDPOINTS_PREFIX.public}/recipes`);
       setRecipes(fetchedRecipes.data);
-      console.log(fetchedRecipes);
+      // console.log(fetchedRecipes);
     } catch (error) {
       console.error('Error fetching recipes:', error);
       setRecipes([]);
@@ -49,7 +48,6 @@ export default function HomePage() {
     }
   }, [isSignedIn, fetchRecipes, fetchRecipesGuest]);
 
-
   return (
     <SafeAreaView className='flex-1 bg-background'>
       <ScrollView className='flex-1 px-4'>
@@ -61,11 +59,7 @@ export default function HomePage() {
 
         <View className='flex-1 flex-row flex-wrap justify-between'>
           {recipes.map((recipe) => (
-            <RecipeCard
-              key={recipe.id}
-              recipe={recipe}
-              className='w-[48%] h-48'
-            />
+            <RecipeCard key={recipe.id} recipe={recipe} className='w-[48%] h-48' />
           ))}
         </View>
       </ScrollView>

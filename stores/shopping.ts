@@ -26,7 +26,7 @@ export const useShoppingListStore = create<ShoppingListStore>()(
       items: [],
 
       normalizeUnit: (unit: string): string => {
-        const unitLower = unit.toLowerCase().trim();
+        const unitLower = String(unit).toLowerCase().trim();
         if (unitLower === '') {
           return '';
         }
@@ -136,7 +136,7 @@ export const useShoppingListStore = create<ShoppingListStore>()(
           // Check if item with same name and unit already exists
           const existingItemIndex = state.items.findIndex(
             (existingItem) =>
-              existingItem.name.toLowerCase() === item.name.toLowerCase() &&
+              existingItem.name.toLowerCase() === String(item.name).toLowerCase() &&
               get().normalizeUnit(existingItem.unit) === normalizedUnit
           );
 
@@ -190,22 +190,17 @@ export const useShoppingListStore = create<ShoppingListStore>()(
       },
 
       getUncheckedItems: () => {
-        return get()
-          .items.filter((item) => !item.isChecked)
-          .sort((a, b) => a.name.localeCompare(b.name));
+        return get().items.filter((item) => !item.isChecked);
       },
 
       getCheckedItems: () => {
-        return get()
-          .items.filter((item) => item.isChecked)
-          .sort((a, b) => a.name.localeCompare(b.name));
+        return get().items.filter((item) => item.isChecked);
       },
 
       // Enhanced formatting with proper unit display
       formatShoppingListForSharing: () => {
         return get()
           .items.filter((item) => !item.isChecked)
-          .sort((a, b) => a.name.localeCompare(b.name))
           .map((item) => {
             // Try to get the proper unit display name
             const unit = get().normalizeUnit(item.unit);

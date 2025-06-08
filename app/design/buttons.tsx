@@ -32,7 +32,7 @@ export default function NotFoundScreen() {
             <Text>Secondary Button</Text>
           </Button>
         </View>
-      </SafeAreaView >
+      </SafeAreaView>
     </>
   );
 }
