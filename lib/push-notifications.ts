@@ -1,6 +1,8 @@
 import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
 import { Platform } from 'react-native';
+import { useFetch } from '~/hooks/useFetch';
+import { API_ENDPOINTS_PREFIX } from './constants';
 
 // Configure how notifications should be handled when received
 Notifications.setNotificationHandler({
@@ -69,13 +71,10 @@ export async function registerForPushNotificationsAsync(): Promise<PushNotificat
 /**
  * Send push notification token to backend
  */
-export async function sendTokenToBackend(token: PushNotificationToken, userId: string): Promise<boolean> {
+export async function sendTokenToBackend(token: PushNotificationToken, userId: string, $fetch: ReturnType<typeof useFetch>): Promise<boolean> {
   try {
-    const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/users/${userId}/push-token`, {
+    await $fetch(`${API_ENDPOINTS_PREFIX.node_video}/users/${userId}/push-token`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
       body: JSON.stringify({
         token: token.token,
         type: token.type,
@@ -83,7 +82,7 @@ export async function sendTokenToBackend(token: PushNotificationToken, userId: s
       }),
     });
 
-    return response.ok;
+    return true;
   } catch (error) {
     console.error('Error sending token to backend:', error);
     return false;

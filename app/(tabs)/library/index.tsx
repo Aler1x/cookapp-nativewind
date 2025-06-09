@@ -90,17 +90,12 @@ export default function LibraryPage() {
             <Text className='font-medium text-left mt-2'>Create New Collection</Text>
           </TouchableOpacity>
 
-          {collections.length === 0 && (
-            <View className='flex-1 items-center justify-center'>
-              <Text className='text-muted-foreground text-sm font-medium'>No collections found</Text>
-            </View>
-          )}
-
           {collections?.map((collection) => (
             <LibraryCard key={collection.id} collection={collection} className='mb-2' />
           ))}
         </View>
       </ScrollView>
+
 
       <BasicModal isModalOpen={isCreateNewCollectionModalOpen} setIsModalOpen={setIsCreateNewCollectionModalOpen}>
         <Text className='text-2xl font-semibold mb-4'>Create New Collection</Text>
@@ -111,7 +106,6 @@ export default function LibraryPage() {
 
         <Button onPress={() => handleCreateNewCollection(collectionName)}>
           <View className='flex-row items-center gap-2'>
-            <PlusIcon className='w-6 h-6' />
             <Text className='text-sm font-medium'>Create Collection</Text>
           </View>
         </Button>

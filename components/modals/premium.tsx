@@ -7,9 +7,6 @@ import { Text } from '~/components/ui/text';
 import { Button } from '~/components/ui/button';
 import { View } from '~/components/ui/view';
 import { Badge } from '~/components/ui/badge';
-import { usePaymentService } from '~/lib/payment-service';
-import { usePaymentStore } from '~/stores/payment';
-import { initializeStripe } from '~/lib/stripe';
 import BasicModal from '../ui/basic-modal';
 import { cn } from '~/lib/utils';
 
@@ -103,59 +100,11 @@ interface PremiumPageProps {
 }
 
 export default function PremiumPage({ onClose, onClickPlan }: PremiumPageProps) {
-  const { createSubscription } = usePaymentService();
-  const { isProcessing, setIsProcessing, setSubscriptionDetails } = usePaymentStore();
-  const [isStripeInitialized, setIsStripeInitialized] = useState(false);
-
   const [paymentMessage, setPaymentMessage] = useState('');
   const [isError, setIsError] = useState(false);
 
-  useEffect(() => {
-    const initStripe = async () => {
-      try {
-        await initializeStripe();
-        setIsStripeInitialized(true);
-      } catch (error) {
-        console.error('Failed to initialize Stripe:', error);
-      }
-    };
-
-    initStripe();
-  }, []);
-
   const handlePlanSelection = async (planTitle: string) => {
-    if (!isStripeInitialized || isProcessing) return;
-
-    const planId = planTitle.toLowerCase().replace(' ', '-');
-
-    if (planId === 'free') {
-      onClickPlan(planTitle);
-      return;
-    }
-
-    setIsProcessing(true);
-
-    try {
-      const result = await createSubscription(planId);
-
-      if (result.success && result.paymentMethod?.subscriptionId) {
-        setSubscriptionDetails(result.paymentMethod.subscriptionId, planId as 'premium' | 'premium-annual');
-        onClickPlan(planTitle);
-        setPaymentMessage('🎉 Welcome to Premium! Your subscription is now active');
-      } else {
-        setPaymentMessage(result.error || 'Something went wrong');
-        setIsError(true);
-      }
-    } catch (error) {
-      setPaymentMessage(error instanceof Error ? error.message : 'Something went wrong');
-      setIsError(true);
-    } finally {
-      setTimeout(() => {
-        setIsProcessing(false);
-        setPaymentMessage('');
-        setIsError(false);
-      }, 3000);
-    }
+    onClickPlan(planTitle);
   };
 
   const premiumFeatures = [
@@ -290,7 +239,7 @@ export default function PremiumPage({ onClose, onClickPlan }: PremiumPageProps) 
                 isPopular={tier.isPopular}
                 isCurrentPlan={tier.isCurrentPlan}
                 onPress={() => handlePlanSelection(tier.title)}
-                isLoading={isProcessing}
+                isLoading={false}
               />
             ))}
           </View>
@@ -314,9 +263,9 @@ export default function PremiumPage({ onClose, onClickPlan }: PremiumPageProps) 
         </View>
 
         {/* Loading overlay */}
-        <BasicModal isModalOpen={isProcessing} setIsModalOpen={() => { }}>
+        <BasicModal isModalOpen={false} setIsModalOpen={() => { }}>
           <View className='bg-white p-6 rounded-2xl items-center'>
-            {isProcessing && !paymentMessage && (
+            {!paymentMessage && (
               <>
                 <ActivityIndicator size="large" color="#007AFF" />
                 <Text className='mt-4 text-lg font-semibold'>Processing Payment...</Text>

@@ -23,7 +23,7 @@ import { toaster } from '~/components/toaster';
 import DesktopBlocker from '~/components/DesktopBlocker';
 import { useKeepAwake } from 'expo-keep-awake';
 import { usePushNotifications } from '~/hooks/usePushNotifications';
-import { initializeStripe } from '~/lib/stripe';
+import BaseLayout from '~/components/pages/base-layout';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -50,10 +50,6 @@ export default function Layout() {
     }
   }, [loaded, error]);
 
-  useEffect(() => {
-    initializeStripe();
-  }, []);
-
   if (!loaded && !error) {
     return null;
   }
@@ -64,29 +60,7 @@ export default function Layout() {
         <ClerkLoaded>
           <SafeAreaProvider>
             <ThemeProvider value={isDarkColorScheme ? THEME.dark : THEME.light}>
-              <StatusBar style={isDarkColorScheme ? 'light' : 'dark'} />
-              <Stack
-                screenOptions={{
-                  headerShown: false,
-                  contentStyle: {
-                    backgroundColor: isDarkColorScheme ? THEME.dark.colors.background : THEME.light.colors.background,
-                  },
-                }}>
-                <Stack.Screen name='(tabs)' />
-                <Stack.Screen name='index' />
-                <Stack.Screen name='+not-found' />
-                <Stack.Screen
-                  name='stack-modal'
-                  options={{
-                    presentation: 'modal',
-                    animation: 'slide_from_bottom',
-                  }}
-                />
-              </Stack>
-
-              <PortalHost />
-
-              <Toast topOffset={50} config={toaster} />
+              <BaseLayout />              
             </ThemeProvider>
           </SafeAreaProvider>
         </ClerkLoaded>

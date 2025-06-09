@@ -39,7 +39,7 @@ const ShoppingListAddItemModal = ({ showAddItemModal, setShowAddItemModal }: Sho
           `${API_ENDPOINTS_PREFIX.node}/ingredients/search`,
           {
             method: 'POST',
-            body: JSON.stringify({ query, limit: 3, embeddingModel: 'openai' }),
+            body: JSON.stringify({ query, limit: 3 }),
           }
         );
 
@@ -68,7 +68,7 @@ const ShoppingListAddItemModal = ({ showAddItemModal, setShowAddItemModal }: Sho
 
       try {
         const response = await $fetch<SearchUnit[]>(
-          `${API_ENDPOINTS_PREFIX.spring}/units?name=${encodeURIComponent(query)}&limit=5`
+          `${API_ENDPOINTS_PREFIX.spring}/units?name=${encodeURIComponent(query)}`
         );
         if (response) {
           return response.slice(0, 3).map((unit) => ({
@@ -160,7 +160,6 @@ const ShoppingListAddItemModal = ({ showAddItemModal, setShowAddItemModal }: Sho
           searchPlaceholder='Search for units...'
           fontFamily='Comfortaa_400Regular'
           notFoundText='No units found'
-          allowFreeText={true}
           boxStyles={{
             borderColor: THEME.light.colors.primary,
           }}

@@ -66,8 +66,8 @@ export function useFetch() {
           // console.log(response);
         }
       }
-      // eslint-disable-next-line react-hooks/exhaustive-deps -- getToken isn't a useCallback so we get on one call fucking 1 thousand calls
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- getToken isn't a useCallback so we get on one call fucking 1 thousand calls
     [isSignedIn]
   );
 

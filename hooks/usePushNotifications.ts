@@ -9,9 +9,12 @@ import {
   addNotificationResponseReceivedListener,
   getLastNotificationResponseAsync,
 } from '~/lib/push-notifications';
+import { useFetch } from './useFetch';
+import { Platform } from 'react-native';
 
 export function usePushNotifications() {
   const { userId, isSignedIn } = useAuth();
+  const $fetch = useFetch();
   const router = useRouter();
   const notificationListener = useRef<Notifications.EventSubscription>(null);
   const responseListener = useRef<Notifications.EventSubscription>(null);
@@ -24,7 +27,7 @@ export function usePushNotifications() {
       try {
         const token = await registerForPushNotificationsAsync();
         if (token) {
-          await sendTokenToBackend(token, userId);
+          await sendTokenToBackend(token, userId, $fetch);
         }
       } catch (error) {
         console.error('Error setting up push notifications:', error);
@@ -75,11 +78,13 @@ export function usePushNotifications() {
       }
     };
 
+    if (Platform.OS === 'web') return;
+
     checkInitialNotification();
 
     return () => {
       notificationListener.current?.remove();
       responseListener.current?.remove();
     };
-  }, [isSignedIn, userId, router]);
+  }, [isSignedIn, userId, router, $fetch]);
 } 

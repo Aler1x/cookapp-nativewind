@@ -16,7 +16,9 @@
         "CFBundleURLTypes": [
           {
             "CFBundleURLName": "cookapp-nativewind",
-            "CFBundleURLSchemes": ["cookapp-nativewind"]
+            "CFBundleURLSchemes": [
+              "cookapp-nativewind"
+            ]
           }
         ]
       }
@@ -26,7 +28,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.the-ooh.cookapp-nativewind",
+      "package": "com.alerix.cookapp",
       "intentFilters": [
         {
           "action": "VIEW",
@@ -35,7 +37,10 @@
               "scheme": "cookapp-nativewind"
             }
           ],
-          "category": ["BROWSABLE", "DEFAULT"]
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
         }
       ]
     },

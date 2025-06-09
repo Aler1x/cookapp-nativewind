@@ -22,7 +22,7 @@ export default function HomePage() {
     try {
       const fetchedRecipes = await $fetch<RecipesPage>(`${API_ENDPOINTS_PREFIX.node}/recommendations`);
       setRecipes(fetchedRecipes.data);
-      console.log(fetchedRecipes);
+      // console.log(fetchedRecipes);
     } catch (error) {
       console.error('Error fetching recipes:', error);
       setRecipes([]);
