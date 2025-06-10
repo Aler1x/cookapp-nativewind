@@ -8,7 +8,7 @@ import { Preferences, PreferencesRequest } from '~/types/profile';
 import BasicModal from '../ui/basic-modal';
 import { useFetch } from '~/hooks/useFetch';
 import { API_ENDPOINTS_PREFIX, THEME } from '~/lib/constants';
-import SelectList, { SelectListData } from '../ui/input-with-dropdown';
+import InputWithDropdown, { SelectListData } from '../ui/input-with-dropdown';
 import { SuccessResponse, SearchProduct } from '~/types';
 
 interface PreferencePillProps {
@@ -21,8 +21,9 @@ function PreferencePill({ name, selected, onPress }: PreferencePillProps) {
   return (
     <TouchableOpacity
       onPress={onPress}
-      className={`px-4 py-2 rounded-full mr-2 mb-2 border ${selected ? 'bg-primary border-primary' : 'bg-transparent border-gray-300'
-        }`}>
+      className={`px-4 py-2 rounded-full mr-2 mb-2 border ${
+        selected ? 'bg-secondary border-secondary' : 'bg-transparent border-gray-300'
+      }`}>
       <Text className={`text-sm ${selected ? 'font-medium' : 'text-gray-700'}`}>{name}</Text>
     </TouchableOpacity>
   );
@@ -338,7 +339,7 @@ export default function PreferencesPage({ onClose }: PreferencesPageProps) {
           </TouchableOpacity>
         </View>
 
-        <SelectList
+        <InputWithDropdown
           setSelected={(value) => {
             setNewItemText(value.value);
             setNewItem(value);

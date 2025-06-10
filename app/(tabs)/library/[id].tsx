@@ -25,25 +25,24 @@ export default function LibraryDetailPage() {
 
   const fetchCollection = async () => {
     const data = await $fetch<Collection>(`${API_ENDPOINTS_PREFIX.spring}/recipes/collection/${id}`);
-    console.log('data', data);
     setCollection(data);
   };
 
   const handleEditCollection = async () => {
     if (!editedName.trim()) return;
-    
+
     try {
       await $fetch(`${API_ENDPOINTS_PREFIX.spring}/recipes/collection/${id}`, {
         method: 'PUT',
         body: JSON.stringify({ name: editedName }),
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
       });
-      
+
       // Update local state
       if (collection) {
         setCollection({ ...collection, name: editedName });
       }
-      
+
       setIsEditModalOpen(false);
     } catch (error) {
       console.error('Error updating collection:', error);
@@ -53,9 +52,9 @@ export default function LibraryDetailPage() {
   const handleDeleteCollection = async () => {
     try {
       await $fetch(`${API_ENDPOINTS_PREFIX.spring}/recipes/collection/${id}`, {
-        method: 'DELETE'
+        method: 'DELETE',
       });
-      
+
       router.replace('/(tabs)/library');
     } catch (error) {
       console.error('Error deleting collection:', error);
@@ -68,33 +67,20 @@ export default function LibraryDetailPage() {
   };
 
   const renderRecipeItem = (recipe: Recipe) => (
-    <TouchableOpacity 
-      key={recipe.id} 
-      className='bg-card rounded-lg p-4 mb-3 shadow-sm'
-    >
+    <TouchableOpacity key={recipe.id} className='bg-card rounded-lg p-4 mb-3 shadow-sm'>
       <View className='flex-row'>
-        <Image 
-          source={{ uri: recipe.mainImageUrl }} 
-          className='w-16 h-16 rounded-lg mr-3'
-          resizeMode='cover'
-        />
+        <Image source={{ uri: recipe.mainImageUrl }} className='w-16 h-16 rounded-lg mr-3' resizeMode='cover' />
         <View className='flex-1'>
           <Text className='font-semibold text-lg mb-1'>{recipe.title}</Text>
-          <Text className='text-muted-foreground text-sm mb-2 capitalize'>
-            {recipe.difficulty}
-          </Text>
+          <Text className='text-muted-foreground text-sm mb-2 capitalize'>{recipe.difficulty}</Text>
           <View className='flex-row items-center gap-4'>
             <View className='flex-row items-center gap-1'>
               <Clock size={14} color='#666' />
-              <Text className='text-xs text-muted-foreground'>
-                {recipe.duration} min
-              </Text>
+              <Text className='text-xs text-muted-foreground'>{recipe.duration} min</Text>
             </View>
             <View className='flex-row items-center gap-1'>
               <Users size={14} color='#666' />
-              <Text className='text-xs text-muted-foreground'>
-                {recipe.servings} servings
-              </Text>
+              <Text className='text-xs text-muted-foreground'>{recipe.servings} servings</Text>
             </View>
           </View>
         </View>
@@ -110,18 +96,12 @@ export default function LibraryDetailPage() {
     <SafeAreaView className='flex-1 bg-background'>
       <ScrollView className='flex-1' contentContainerStyle={{ padding: 16 }}>
         <View className='flex-row items-center justify-between mb-6'>
-          <Text className='text-3xl font-bold flex-1'>
-            {collection?.name || name || 'Collection'}
-          </Text>
+          <Text className='text-3xl font-bold flex-1'>{collection?.name || name || 'Collection'}</Text>
           <View className='flex-row gap-2'>
             <Button variant='outline' size='icon' onPress={openEditModal}>
               <Edit size={18} color='#666' />
             </Button>
-            <Button 
-              variant='outline' 
-              size='icon' 
-              onPress={() => setIsDeleteModalOpen(true)}
-            >
+            <Button variant='outline' size='icon' onPress={() => setIsDeleteModalOpen(true)}>
               <Trash2 size={18} color='#ef4444' />
             </Button>
           </View>
@@ -129,16 +109,12 @@ export default function LibraryDetailPage() {
 
         {collection?.recipes && collection.recipes.length > 0 ? (
           <View>
-            <Text className='text-lg font-semibold mb-4'>
-              Recipes ({collection.recipes.length})
-            </Text>
+            <Text className='text-lg font-semibold mb-4'>Recipes ({collection.recipes.length})</Text>
             {collection.recipes.map(renderRecipeItem)}
           </View>
         ) : (
           <View className='flex-1 items-center justify-center py-12'>
-            <Text className='text-muted-foreground text-center'>
-              No recipes in this collection yet
-            </Text>
+            <Text className='text-muted-foreground text-center'>No recipes in this collection yet</Text>
           </View>
         )}
       </ScrollView>
@@ -149,26 +125,13 @@ export default function LibraryDetailPage() {
           <Text className='text-xl font-bold text-center'>Edit Collection</Text>
           <View>
             <Text className='text-sm font-medium mb-2'>Collection Name</Text>
-            <Input
-              value={editedName}
-              onChangeText={setEditedName}
-              placeholder='Enter collection name'
-              autoFocus
-            />
+            <Input value={editedName} onChangeText={setEditedName} placeholder='Enter collection name' autoFocus />
           </View>
           <View className='flex-row gap-3 mt-4'>
-            <Button 
-              variant='outline' 
-              className='flex-1' 
-              onPress={() => setIsEditModalOpen(false)}
-            >
+            <Button variant='outline' className='flex-1' onPress={() => setIsEditModalOpen(false)}>
               <Text>Cancel</Text>
             </Button>
-            <Button 
-              className='flex-1' 
-              onPress={handleEditCollection}
-              disabled={!editedName.trim()}
-            >
+            <Button className='flex-1' onPress={handleEditCollection} disabled={!editedName.trim()}>
               <Text>Save</Text>
             </Button>
           </View>

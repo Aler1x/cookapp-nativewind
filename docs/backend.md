@@ -31,20 +31,24 @@ CREATE TABLE recipe_processing_jobs (
 ## 2. **Implement Two Required Endpoints**
 
 ### **Store Push Token**
+
 ```javascript
 // POST /users/:userId/push-token
 app.post('/users/:userId/push-token', async (req, res) => {
   const { userId } = req.params;
   const { token, type, platform } = req.body;
-  
+
   try {
-    await db.query(`
+    await db.query(
+      `
       INSERT INTO push_tokens (user_id, token, type, platform) 
       VALUES ($1, $2, $3, $4)
       ON CONFLICT (user_id, token) 
       DO UPDATE SET updated_at = NOW()
-    `, [userId, token, type, platform]);
-    
+    `,
+      [userId, token, type, platform]
+    );
+
     res.json({ success: true, message: 'Push token stored successfully' });
   } catch (error) {
     res.status(500).json({ error: 'Failed to store push token' });
@@ -53,37 +57,41 @@ app.post('/users/:userId/push-token', async (req, res) => {
 ```
 
 ### **Process Social Media Recipe**
+
 ```javascript
 // POST /users/:userId/recipes/process-social
 app.post('/users/:userId/recipes/process-social', async (req, res) => {
   const { userId } = req.params;
   const { url } = req.body;
-  
+
   // Validate URL
   if (!isValidRecipeUrl(url)) {
     return res.status(400).json({ error: 'Invalid URL' });
   }
-  
+
   try {
     // Create processing job
-    const jobResult = await db.query(`
+    const jobResult = await db.query(
+      `
       INSERT INTO recipe_processing_jobs (user_id, original_url) 
       VALUES ($1, $2) RETURNING id
-    `, [userId, url]);
-    
+    `,
+      [userId, url]
+    );
+
     const processingId = jobResult.rows[0].id;
-    
+
     // Add to background queue
     await recipeProcessingQueue.add('process-recipe', {
       userId,
       url,
-      processingId
+      processingId,
     });
-    
+
     res.json({
       success: true,
       processingId,
-      message: 'Recipe processing started'
+      message: 'Recipe processing started',
     });
   } catch (error) {
     res.status(500).json({ error: 'Failed to start processing' });
@@ -106,46 +114,45 @@ const recipeProcessingQueue = new Queue('recipe processing', 'redis://127.0.0.1:
 // Process jobs
 recipeProcessingQueue.process('process-recipe', async (job) => {
   const { userId, url, processingId } = job.data;
-  
+
   try {
     // Update status to processing
     await updateJobStatus(processingId, 'processing');
-    
+
     // Extract recipe data from URL
     const recipeData = await extractRecipeFromUrl(url);
-    
+
     // Save recipe to database
     const recipe = await createRecipe(userId, recipeData);
-    
+
     // Update job with success
     await updateJobStatus(processingId, 'completed', recipe.id);
-    
+
     // Send success notification
     await sendPushNotification(userId, {
-      title: "Recipe Ready! 🍽️",
+      title: 'Recipe Ready! 🍽️',
       body: `Your ${recipeData.title} is now available`,
       data: {
         type: 'recipe_processed',
         recipeId: recipe.id,
-        status: 'completed'
-      }
+        status: 'completed',
+      },
     });
-    
   } catch (error) {
     console.error('Recipe processing failed:', error);
-    
+
     // Update job with failure
     await updateJobStatus(processingId, 'failed', null, error.message);
-    
+
     // Send failure notification
     await sendPushNotification(userId, {
-      title: "Recipe Processing Failed 😔",
+      title: 'Recipe Processing Failed 😔',
       body: "We couldn't extract the recipe from that link",
       data: {
         type: 'recipe_processed',
         status: 'failed',
-        error: error.message
-      }
+        error: error.message,
+      },
     });
   }
 });
@@ -156,6 +163,7 @@ recipeProcessingQueue.process('process-recipe', async (job) => {
 Choose and implement a scraping solution:
 
 ### **Option A: Use existing library (Python)**
+
 ```python
 # Install: pip install recipe-scrapers
 from recipe_scrapers import scrape_me
@@ -174,6 +182,7 @@ def extract_recipe_from_url(url):
 ```
 
 ### **Option B: Custom implementation (Node.js)**
+
 ```javascript
 const cheerio = require('cheerio');
 const axios = require('axios');
@@ -181,10 +190,10 @@ const axios = require('axios');
 async function extractRecipeFromUrl(url) {
   const response = await axios.get(url);
   const $ = cheerio.load(response.data);
-  
+
   // Look for JSON-LD structured data
   const scriptTags = $('script[type="application/ld+json"]');
-  
+
   for (let i = 0; i < scriptTags.length; i++) {
     try {
       const jsonData = JSON.parse($(scriptTags[i]).html());
@@ -195,7 +204,7 @@ async function extractRecipeFromUrl(url) {
       continue;
     }
   }
-  
+
   // Fallback to manual scraping
   return manualScrape($, url);
 }
@@ -206,28 +215,25 @@ async function extractRecipeFromUrl(url) {
 ```javascript
 async function sendPushNotification(userId, notification) {
   // Get user's push tokens
-  const tokens = await db.query(
-    'SELECT token FROM push_tokens WHERE user_id = $1',
-    [userId]
-  );
-  
-  const messages = tokens.rows.map(row => ({
+  const tokens = await db.query('SELECT token FROM push_tokens WHERE user_id = $1', [userId]);
+
+  const messages = tokens.rows.map((row) => ({
     to: row.token,
     title: notification.title,
     body: notification.body,
     data: notification.data,
-    sound: 'default'
+    sound: 'default',
   }));
-  
+
   // Send to Expo Push API
   const response = await fetch('https://exp.host/--/api/v2/push/send', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(messages)
+    body: JSON.stringify(messages),
   });
-  
+
   return response.json();
 }
 ```
@@ -243,14 +249,12 @@ function isValidRecipeUrl(url) {
     'allrecipes.com',
     'food.com',
     'foodnetwork.com',
-    'epicurious.com'
+    'epicurious.com',
   ];
-  
+
   try {
     const urlObj = new URL(url);
-    return allowedDomains.some(domain => 
-      urlObj.hostname.includes(domain)
-    );
+    return allowedDomains.some((domain) => urlObj.hostname.includes(domain));
   } catch {
     return false;
   }
@@ -266,7 +270,7 @@ const recipeProcessingLimit = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
   max: 5, // 5 requests per hour per user
   keyGenerator: (req) => req.params.userId,
-  message: 'Too many processing requests, try again later'
+  message: 'Too many processing requests, try again later',
 });
 
 app.use('/users/:userId/recipes/process-social', recipeProcessingLimit);
@@ -281,6 +285,7 @@ DATABASE_URL=postgresql://...
 ```
 
 ## **Priority Order:**
+
 1. Set up database tables
 2. Implement the two endpoints (even with dummy responses)
 3. Set up job queue infrastructure

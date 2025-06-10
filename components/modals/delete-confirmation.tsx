@@ -21,7 +21,7 @@ export default function DeleteConfirmationModal({
   onApprove,
   title = 'Delete Confirmation',
   message = 'Are you sure you want to delete',
-  itemName = 'this item'
+  itemName = 'this item',
 }: DeleteConfirmationModalProps) {
   const handleReject = () => {
     onReject();
@@ -40,24 +40,16 @@ export default function DeleteConfirmationModal({
         <Text className='text-center text-muted-foreground'>
           {message} &quot;{itemName}&quot;? This action cannot be undone.
         </Text>
-        
+
         <View className='flex-row gap-3 mt-4'>
-          <Button 
-            variant='outline' 
-            className='flex-1' 
-            onPress={handleReject}
-          >
+          <Button variant='outline' className='flex-1' onPress={handleReject}>
             <Text>Cancel</Text>
           </Button>
-          <Button 
-            variant='destructive' 
-            className='flex-1' 
-            onPress={handleApprove}
-          >
+          <Button variant='destructive' className='flex-1' onPress={handleApprove}>
             <Text>Delete</Text>
           </Button>
         </View>
       </View>
     </BasicModal>
   );
-} 
+}

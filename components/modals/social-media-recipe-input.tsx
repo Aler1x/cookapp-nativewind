@@ -21,7 +21,7 @@ export default function SocialMediaRecipeInput({
   socialMediaUrl,
   onChangeUrl,
   onSubmit,
-  isProcessing
+  isProcessing,
 }: SocialMediaRecipeInputProps) {
   return (
     <>
@@ -36,10 +36,8 @@ export default function SocialMediaRecipeInput({
       </View>
 
       <View className='gap-4 mb-6'>
-        <Text className='text-sm text-gray-600'>
-          Paste a link from Instagram, TikTok, YouTube
-        </Text>
-        
+        <Text className='text-sm text-gray-600'>Paste a link from Instagram, TikTok, YouTube</Text>
+
         <Input
           placeholder='Paste recipe URL here...'
           value={socialMediaUrl}
@@ -49,16 +47,10 @@ export default function SocialMediaRecipeInput({
           keyboardType='url'
         />
 
-        <Button 
-          className='w-full' 
-          onPress={onSubmit}
-          disabled={!socialMediaUrl.trim() || isProcessing}
-        >
-          <Text>
-            {isProcessing ? 'Processing...' : 'Send to Processing'}
-          </Text>
+        <Button className='w-full' onPress={onSubmit} disabled={!socialMediaUrl.trim() || isProcessing}>
+          <Text>{isProcessing ? 'Processing...' : 'Send to Processing'}</Text>
         </Button>
       </View>
     </>
   );
-} 
+}

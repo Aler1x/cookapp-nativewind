@@ -2,10 +2,10 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text } from '~/components/ui/text';
 import { View } from '~/components/ui/view';
-import { ScrollView, TouchableOpacity } from 'react-native';
+import { ActivityIndicator, ScrollView, TouchableOpacity } from 'react-native';
 import LibraryCard from '~/components/library-card';
 import { useFetch } from '~/hooks/useFetch';
-import { API_ENDPOINTS_PREFIX } from '~/lib/constants';
+import { API_ENDPOINTS_PREFIX, THEME } from '~/lib/constants';
 import type { CollectionPage } from '~/types/library';
 import { useAuth } from '@clerk/clerk-expo';
 import { PlusIcon } from 'lucide-react-native';
@@ -24,16 +24,20 @@ export default function LibraryPage() {
   // Create New Collection
   const [collectionName, setCollectionName] = useState('');
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const fetchCollections = useCallback(async () => {
     try {
+      setIsLoading(true);
       const fetchedCollections = await $fetch<{ collections: CollectionPage[] }>(
         `${API_ENDPOINTS_PREFIX.spring}/recipes/collection`
       );
-      console.log('fetchedCollections', fetchedCollections);
       setCollections(fetchedCollections.collections);
     } catch (error) {
       console.error('Error fetching collections:', error);
       setCollections([]);
+    } finally {
+      setIsLoading(false);
     }
   }, [$fetch]);
 
@@ -96,6 +100,12 @@ export default function LibraryPage() {
         </View>
       </ScrollView>
 
+      {isLoading && (
+        <View className='items-center justify-center absolute top-0 left-0 right-0 bottom-0 p-12'>
+          <ActivityIndicator size='large' color={THEME.light.colors.primary} />
+          <Text className='text-lg font-medium mt-4'>Loading your collections...</Text>
+        </View>
+      )}
 
       <BasicModal isModalOpen={isCreateNewCollectionModalOpen} setIsModalOpen={setIsCreateNewCollectionModalOpen}>
         <Text className='text-2xl font-semibold mb-4'>Create New Collection</Text>

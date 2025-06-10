@@ -35,6 +35,7 @@ import {
   PlusIcon,
   Palette,
   HelpCircle,
+  Settings2,
 } from 'lucide-react-native';
 import GoogleIcon from './google';
 import AppleIcon from './apple';
@@ -76,6 +77,7 @@ iconWithClassName(Croissant);
 iconWithClassName(PlusIcon);
 iconWithClassName(Palette);
 iconWithClassName(HelpCircle);
+iconWithClassName(Settings2);
 
 export {
   MoonStar,
@@ -116,4 +118,5 @@ export {
   PlusIcon,
   Palette,
   HelpCircle,
+  Settings2,
 };

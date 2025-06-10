@@ -9,7 +9,6 @@ export default function Layout() {
       }}>
       <Stack.Screen name='index' />
       <Stack.Screen name='results' />
-      <Stack.Screen name='filters' options={{ presentation: 'modal' }} />
     </Stack>
   );
 }

@@ -60,7 +60,7 @@ export default function Layout() {
         <ClerkLoaded>
           <SafeAreaProvider>
             <ThemeProvider value={isDarkColorScheme ? THEME.dark : THEME.light}>
-              <BaseLayout />              
+              <BaseLayout />
             </ThemeProvider>
           </SafeAreaProvider>
         </ClerkLoaded>

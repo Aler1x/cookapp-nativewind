@@ -1,7 +1,7 @@
 import { Text } from '../ui/text';
 import { View } from '../ui/view';
 import { Input } from '../ui/input';
-import SelectList, { SelectListData } from '../ui/input-with-dropdown';
+import InputWithDropdown, { SelectListData } from '../ui/input-with-dropdown';
 import { Button } from '../ui/button';
 import React, { useState, useCallback } from 'react';
 import { useShoppingListStore } from '~/stores/shopping';
@@ -117,9 +117,9 @@ const ShoppingListAddItemModal = ({ showAddItemModal, setShowAddItemModal }: Sho
 
       {/* Product Name Input with Search */}
       <View className='gap-1'>
-        <Text className='text-sm font-medium mb-2'>Item Name</Text>
+        <Text className='text-sm font-medium'>Item Name</Text>
 
-        <SelectList
+        <InputWithDropdown
           setSelected={useCallback((value) => setNewItemName(value), [])}
           placeholder='Enter item name'
           fetchItems={fetchProducts}
@@ -139,7 +139,7 @@ const ShoppingListAddItemModal = ({ showAddItemModal, setShowAddItemModal }: Sho
 
       {/* Amount Input */}
       <View className='gap-1'>
-        <Text className='text-sm font-medium mb-2'>Amount</Text>
+        <Text className='text-sm font-medium'>Amount</Text>
         <Input
           className='border border-gray-300 rounded-lg px-3 py-2'
           placeholder='Enter amount'
@@ -151,8 +151,8 @@ const ShoppingListAddItemModal = ({ showAddItemModal, setShowAddItemModal }: Sho
 
       {/* Unit Input with Search */}
       <View className='gap-1'>
-        <Text className='text-sm font-medium mb-2'>Unit</Text>
-        <SelectList
+        <Text className='text-sm font-medium'>Unit</Text>
+        <InputWithDropdown
           setSelected={useCallback((value) => setNewItemUnit(value), [])}
           placeholder='Enter unit (e.g., cups, lbs, pieces)'
           fetchItems={fetchUnits}
@@ -170,7 +170,7 @@ const ShoppingListAddItemModal = ({ showAddItemModal, setShowAddItemModal }: Sho
       </View>
 
       {/* Action Buttons */}
-      <View className='flex-row gap-3 mt-4'>
+      <View className='flex-row gap-3'>
         <Button className='flex-1' onPress={handleAddItem} disabled={!newItemName || !newItemAmount || !newItemUnit}>
           <Text>Add</Text>
         </Button>

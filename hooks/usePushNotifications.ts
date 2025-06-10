@@ -27,7 +27,7 @@ export function usePushNotifications() {
       try {
         const token = await registerForPushNotificationsAsync();
         if (token) {
-          await sendTokenToBackend(token, userId, $fetch);
+          await sendTokenToBackend(token, $fetch);
         }
       } catch (error) {
         console.error('Error setting up push notifications:', error);
@@ -39,7 +39,7 @@ export function usePushNotifications() {
     // Handle notifications received while app is running
     notificationListener.current = addNotificationReceivedListener((notification) => {
       console.log('Notification received:', notification);
-      
+
       // Handle different types of notifications
       const data = notification.request.content.data;
       if (data?.type === 'recipe_processed') {
@@ -51,7 +51,7 @@ export function usePushNotifications() {
     // Handle notification responses (when user taps on notification)
     responseListener.current = addNotificationResponseReceivedListener((response) => {
       console.log('Notification response:', response);
-      
+
       const data = response.notification.request.content.data;
       if (data?.type === 'recipe_processed') {
         // Navigate to the recipe or recipes list
@@ -87,4 +87,4 @@ export function usePushNotifications() {
       responseListener.current?.remove();
     };
   }, [isSignedIn, userId, router, $fetch]);
-} 
+}

@@ -13,6 +13,7 @@ This document outlines the backend requirements for implementing social media re
 **Purpose:** Store the user's push notification token for sending notifications when processing is complete.
 
 **Request Body:**
+
 ```json
 {
   "token": "ExponentPushToken[xxxxxxxxxxxxxxxxxxxxxx]",
@@ -22,6 +23,7 @@ This document outlines the backend requirements for implementing social media re
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -36,6 +38,7 @@ This document outlines the backend requirements for implementing social media re
 **Purpose:** Receive a social media URL and start background processing to extract recipe data.
 
 **Request Body:**
+
 ```json
 {
   "url": "https://www.instagram.com/p/xyz123/"
@@ -43,6 +46,7 @@ This document outlines the backend requirements for implementing social media re
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -58,12 +62,14 @@ This document outlines the backend requirements for implementing social media re
 The backend should implement a system to extract recipe information from various social media platforms:
 
 **Supported Platforms:**
+
 - Instagram posts/reels
 - TikTok videos
 - YouTube videos
 - Recipe websites (AllRecipes, Food Network, etc.)
 
 **Extracted Data:**
+
 ```json
 {
   "title": "Delicious Chocolate Cake",
@@ -94,6 +100,7 @@ The backend should implement a system to extract recipe information from various
 ### 2. Processing States
 
 Track processing status:
+
 - `pending` - Just received, queued for processing
 - `processing` - Currently extracting data
 - `completed` - Successfully processed
@@ -102,6 +109,7 @@ Track processing status:
 ### 3. Database Schema
 
 **push_tokens table:**
+
 ```sql
 CREATE TABLE push_tokens (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -116,6 +124,7 @@ CREATE TABLE push_tokens (
 ```
 
 **recipe_processing_jobs table:**
+
 ```sql
 CREATE TABLE recipe_processing_jobs (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -138,6 +147,7 @@ When recipe processing is complete, send a push notification using Expo's Push A
 **Endpoint:** `https://exp.host/--/api/v2/push/send`
 
 **Request Body:**
+
 ```json
 {
   "to": "ExponentPushToken[xxxxxxxxxxxxxxxxxxxxxx]",
@@ -156,6 +166,7 @@ When recipe processing is complete, send a push notification using Expo's Push A
 ### 2. Notification Types
 
 **Success Notification:**
+
 ```json
 {
   "title": "Recipe Ready! 🍽️",
@@ -169,6 +180,7 @@ When recipe processing is complete, send a push notification using Expo's Push A
 ```
 
 **Failure Notification:**
+
 ```json
 {
   "title": "Recipe Processing Failed 😔",
@@ -196,31 +208,30 @@ const recipeProcessingQueue = new Queue('recipe processing');
 recipeProcessingQueue.add('process-recipe', {
   userId: 'user-id',
   url: 'https://instagram.com/p/xyz',
-  processingId: 'processing-id'
+  processingId: 'processing-id',
 });
 
 // Process jobs
 recipeProcessingQueue.process('process-recipe', async (job) => {
   const { userId, url, processingId } = job.data;
-  
+
   try {
     // Extract recipe data
     const recipeData = await extractRecipeFromUrl(url);
-    
+
     // Save to database
     const recipe = await createRecipe(userId, recipeData);
-    
+
     // Send success notification
     await sendPushNotification(userId, {
       type: 'success',
-      recipeId: recipe.id
+      recipeId: recipe.id,
     });
-    
   } catch (error) {
     // Send failure notification
     await sendPushNotification(userId, {
       type: 'failure',
-      error: error.message
+      error: error.message,
     });
   }
 });
@@ -229,6 +240,7 @@ recipeProcessingQueue.process('process-recipe', async (job) => {
 ### 2. Recipe Extraction Libraries
 
 Consider using these libraries for extraction:
+
 - **Python:** `recipe-scrapers`, `beautifulsoup4`
 - **Node.js:** `recipe-scraper`, `cheerio`
 - **AI-based:** OpenAI GPT API for complex content parsing
@@ -236,12 +248,14 @@ Consider using these libraries for extraction:
 ### 3. Rate Limiting
 
 Implement rate limiting to prevent abuse:
+
 - Max 5 processing requests per user per hour
 - Global rate limit of 100 requests per minute
 
 ### 4. Error Handling
 
 Handle common errors:
+
 - Invalid URLs
 - Private/protected content
 - Rate limited by source platform
@@ -253,6 +267,7 @@ Handle common errors:
 ### 1. Test URLs
 
 Use these URLs for testing:
+
 - Instagram: `https://www.instagram.com/p/[post-id]/`
 - TikTok: `https://www.tiktok.com/@username/video/[video-id]`
 - YouTube: `https://www.youtube.com/watch?v=[video-id]`
@@ -261,6 +276,7 @@ Use these URLs for testing:
 ### 2. Test Push Notifications
 
 Use Expo's push tool for testing:
+
 ```bash
 npx expo send-push-notification --token "ExponentPushToken[...]" --message "Test notification"
 ```
@@ -276,8 +292,9 @@ npx expo send-push-notification --token "ExponentPushToken[...]" --message "Test
 ## Monitoring
 
 Track these metrics:
+
 - Processing success/failure rates
 - Average processing time
 - Push notification delivery rates
 - Popular source platforms
-- Error types and frequencies 
+- Error types and frequencies

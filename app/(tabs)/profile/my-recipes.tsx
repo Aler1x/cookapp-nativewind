@@ -42,9 +42,9 @@ export default function Page() {
 
   const handleSocialMediaSubmit = async () => {
     if (!socialMediaUrl.trim()) return;
-    
+
     setIsProcessing(true);
-    
+
     try {
       // Send social media URL to backend for processing
       const response = await $fetch(`${API_ENDPOINTS_PREFIX.node}/recipe-sources/video-url`, {
@@ -53,14 +53,14 @@ export default function Page() {
           url: socialMediaUrl.trim(),
         }),
       });
-      
+
       if (response) {
         // Close modal and show success message
         handleModalClose();
         Toast.show({
           type: 'success',
           text1: 'Recipe Processing Started',
-          text2: 'We\'ll notify you when your recipe is ready!',
+          text2: "We'll notify you when your recipe is ready!",
         });
       }
     } catch (error) {
@@ -85,7 +85,7 @@ export default function Page() {
             onSelectFromScratch={handleFromScratch}
           />
         );
-      
+
       case 'social-media-input':
         return (
           <SocialMediaRecipeInput
@@ -107,7 +107,11 @@ export default function Page() {
       </FloatingButton>
 
       {recipes?.data?.length > 0 ? (
-        <View className='flex-1'>{recipes.data.map((recipe) => <RecipeCard key={recipe.id} recipe={recipe} />)}</View>
+        <View className='flex-1'>
+          {recipes.data.map((recipe) => (
+            <RecipeCard key={recipe.id} recipe={recipe} />
+          ))}
+        </View>
       ) : (
         <View className='flex-1 items-center justify-center'>
           <Text className='text-center font-medium'>No recipes found</Text>

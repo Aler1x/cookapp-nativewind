@@ -263,11 +263,11 @@ export default function PremiumPage({ onClose, onClickPlan }: PremiumPageProps) 
         </View>
 
         {/* Loading overlay */}
-        <BasicModal isModalOpen={false} setIsModalOpen={() => { }}>
+        <BasicModal isModalOpen={false} setIsModalOpen={() => {}}>
           <View className='bg-white p-6 rounded-2xl items-center'>
             {!paymentMessage && (
               <>
-                <ActivityIndicator size="large" color="#007AFF" />
+                <ActivityIndicator size='large' color='#007AFF' />
                 <Text className='mt-4 text-lg font-semibold'>Processing Payment...</Text>
                 <Text className='text-muted-foreground text-center mb-6 leading-relaxed'>
                   Please wait while we process your payment. This may take a few seconds.
@@ -276,7 +276,11 @@ export default function PremiumPage({ onClose, onClickPlan }: PremiumPageProps) 
             )}
             {paymentMessage && (
               <View className='bg-white p-6 rounded-2xl items-center'>
-                <Text className={cn('text-center mb-6 leading-relaxed', isError ? 'text-red-500' : 'text-muted-foreground')}>
+                <Text
+                  className={cn(
+                    'text-center mb-6 leading-relaxed',
+                    isError ? 'text-red-500' : 'text-muted-foreground'
+                  )}>
                   {paymentMessage}
                 </Text>
               </View>

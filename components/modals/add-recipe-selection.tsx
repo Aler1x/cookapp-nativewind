@@ -14,7 +14,7 @@ interface AddRecipeSelectionProps {
 export default function AddRecipeSelection({
   onClose,
   onSelectSocialMedia,
-  onSelectFromScratch
+  onSelectFromScratch,
 }: AddRecipeSelectionProps) {
   return (
     <>
@@ -26,18 +26,14 @@ export default function AddRecipeSelection({
       </View>
 
       <View className='gap-2 w-full mb-6'>
-        <Button
-          onPress={onSelectSocialMedia}
-        >
+        <Button onPress={onSelectSocialMedia}>
           <Text>Create from social media</Text>
         </Button>
 
-        <Button
-          onPress={onSelectFromScratch}
-        >
+        <Button onPress={onSelectFromScratch}>
           <Text>Create from scratch</Text>
         </Button>
       </View>
     </>
   );
-} 
+}

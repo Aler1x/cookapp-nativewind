@@ -29,17 +29,17 @@ export async function registerForPushNotificationsAsync(): Promise<PushNotificat
   if (Device.isDevice) {
     const { status: existingStatus } = await Notifications.getPermissionsAsync();
     let finalStatus = existingStatus;
-    
+
     if (existingStatus !== 'granted') {
       const { status } = await Notifications.requestPermissionsAsync();
       finalStatus = status;
     }
-    
+
     if (finalStatus !== 'granted') {
       alert('Failed to get push token for push notification!');
       return null;
     }
-    
+
     try {
       const projectId = process.env.EXPO_PUBLIC_PROJECT_ID || 'ed3520ad-df52-44b4-8ad5-fa6d30256b15';
       token = (await Notifications.getExpoPushTokenAsync({ projectId })).data;
@@ -64,16 +64,19 @@ export async function registerForPushNotificationsAsync(): Promise<PushNotificat
 
   return {
     token,
-    type: 'expo'
+    type: 'expo',
   };
 }
 
 /**
  * Send push notification token to backend
  */
-export async function sendTokenToBackend(token: PushNotificationToken, userId: string, $fetch: ReturnType<typeof useFetch>): Promise<boolean> {
+export async function sendTokenToBackend(
+  token: PushNotificationToken,
+  $fetch: ReturnType<typeof useFetch>
+): Promise<boolean> {
   try {
-    await $fetch(`${API_ENDPOINTS_PREFIX.node_video}/users/${userId}/push-token`, {
+    await $fetch(`${API_ENDPOINTS_PREFIX.spring}/users/push-token`, {
       method: 'POST',
       body: JSON.stringify({
         token: token.token,
@@ -99,7 +102,9 @@ export function addNotificationReceivedListener(handler: (notification: Notifica
 /**
  * Handle notification response (when user taps on notification)
  */
-export function addNotificationResponseReceivedListener(handler: (response: Notifications.NotificationResponse) => void) {
+export function addNotificationResponseReceivedListener(
+  handler: (response: Notifications.NotificationResponse) => void
+) {
   return Notifications.addNotificationResponseReceivedListener(handler);
 }
 
@@ -108,4 +113,4 @@ export function addNotificationResponseReceivedListener(handler: (response: Noti
  */
 export async function getLastNotificationResponseAsync() {
   return await Notifications.getLastNotificationResponseAsync();
-} 
+}

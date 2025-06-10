@@ -47,7 +47,7 @@ export interface SelectListProps {
   allowFreeText?: boolean;
 }
 
-const SelectList: React.FC<SelectListProps> = ({
+const InputWithDropdown: React.FC<SelectListProps> = ({
   setSelected,
   placeholder,
   boxStyles,
@@ -212,7 +212,6 @@ const SelectList: React.FC<SelectListProps> = ({
           onPress={() => {
             if (!dropdown) {
               slidedown();
-              
             } else {
               slideup();
             }
@@ -230,8 +229,7 @@ const SelectList: React.FC<SelectListProps> = ({
             contentContainerStyle={{ paddingVertical: 10, overflow: 'hidden' }}
             keyboardDismissMode='none'
             keyboardShouldPersistTaps='always'
-            nestedScrollEnabled={true}
-            >
+            nestedScrollEnabled={true}>
             {isLoading ? (
               <View style={[styles.option, dropdownItemStyles]}>
                 <Text style={[{ fontFamily }, dropdownTextStyles]}>Loading...</Text>
@@ -284,7 +282,7 @@ const SelectList: React.FC<SelectListProps> = ({
   );
 };
 
-export default SelectList;
+export default InputWithDropdown;
 
 const styles = StyleSheet.create({
   wrapper: {
@@ -292,11 +290,11 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderColor: 'gray',
     paddingHorizontal: 20,
-    paddingVertical: 12,
+    paddingVertical: 10,
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
-  dropdown: { borderWidth: 1, borderRadius: 10, borderColor: 'gray', marginTop: 10, overflow: 'hidden' },
+  dropdown: { borderWidth: 1, borderRadius: 10, borderColor: 'gray', marginTop: 5, overflow: 'hidden' },
   option: { paddingHorizontal: 20, paddingVertical: 8, overflow: 'hidden' },
   disabledoption: {
     paddingHorizontal: 20,

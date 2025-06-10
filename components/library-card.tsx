@@ -11,20 +11,14 @@ interface LibraryCardProps {
   className?: string;
 }
 
-const fallbackColors = [
-  'bg-[#ADD6CF]',
-  'bg-[#92B693]',
-  'bg-[#F8E8C4]',
-  'bg-[#F0AF9E]',
-  'bg-[#E48364]',
-];
+const fallbackColors = ['bg-[#ADD6CF]', 'bg-[#92B693]', 'bg-[#F8E8C4]', 'bg-[#F0AF9E]', 'bg-[#E48364]'];
 
 export default function LibraryCard({ collection, className }: LibraryCardProps) {
   const offsetAmount = 25; // Horizontal offset in pixels
   const handlePress = () => {
     router.push({
       pathname: `/(tabs)/library/${collection.id}`,
-      params: { name: collection.name }
+      params: { name: collection.name },
     });
   };
 
