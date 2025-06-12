@@ -13,3 +13,5 @@ export type CollectionPage = {
   recipeCount: number;
   recipes: string[];
 };
+
+export type CollectionPreview = Pick<Collection, 'id' | 'name'>;

@@ -73,12 +73,3 @@ export type Category = {
   };
   imageUrl: string;
 };
-
-export type RecipesPage = {
-  data: Recipe[];
-  meta: {
-    page: number;
-    totalPages: number;
-    totalItems: number;
-  };
-};

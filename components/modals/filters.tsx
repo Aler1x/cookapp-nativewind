@@ -145,10 +145,6 @@ export default function FiltersPage({ onClose, filters, onApplyFilters }: Filter
     count += currentFilters.ingredients.includeIds.length;
     count += currentFilters.ingredients.excludeIds.length;
     
-    if (currentFilters.searchQuery.trim()) {
-      count++;
-    }
-    
     return count;
   };
 

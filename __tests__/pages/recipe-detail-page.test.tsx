@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from '@testing-library/react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import RecipeDetailPage from '~/app/recipes/[slug]';
+import RecipeDetailPage from '~/app/recipes/[id]/[slug]';
 
 // Mock color scheme
 jest.mock('~/lib/useColorScheme', () => ({
