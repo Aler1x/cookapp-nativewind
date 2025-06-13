@@ -7,7 +7,7 @@
     "userInterfaceStyle": "automatic",
     "icon": "./assets/images/icon.png",
     "newArchEnabled": true,
-    "orientation": "default",
+    "orientation": "portrait",
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.the-ooh.cookapp-nativewind",
@@ -90,6 +90,6 @@
         "projectId": "ed3520ad-df52-44b4-8ad5-fa6d30256b15"
       }
     },
-    "owner": "alerix"
+    "owner": "alerix",
   }
 }

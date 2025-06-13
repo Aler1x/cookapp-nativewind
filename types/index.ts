@@ -1,16 +1,16 @@
 export type ErrorResponse = {
-  success: false;
+  success: boolean;
   message?: string;
   error?: string;
 };
 
 export type SuccessResponse<T> = {
-  success: true;
+  success: boolean;
   data: T;
 };
 
 export type PaginatedResponse<T> = {
-  success: true;
+  success?: boolean;
   data: T[];
   meta: {
     page: number;

@@ -1,4 +1,4 @@
-import React, { JSX } from 'react';
+import React from 'react';
 import {
   View,
   Text,
@@ -7,13 +7,12 @@ import {
   ScrollView,
   Animated,
   TextInput,
-  Keyboard,
   TextStyle,
   ViewStyle,
 } from 'react-native';
 import { ChevronDown, Search, X } from 'lucide-react-native';
 import { THEME } from '~/lib/constants';
-import { debounce } from '~/lib/debounce';
+import debounce from 'lodash.debounce';
 
 const DEFAULT_DATA: SelectListData[] = [];
 
@@ -87,7 +86,6 @@ const InputWithDropdown: React.FC<SelectListProps> = ({
     fetchItemsRef.current = fetchItems;
   }, [fetchItems]);
 
-  // Create debounced fetch function
   const debouncedFetch = React.useCallback(
     debounce(async (query: string) => {
       if (!fetchItemsRef.current || !search || !query || query.length < 2) return;

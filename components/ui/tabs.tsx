@@ -34,8 +34,7 @@ function TabsTrigger({
       value={cn(
         'text-sm native:text-base font-medium text-muted-foreground web:transition-all',
         value === props.value && 'text-foreground'
-      )}
-    >
+      )}>
       <TabsPrimitive.Trigger
         className={cn(
           'inline-flex items-center justify-center shadow-none web:whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium web:ring-offset-background web:transition-all web:focus-visible:outline-none web:focus-visible:ring-2 web:focus-visible:ring-ring web:focus-visible:ring-offset-2',

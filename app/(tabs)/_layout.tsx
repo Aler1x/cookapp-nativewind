@@ -23,6 +23,7 @@ export default function RootLayout() {
           paddingRight: 10,
           borderTopLeftRadius: 60,
           borderTopRightRadius: 60,
+          position: 'absolute',
         },
         animation: 'shift',
       }}
@@ -39,6 +40,9 @@ export default function RootLayout() {
         options={{
           title: 'Library',
           tabBarIcon: ({ color }) => <LibraryBig size={28} color={color} />,
+          sceneStyle: {
+            paddingBottom: 80,
+          },
         }}
       />
       <Tabs.Screen
@@ -46,6 +50,9 @@ export default function RootLayout() {
         options={{
           title: 'Chat',
           tabBarIcon: ({ color }) => <BotMessageSquare size={28} color={color} />,
+          sceneStyle: {
+            paddingBottom: 80,
+          },
         }}
       />
       <Tabs.Screen
@@ -53,6 +60,9 @@ export default function RootLayout() {
         options={{
           title: 'Shopping',
           tabBarIcon: ({ color }) => <ShoppingBasket size={28} color={color} />,
+          sceneStyle: {
+            paddingBottom: 80,
+          },
         }}
       />
       <Tabs.Screen
@@ -60,6 +70,9 @@ export default function RootLayout() {
         options={{
           title: 'Profile',
           tabBarIcon: ({ color }) => <CircleUserRound size={28} color={color} />,
+          sceneStyle: {
+            paddingBottom: 80,
+          },
         }}
       />
     </Tabs>

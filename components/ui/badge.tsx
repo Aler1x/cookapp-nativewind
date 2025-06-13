@@ -8,6 +8,7 @@ const badgeVariants = cva('flex flex-row items-center rounded-full px-2 py-1 tex
     variant: {
       default: 'bg-primary',
       secondary: 'bg-secondary',
+      outline: 'border border-black bg-transparent',
       destructive: 'bg-destructive',
       success: 'bg-green-500 dark:bg-green-700',
     },
@@ -24,6 +25,7 @@ const badgeTextVariants = cva('font-medium text-center text-xs', {
       secondary: 'text-secondary-foreground',
       destructive: 'text-destructive-foreground',
       success: 'text-green-100',
+      outline: 'text-black',
     },
   },
   defaultVariants: {

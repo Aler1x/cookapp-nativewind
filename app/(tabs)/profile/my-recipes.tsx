@@ -4,7 +4,8 @@ import { FloatingButton } from '~/components/ui/floating-button';
 import { Plus } from 'lucide-react-native';
 import { View } from '~/components/ui/view';
 import { useFetch } from '~/hooks/useFetch';
-import { RecipesPage } from '~/types/recipe';
+import { Recipe } from '~/types/recipe';
+import { PaginatedResponse } from '~/types';
 import RecipeCard from '~/components/recipe-card';
 import { Text } from '~/components/ui/text';
 import { useAuth } from '@clerk/clerk-expo';
@@ -18,7 +19,7 @@ type ModalStep = 'selection' | 'social-media-input';
 
 export default function Page() {
   const { userId } = useAuth();
-  const [recipes, setRecipes] = useState<RecipesPage | null>(null);
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [showAddRecipeModal, setShowAddRecipeModal] = useState(false);
   const [modalStep, setModalStep] = useState<ModalStep>('selection');
   const [socialMediaUrl, setSocialMediaUrl] = useState('');
@@ -27,8 +28,8 @@ export default function Page() {
 
   useEffect(() => {
     const fetchRecipes = async () => {
-      const recipes = await $fetch<RecipesPage>(`${API_ENDPOINTS_PREFIX.spring}/recipes/my`);
-      setRecipes(recipes);
+      const response = await $fetch<PaginatedResponse<Recipe>>(`${API_ENDPOINTS_PREFIX.spring}/recipes/my`);
+      setRecipes(response.data);
     };
     fetchRecipes();
   }, [userId, $fetch]);
@@ -101,14 +102,14 @@ export default function Page() {
   };
 
   return (
-    <SafeAreaView className='flex-1 items-center justify-center' style={{ padding: 16 }}>
+    <SafeAreaView className='flex-1 items-center justify-center' style={{ padding: 16 }} edges={['top']}>
       <FloatingButton onPress={() => setShowAddRecipeModal(true)}>
         <Plus size={24} />
       </FloatingButton>
 
-      {recipes?.data?.length > 0 ? (
+      {recipes?.length > 0 ? (
         <View className='flex-1'>
-          {recipes.data.map((recipe) => (
+          {recipes.map((recipe) => (
             <RecipeCard key={recipe.id} recipe={recipe} />
           ))}
         </View>

@@ -12,7 +12,11 @@ interface SearchBarProps {
 
 export default function SearchInput({ placeholder = 'Search...', value, onChangeText, onSubmit }: SearchBarProps) {
   return (
-    <View className='flex-row items-center bg-white rounded-full px-4 py-2'>
+    <View
+      className='flex-row items-center bg-white rounded-full px-4 py-2 border border-black shadow-md'
+      style={{
+        elevation: 5,
+      }}>
       <Search size={20} color={THEME.light.colors.foreground} />
       <TextInput
         className='flex-1 ml-2 text-base p-1'
@@ -23,10 +27,11 @@ export default function SearchInput({ placeholder = 'Search...', value, onChange
         returnKeyType='search'
       />
       {value.length > 0 && (
-        <TouchableOpacity onPress={() => {
-          onChangeText('');
-          onSubmit?.();
-        }}>
+        <TouchableOpacity
+          onPress={() => {
+            onChangeText('');
+            onSubmit?.();
+          }}>
           <X size={20} color={THEME.light.colors.foreground} />
         </TouchableOpacity>
       )}

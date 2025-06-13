@@ -83,7 +83,7 @@ export default function LibraryPage() {
   }
 
   return (
-    <SafeAreaView className='flex-1 bg-background' style={{ padding: 16 }}>
+    <SafeAreaView className='flex-1 bg-background' style={{ padding: 16 }} edges={['top', 'bottom']}>
       <Text className='text-3xl font-bold'>Library</Text>
       <ScrollView className='mt-4' showsVerticalScrollIndicator={false}>
         <View className='flex flex-row flex-wrap w-full justify-between'>

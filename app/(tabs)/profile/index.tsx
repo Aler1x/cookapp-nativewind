@@ -88,7 +88,7 @@ export default function ProfilePage() {
     <>
       {!isSignedIn && <AuthPage />}
       {isSignedIn && (
-        <SafeAreaView className='flex-1 gap-4' style={{ padding: 16 }}>
+        <SafeAreaView className='flex-1 gap-4' style={{ padding: 16 }} edges={['top']}>
           <Text className='text-3xl font-bold'>Profile</Text>
           <View className='flex-row items-center justify-between'>
             <View className='flex-row items-center gap-4'>

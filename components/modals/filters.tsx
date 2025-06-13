@@ -9,7 +9,7 @@ import { FiltersResponse, FiltersRequest } from '~/types/home';
 import { useFetch } from '~/hooks/useFetch';
 import { API_ENDPOINTS_PREFIX, THEME } from '~/lib/constants';
 import { SuccessResponse } from '~/types';
-import {Slider} from '@miblanchard/react-native-slider';
+import { Slider } from '@miblanchard/react-native-slider';
 
 interface FilterPillProps {
   name: string;
@@ -39,7 +39,15 @@ interface FilterSectionProps {
   onToggleShowAll: () => void;
 }
 
-function FilterSection({ title, items, selectedItems, onToggleItem, visibleCount, showAll, onToggleShowAll }: FilterSectionProps) {
+function FilterSection({
+  title,
+  items,
+  selectedItems,
+  onToggleItem,
+  visibleCount,
+  showAll,
+  onToggleShowAll,
+}: FilterSectionProps) {
   const displayItems = showAll ? items : items?.slice(0, visibleCount);
   const hasMore = items && items.length > visibleCount;
 
@@ -97,27 +105,28 @@ export default function FiltersPage({ onClose, filters, onApplyFilters }: Filter
     fetchFilters();
   }, [$fetch]);
 
-  const toggleFilterItem = (section: keyof Pick<FiltersRequest, 'dishTypes' | 'diets' | 'difficulty'>, item: string) => {
-    setCurrentFilters(prev => {
+  const toggleFilterItem = (
+    section: keyof Pick<FiltersRequest, 'dishTypes' | 'diets' | 'difficulty'>,
+    item: string
+  ) => {
+    setCurrentFilters((prev) => {
       const currentItems = prev[section];
       const isSelected = currentItems.includes(item);
-      
+
       return {
         ...prev,
-        [section]: isSelected 
-          ? currentItems.filter(i => i !== item)
-          : [...currentItems, item]
+        [section]: isSelected ? currentItems.filter((i) => i !== item) : [...currentItems, item],
       };
     });
   };
 
   const handleCookTimeChange = (values: [number, number]) => {
-    setCurrentFilters(prev => ({
+    setCurrentFilters((prev) => ({
       ...prev,
       cookTime: {
         min: values[0],
-        max: values[1]
-      }
+        max: values[1],
+      },
     }));
   };
 
@@ -128,23 +137,23 @@ export default function FiltersPage({ onClose, filters, onApplyFilters }: Filter
       difficulty: [],
       dishTypes: [],
       diets: [],
-      ingredients: { includeIds: [], excludeIds: [] }
+      ingredients: { includeIds: [], excludeIds: [] },
     });
   };
 
   const getAppliedFiltersCount = () => {
     let count = 0;
-    
+
     if (currentFilters.cookTime.min > 5 || currentFilters.cookTime.max < 120) {
       count++;
     }
-    
+
     count += currentFilters.difficulty.length;
     count += currentFilters.dishTypes.length;
     count += currentFilters.diets.length;
     count += currentFilters.ingredients.includeIds.length;
     count += currentFilters.ingredients.excludeIds.length;
-    
+
     return count;
   };
 

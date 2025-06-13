@@ -2,7 +2,7 @@ import React from 'react';
 import { render } from '@testing-library/react-native';
 import { ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import HomePage from '~/app/(tabs)/home/index';
+import HomePage from '~/app/(tabs)/home/home';
 
 describe('HomePage', () => {
   it('renders without crashing', () => {

@@ -70,7 +70,7 @@ export default function ShoppingListPage() {
   };
 
   return (
-    <SafeAreaView className='flex-1' style={{ padding: 16, paddingBottom: 4 }}>
+    <SafeAreaView className='flex-1' style={{ padding: 16 }} edges={['top']}>
       <Text className='text-3xl font-bold'>Shopping List</Text>
 
       {items.length > 0 && (
@@ -121,7 +121,7 @@ export default function ShoppingListPage() {
         </View>
       )}
 
-      <View className='flex-row justify-center pt-4 rounded-t-3xl'>
+      <View className='flex-row justify-center pt-4 rounded-t-3xl pb-3'>
         <Button className='w-1/2' onPress={() => setShowAddItemModal(true)}>
           <Text>Add item</Text>
         </Button>
