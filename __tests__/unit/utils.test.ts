@@ -19,9 +19,9 @@ describe('Utils', () => {
 
     it('handles object with boolean values', () => {
       const result = cn({
-        'active': true,
-        'disabled': false,
-        'primary': true,
+        active: true,
+        disabled: false,
+        primary: true,
       });
       expect(result).toBe('active primary');
     });
@@ -47,12 +47,7 @@ describe('Utils', () => {
     });
 
     it('handles mixed input types', () => {
-      const result = cn(
-        'base',
-        ['array1', 'array2'],
-        { conditional: true, hidden: false },
-        'final'
-      );
+      const result = cn('base', ['array1', 'array2'], { conditional: true, hidden: false }, 'final');
       expect(result).toBe('base array1 array2 conditional final');
     });
 
@@ -81,4 +76,4 @@ describe('Utils', () => {
       expect(result).toBe('bg-white dark:bg-black text-black dark:text-white');
     });
   });
-}); 
+});

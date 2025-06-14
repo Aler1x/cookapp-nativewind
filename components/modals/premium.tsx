@@ -1,5 +1,5 @@
-import React from 'react';
-import { ScrollView, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Crown, Zap, Shield, Sparkles, ChefHat, BookOpen, Users, Download, Check, X } from 'lucide-react-native';
 
@@ -7,6 +7,8 @@ import { Text } from '~/components/ui/text';
 import { Button } from '~/components/ui/button';
 import { View } from '~/components/ui/view';
 import { Badge } from '~/components/ui/badge';
+import BasicModal from '../ui/basic-modal';
+import { cn } from '~/lib/utils';
 
 interface FeatureCardProps {
   icon: React.ReactNode;
@@ -37,6 +39,7 @@ interface PricingTierProps {
   isPopular?: boolean;
   isCurrentPlan?: boolean;
   onPress: () => void;
+  isLoading?: boolean;
 }
 
 function PricingTier({
@@ -48,6 +51,7 @@ function PricingTier({
   isPopular = false,
   isCurrentPlan = false,
   onPress,
+  isLoading = false,
 }: PricingTierProps) {
   return (
     <View
@@ -80,7 +84,7 @@ function PricingTier({
         variant={isPopular ? 'default' : 'outline'}
         size='lg'
         className='w-full'
-        disabled={isCurrentPlan}
+        disabled={isCurrentPlan || isLoading}
         onPress={onPress}>
         <Text className={isPopular ? 'text-primary-foreground' : 'text-foreground'}>
           {isCurrentPlan ? 'Current Plan' : 'Get Started'}
@@ -96,6 +100,13 @@ interface PremiumPageProps {
 }
 
 export default function PremiumPage({ onClose, onClickPlan }: PremiumPageProps) {
+  const [paymentMessage, setPaymentMessage] = useState('');
+  const [isError, setIsError] = useState(false);
+
+  const handlePlanSelection = async (planTitle: string) => {
+    onClickPlan(planTitle);
+  };
+
   const premiumFeatures = [
     {
       icon: <ChefHat className='text-primary' size={24} />,
@@ -227,7 +238,8 @@ export default function PremiumPage({ onClose, onClickPlan }: PremiumPageProps) 
                 features={tier.features}
                 isPopular={tier.isPopular}
                 isCurrentPlan={tier.isCurrentPlan}
-                onPress={() => onClickPlan(tier.title)}
+                onPress={() => handlePlanSelection(tier.title)}
+                isLoading={false}
               />
             ))}
           </View>
@@ -241,7 +253,7 @@ export default function PremiumPage({ onClose, onClickPlan }: PremiumPageProps) 
             <Text className='text-muted-foreground text-center mb-6 leading-relaxed'>
               Join thousands of home cooks who have transformed their kitchen experience with our premium features.
             </Text>
-            <Button size='lg' className='w-full'>
+            <Button size='lg' className='w-full' onPress={() => onClickPlan('Premium')}>
               <Text className='text-primary-foreground font-semibold'>Try Premium Free for 7 Days</Text>
             </Button>
             <Text className='text-xs text-muted-foreground mt-3 text-center'>
@@ -249,6 +261,32 @@ export default function PremiumPage({ onClose, onClickPlan }: PremiumPageProps) 
             </Text>
           </View>
         </View>
+
+        {/* Loading overlay */}
+        <BasicModal isModalOpen={false} setIsModalOpen={() => {}}>
+          <View className='bg-white p-6 rounded-2xl items-center'>
+            {!paymentMessage && (
+              <>
+                <ActivityIndicator size='large' color='#007AFF' />
+                <Text className='mt-4 text-lg font-semibold'>Processing Payment...</Text>
+                <Text className='text-muted-foreground text-center mb-6 leading-relaxed'>
+                  Please wait while we process your payment. This may take a few seconds.
+                </Text>
+              </>
+            )}
+            {paymentMessage && (
+              <View className='bg-white p-6 rounded-2xl items-center'>
+                <Text
+                  className={cn(
+                    'text-center mb-6 leading-relaxed',
+                    isError ? 'text-red-500' : 'text-muted-foreground'
+                  )}>
+                  {paymentMessage}
+                </Text>
+              </View>
+            )}
+          </View>
+        </BasicModal>
 
         {/* Bottom Spacing */}
         <View className='h-8' />

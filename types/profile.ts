@@ -28,3 +28,16 @@ export type Preferences = {
   unfavoriteIngredients: UnfavoriteIngredientPreference[];
   cuisinePreferences: CategoryPreference[];
 };
+
+export type PreferencesRequest = {
+  preferences:
+    | [
+        {
+          categoryId?: number;
+          ingredientId?: number;
+          selected: boolean;
+          preferenceType: PreferenceType;
+        },
+      ]
+    | [];
+};

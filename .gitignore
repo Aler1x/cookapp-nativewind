@@ -41,3 +41,5 @@ app-example
 !.env.example
 
 coverage/
+
+bundletool.jar

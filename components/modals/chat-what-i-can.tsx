@@ -32,30 +32,30 @@ export default function ChatWhatICan({ onClose }: ChatWhatICanProps) {
 
   return (
     <>
-        {/* Header */}
-        <View className='flex-row items-center justify-center mb-6'>
-          <Text className='text-2xl font-bold text-foreground flex-1 text-center'>What can I do for you?</Text>
-        </View>
+      {/* Header */}
+      <View className='flex-row items-center justify-center mb-6'>
+        <Text className='text-2xl font-bold text-foreground flex-1 text-center'>What can I do for you?</Text>
+      </View>
 
-        {/* Options */}
-        <View className='gap-3'>
-          {options.map((option) => (
-            <View
+      {/* Options */}
+      <View className='gap-3'>
+        {options.map((option) => (
+          <View
             key={option.id}
             className='bg-card rounded-xl p-4 border border-border shadow-sm active:scale-[0.98] transition-transform'>
-              <View className='flex-row items-center'>
-                {/* Icon container */}
-                <View className='p-3 rounded-xl bg-primary/10 mr-4'>{option.icon}</View>
+            <View className='flex-row items-center'>
+              {/* Icon container */}
+              <View className='p-3 rounded-xl bg-primary/10 mr-4'>{option.icon}</View>
 
-                {/* Content */}
-                <View className='flex-1'>
-                  <Text className='text-lg font-semibold text-foreground mb-1'>{option.label}</Text>
-                  <Text className='text-sm text-muted-foreground leading-relaxed'>{option.description}</Text>
-                </View>
+              {/* Content */}
+              <View className='flex-1'>
+                <Text className='text-lg font-semibold text-foreground mb-1'>{option.label}</Text>
+                <Text className='text-sm text-muted-foreground leading-relaxed'>{option.description}</Text>
               </View>
             </View>
-          ))}
-        </View>
+          </View>
+        ))}
+      </View>
     </>
   );
 }

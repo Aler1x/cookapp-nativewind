@@ -21,7 +21,7 @@ describe('ResultsPage', () => {
 
   it('applies correct styling classes', () => {
     const { UNSAFE_getByType } = render(<ResultsPage />);
-    
+
     const safeAreaView = UNSAFE_getByType(SafeAreaView);
     expect(safeAreaView.props.className).toContain('flex-1');
     expect(safeAreaView.props.className).toContain('items-center');
@@ -31,7 +31,7 @@ describe('ResultsPage', () => {
   it('centers content properly', () => {
     const { getByText } = render(<ResultsPage />);
     const resultsText = getByText('Results');
-    
+
     // Text should be rendered within the centered container
     expect(resultsText).toBeTruthy();
   });
@@ -40,4 +40,4 @@ describe('ResultsPage', () => {
     const tree = render(<ResultsPage />).toJSON();
     expect(tree).toMatchSnapshot();
   });
-}); 
+});

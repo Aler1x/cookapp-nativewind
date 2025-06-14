@@ -24,13 +24,7 @@ export interface ShoppingListSectionData {
   data: ShoppingListItem[];
 }
 
-export type UnitType = 
-  | 'volume' 
-  | 'weight' 
-  | 'count' 
-  | 'length' 
-  | 'temperature' 
-  | 'other';
+export type UnitType = 'volume' | 'weight' | 'count' | 'length' | 'temperature' | 'other';
 
 export interface UnitMapping {
   [key: string]: string;
@@ -49,11 +43,6 @@ export interface ShareResult {
     code?: string;
   };
 }
-
-export type SearchItem = {
-  id: string;
-  name: string
-};
 
 export type SearchUnit = {
   id: string;

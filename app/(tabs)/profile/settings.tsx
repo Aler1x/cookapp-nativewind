@@ -7,7 +7,6 @@ export default function Page() {
   return (
     <SafeAreaView className='flex-1 bg-background'>
       <Text className='text-3xl font-bold'>Settings</Text>
-
     </SafeAreaView>
   );
 }

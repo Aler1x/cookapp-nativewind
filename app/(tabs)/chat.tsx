@@ -19,18 +19,18 @@ export default function ChatPage() {
       id: 1,
       message: 'What do you want to cook today?',
       isUser: false,
-    }
+    },
   ]);
 
   // const $fetch = useFetch();
 
   return (
-    <SafeAreaView className='flex-1 bg-background' edges={['top']}>
+    <SafeAreaView className='flex-1 bg-background' edges={['top']} style={{ padding: 16 }}>
       <KeyboardAvoidingView
         style={{ flex: 1, height: '100%' }}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}>
-        <View className='w-full flex-row items-center justify-between p-4'>
+        <View className='w-full flex-row items-center justify-between'>
           <Text className='text-2xl font-bold'>CookBot</Text>
           <TouchableOpacity
             className='p-2'
@@ -46,7 +46,7 @@ export default function ChatPage() {
         </BasicModal>
 
         <ScrollView
-          className='flex-1 px-4 w-full flex-col-reverse'
+          className='flex-1 w-full flex-col-reverse'
           contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-end' }}
           keyboardShouldPersistTaps='handled'>
           {messages.map((message) => (
@@ -54,7 +54,7 @@ export default function ChatPage() {
           ))}
         </ScrollView>
 
-        <View className='flex-row items-end gap-2 px-4 w-full mb-4'>
+        <View className='flex-row items-end gap-2 w-full mb-4'>
           <Textarea
             placeholder='Ask me anything about recipes'
             className='flex-1 bg-background rounded-lg p-2'

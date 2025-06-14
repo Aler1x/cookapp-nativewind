@@ -5,7 +5,7 @@ import { cn } from '~/lib/utils';
 import { TextClassContext } from '~/components/ui/text';
 
 const floatingButtonVariants = cva(
-  'group flex items-center justify-center rounded-full absolute bottom-6 shadow-lg web:ring-offset-background web:transition-colors web:focus-visible:outline-none web:focus-visible:ring-2 web:focus-visible:ring-ring web:focus-visible:ring-offset-2',
+  'group flex items-center justify-center rounded-full absolute bottom-8 shadow-lg web:ring-offset-background web:transition-colors web:focus-visible:outline-none web:focus-visible:ring-2 web:focus-visible:ring-ring web:focus-visible:ring-offset-2',
   {
     variants: {
       variant: {

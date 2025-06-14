@@ -4,13 +4,13 @@ import { Text } from '~/components/ui/text';
 import { Image } from '~/components/ui/image';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button } from '~/components/ui/button';
-import { TouchableOpacity, Pressable } from 'react-native';
+import { TouchableOpacity, Pressable, Linking, KeyboardAvoidingView, Platform } from 'react-native';
 import { useAuth, useUser } from '@clerk/clerk-expo';
 import { useRouter, useLocalSearchParams, Link } from 'expo-router';
 import AuthPage from '~/components/pages/auth';
 import FullscreenModal from '~/components/ui/fullscreen-modal';
 import PreferencesPage from '~/components/modals/preferences';
-import { UserPen, ChevronRight, Heart, CookingPot, Palette } from '~/assets/icons';
+import { UserPen, ChevronRight, Heart, CookingPot, Palette, HelpCircle } from '~/assets/icons';
 import { Preferences } from '~/types/profile';
 import PremiumPage from '~/components/modals/premium';
 import Toast from 'react-native-toast-message';
@@ -88,7 +88,7 @@ export default function ProfilePage() {
     <>
       {!isSignedIn && <AuthPage />}
       {isSignedIn && (
-        <SafeAreaView className='flex-1 gap-4' style={{ padding: 16 }}>
+        <SafeAreaView className='flex-1 gap-4' style={{ padding: 16 }} edges={['top']}>
           <Text className='text-3xl font-bold'>Profile</Text>
           <View className='flex-row items-center justify-between'>
             <View className='flex-row items-center gap-4'>
@@ -104,7 +104,7 @@ export default function ProfilePage() {
               </View>
             </View>
 
-            {process.env.EXPO_PUBLIC_LOCAL === 'true' && (
+            {process.env.NODE_ENV === 'development' && (
               <Button variant='outline' size='icon' className='w-10 h-10 border-gray-500' onPress={handleCopyToken}>
                 <UserPen size={24} />
               </Button>
@@ -145,15 +145,15 @@ export default function ProfilePage() {
 
             {/* <Link href='/profile/settings' asChild>
               <Pressable className='flex-row items-center justify-between border-b border-gray-500 py-6 px-4'>
-                <View className='flex-row items-center gap-4'>
-                  <View className='w-14 h-14 bg-gray-200 rounded-2xl items-center justify-center'>
-                    <SettingsIcon size={24} color='#666' />
-                  </View>
-                  <Text className='text-lg font-semibold'>Settings</Text>
-                </View>
-                <ChevronRight size={24} color='#666' />
+              <View className='flex-row items-center gap-4'>
+              <View className='w-14 h-14 bg-gray-200 rounded-2xl items-center justify-center'>
+              <SettingsIcon size={24} color='#666' />
+              </View>
+              <Text className='text-lg font-semibold'>Settings</Text>
+              </View>
+              <ChevronRight size={24} color='#666' />
               </Pressable>
-            </Link> */}
+              </Link> */}
 
             <TouchableOpacity
               onPress={() => setShowPreferences(true)}
@@ -179,19 +179,31 @@ export default function ProfilePage() {
               </Pressable>
             </Link>
 
-            {process.env.EXPO_PUBLIC_LOCAL === 'true' && (
+            <TouchableOpacity
+              onPress={() => Linking.openURL('mailto:support@cookapp.ai?subject=Support Request')}
+              className='flex-row items-center justify-between border-b border-gray-500 py-6 px-4'>
+              <View className='flex-row items-center gap-4'>
+                <View className='w-14 h-14 bg-gray-200 rounded-2xl items-center justify-center'>
+                  <HelpCircle size={24} color='#666' />
+                </View>
+                <Text className='text-lg font-semibold'>Support</Text>
+              </View>
+              <ChevronRight size={24} color='#666' />
+            </TouchableOpacity>
+
+            {/* {process.env.NODE_ENV === 'development' && (
               <Link href='/design/go-back' asChild>
-                <Pressable className='flex-row items-center justify-between border-b border-gray-500 py-6 px-4'>
-                  <View className='flex-row items-center gap-4'>
-                    <View className='w-14 h-14 bg-gray-200 rounded-2xl items-center justify-center'>
-                      <Palette size={24} color='#666' />
+              <Pressable className='flex-row items-center justify-between border-b border-gray-500 py-6 px-4'>
+              <View className='flex-row items-center gap-4'>
+              <View className='w-14 h-14 bg-gray-200 rounded-2xl items-center justify-center'>
+              <Palette size={24} color='#666' />
                     </View>
                     <Text className='text-lg font-semibold'>Design</Text>
                   </View>
                   <ChevronRight size={24} color='#666' />
-                </Pressable>
-              </Link>
-            )}
+                  </Pressable>
+                  </Link>
+                  )} */}
           </View>
 
           <FullscreenModal visible={showPremium} onClose={() => setShowPremium(false)}>
@@ -199,7 +211,7 @@ export default function ProfilePage() {
           </FullscreenModal>
 
           <FullscreenModal visible={showPreferences} onClose={() => setShowPreferences(false)}>
-            <PreferencesPage onClose={() => setShowPreferences(false)} onSave={handleSavePreferences} />
+            <PreferencesPage onClose={() => setShowPreferences(false)} />
           </FullscreenModal>
         </SafeAreaView>
       )}

@@ -1,186 +1,145 @@
 import { Text } from '../ui/text';
 import { View } from '../ui/view';
 import { Input } from '../ui/input';
-import InputWithDropdown from '../ui/input-with-dropdown';
+import InputWithDropdown, { SelectListData } from '../ui/input-with-dropdown';
 import { Button } from '../ui/button';
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useShoppingListStore } from '~/stores/shopping';
-import { API_ENDPOINTS_PREFIX } from '~/lib/constants';
+import { API_ENDPOINTS_PREFIX, THEME } from '~/lib/constants';
 import { useFetch } from '~/hooks/useFetch';
-import { debounce } from '~/lib/debounce';
 import { useAuth } from '@clerk/clerk-expo';
-import { SearchItem, SearchUnit } from '~/types/shopping';
+import { SearchProduct, SuccessResponse } from '~/types';
+import { SearchUnit } from '~/types/shopping';
+import { TouchableOpacity } from 'react-native';
+import { X } from 'lucide-react-native';
+import BasicModal from '../ui/basic-modal';
 
-const ShoppingListAddItemModal = () => {
-  const [newItemName, setNewItemName] = useState('');
-  const [newItemAmount, setNewItemAmount] = useState('');
-  const [newItemUnit, setNewItemUnit] = useState<string>('');
+interface ShoppingListAddItemModalProps {
+  showAddItemModal: boolean;
+  setShowAddItemModal: (show: boolean) => void;
+}
 
-  // Search states
-  const [productSuggestions, setProductSuggestions] = useState<SearchItem[]>([]);
-  const [unitSuggestions, setUnitSuggestions] = useState<SearchUnit[]>([]);
-  const [isSearchingProducts, setIsSearchingProducts] = useState(false);
-  const [isSearchingUnits, setIsSearchingUnits] = useState(false);
-  const [showProductSuggestions, setShowProductSuggestions] = useState(false);
-  const [showUnitSuggestions, setShowUnitSuggestions] = useState(false);
-  // Replace selection flags with refs
-  const isSelectingProductRef = useRef(false);
-  const isSelectingUnitRef = useRef(false);
-
+const ShoppingListAddItemModal = ({ showAddItemModal, setShowAddItemModal }: ShoppingListAddItemModalProps) => {
+  const [newItemName, setNewItemName] = useState<SelectListData | string>('');
+  const [newItemAmount, setNewItemAmount] = useState<string>('');
+  const [newItemUnit, setNewItemUnit] = useState<SelectListData | string>('');
   const { addItem, normalizeUnit } = useShoppingListStore();
-
   const { isSignedIn } = useAuth();
-
   const $fetch = useFetch();
 
-  // Search products by name
-  const searchProducts = async (query: string) => {
-    if (!isSignedIn || !query.trim() || query.length < 2) {
-      setProductSuggestions([]);
-      setShowProductSuggestions(false);
-      return;
-    }
-
-    setIsSearchingProducts(true);
-    try {
-      const response = await $fetch<SearchItem[]>(`${API_ENDPOINTS_PREFIX.spring}/products?name=${encodeURIComponent(query)}`);
-      if (response) {
-        setProductSuggestions(response.slice(0, 3));
-        setShowProductSuggestions(response.length > 0);
+  // Fetch products function for SelectList
+  const fetchProducts = useCallback(
+    async (query: string): Promise<SelectListData[]> => {
+      if (!isSignedIn || !query.trim() || query.length < 2) {
+        return [];
       }
-    } catch (error) {
-      console.error('Error searching products:', error);
-      setProductSuggestions([]);
-      setShowProductSuggestions(false);
-    } finally {
-      setIsSearchingProducts(false);
-    }
-  };
 
-  // Search units by name
-  const searchUnits = async (query: string) => {
-    if (!isSignedIn || !query.trim() || query.length < 2) {
-      setUnitSuggestions([]);
-      setShowUnitSuggestions(false);
-      return;
-    }
+      try {
+        const response = await $fetch<SuccessResponse<SearchProduct[]>>(
+          `${API_ENDPOINTS_PREFIX.node}/ingredients/search`,
+          {
+            method: 'POST',
+            body: JSON.stringify({ query, limit: 3 }),
+          }
+        );
 
-    setIsSearchingUnits(true);
-    try {
-      const response = await $fetch<SearchUnit[]>(`${API_ENDPOINTS_PREFIX.spring}/units?name=${encodeURIComponent(query)}`);
-      if (response) {
-        setUnitSuggestions(response.slice(0, 3));
-        setShowUnitSuggestions(response.length > 0);
+        if (response) {
+          return response.data.map((product) => ({
+            id: product.id, // Use name as id so setSelected gets the string value
+            value: product.name,
+          }));
+        }
+
+        return [];
+      } catch (error) {
+        console.error('Error searching products:', error);
+        return [];
       }
-    } catch (error) {
-      console.error('Error searching units:', error);
-      setUnitSuggestions([]);
-      setShowUnitSuggestions(false);
-    } finally {
-      setIsSearchingUnits(false);
-    }
-  };
+    },
+    [$fetch, isSignedIn]
+  );
 
-  // Debounced search functions
-  const debouncedProductSearch = useCallback(debounce(searchProducts, 500), []);
-  const debouncedUnitSearch = useCallback(debounce(searchUnits, 500), []);
+  // Fetch units function for SelectList
+  const fetchUnits = useCallback(
+    async (query: string): Promise<SelectListData[]> => {
+      if (!isSignedIn || !query.trim() || query.length < 2) {
+        return [];
+      }
 
-  // Effect for product search
-  useEffect(() => {
-    if (!isSignedIn) {
-      return;
-    }
-
-    if (isSelectingProductRef.current) {
-      // Reset the selecting flag and skip this effect run
-      isSelectingProductRef.current = false;
-      return;
-    }
-
-    debouncedProductSearch(newItemName);
-  }, [newItemName, debouncedProductSearch, isSignedIn]);
-
-  // Effect for unit search
-  useEffect(() => {
-    if (!isSignedIn) {
-      return;
-    }
-
-    if (isSelectingUnitRef.current) {
-      isSelectingUnitRef.current = false;
-      return;
-    }
-
-    debouncedUnitSearch(newItemUnit);
-  }, [newItemUnit, debouncedUnitSearch, isSignedIn]);
-
-  const handleProductSelect = (item: { id: string; label: string; value: SearchItem }) => {
-    setNewItemName(item.value.name);
-    setShowProductSuggestions(false);
-    isSelectingProductRef.current = true;
-  };
-
-  const handleUnitSelect = (item: { id: string; label: string; value: SearchUnit }) => {
-    setNewItemUnit(item.value.name.one);
-    setShowUnitSuggestions(false);
-    isSelectingUnitRef.current = true;
-  };
+      try {
+        const response = await $fetch<SearchUnit[]>(
+          `${API_ENDPOINTS_PREFIX.spring}/units?name=${encodeURIComponent(query)}`
+        );
+        if (response) {
+          return response.slice(0, 3).map((unit) => ({
+            id: unit.id, // Use name as id so setSelected gets the string value
+            value: `${unit.name.one} (${unit.name.many})`,
+          }));
+        }
+        return [];
+      } catch (error) {
+        console.error('Error searching units:', error);
+        return [];
+      }
+    },
+    [$fetch, isSignedIn]
+  );
 
   const resetForm = () => {
     setNewItemName('');
     setNewItemAmount('');
     setNewItemUnit('');
-    setProductSuggestions([]);
-    setUnitSuggestions([]);
-    setShowProductSuggestions(false);
-    setShowUnitSuggestions(false);
   };
 
   const handleAddItem = () => {
-    if (newItemName.trim() && newItemAmount.trim()) {
-      const unitName = normalizeUnit(newItemUnit.trim());
+    if (newItemName && newItemAmount && newItemUnit) {
+      const unitName = normalizeUnit(typeof newItemUnit === 'string' ? newItemUnit : newItemUnit.value);
 
       addItem({
-        name: newItemName.trim(),
+        name: typeof newItemName === 'string' ? newItemName : newItemName.value,
         amount: parseFloat(newItemAmount) || 1,
         unit: unitName,
       });
       resetForm();
+      setShowAddItemModal(false);
     }
   };
 
   return (
-    <>
+    <BasicModal isModalOpen={showAddItemModal} setIsModalOpen={setShowAddItemModal} className='gap-4'>
       {/* Header */}
-      <Text className='text-2xl font-bold mb-4'>Add Item</Text>
+      <View className='flex-row items-center justify-between'>
+        <Text className='text-lg font-semibold'>Add new item</Text>
+        <TouchableOpacity onPress={() => setShowAddItemModal(false)}>
+          <X size={24} color='#000' />
+        </TouchableOpacity>
+      </View>
 
-      {/* Product Name Input with Autocomplete */}
-      <InputWithDropdown
-        label='Item Name'
-        placeholder='Enter item name'
-        value={newItemName}
-        onChangeText={(text) => {
-          setNewItemName(text);
-          if (!text.trim()) {
-            setShowProductSuggestions(false);
-          }
-        }}
-        items={productSuggestions.map((product) => ({
-          id: product.id,
-          label: product.name,
-          value: product,
-        }))}
-        onItemSelect={handleProductSelect}
-        showDropdown={showProductSuggestions}
-        isLoading={isSearchingProducts}
-        autoFocus
-        className='mb-4 relative'
-        onBottom={true}
-      />
+      {/* Product Name Input with Search */}
+      <View className='gap-1'>
+        <Text className='text-sm font-medium'>Item Name</Text>
+
+        <InputWithDropdown
+          setSelected={useCallback((value) => setNewItemName(value), [])}
+          placeholder='Enter item name'
+          fetchItems={fetchProducts}
+          search={true}
+          searchPlaceholder='Search for products...'
+          fontFamily='Comfortaa_400Regular'
+          notFoundText='No products found'
+          allowFreeText={true}
+          boxStyles={{
+            borderColor: THEME.light.colors.primary,
+          }}
+          dropdownStyles={{
+            borderColor: THEME.light.colors.primary,
+          }}
+        />
+      </View>
 
       {/* Amount Input */}
-      <View className='mb-4'>
-        <Text className='text-sm font-medium mb-2'>Amount</Text>
+      <View className='gap-1'>
+        <Text className='text-sm font-medium'>Amount</Text>
         <Input
           className='border border-gray-300 rounded-lg px-3 py-2'
           placeholder='Enter amount'
@@ -190,38 +149,33 @@ const ShoppingListAddItemModal = () => {
         />
       </View>
 
-      {/* Unit Input with Autocomplete */}
-      <InputWithDropdown
-        label='Unit'
-        placeholder='Enter unit (e.g., cups, lbs, pieces)'
-        value={newItemUnit}
-        onChangeText={(text) => {
-          setNewItemUnit(text);
-          if (!text.trim()) {
-            setShowUnitSuggestions(false);
-          }
-        }}
-        items={unitSuggestions.map((unit) => ({
-          id: unit.id,
-          label: unit.name.one,
-          value: unit,
-        }))}
-        onItemSelect={handleUnitSelect}
-        showDropdown={showUnitSuggestions}
-        isLoading={isSearchingUnits}
-        className='mb-6 relative'
-      />
+      {/* Unit Input with Search */}
+      <View className='gap-1'>
+        <Text className='text-sm font-medium'>Unit</Text>
+        <InputWithDropdown
+          setSelected={useCallback((value) => setNewItemUnit(value), [])}
+          placeholder='Enter unit (e.g., cups, lbs, pieces)'
+          fetchItems={fetchUnits}
+          search={true}
+          searchPlaceholder='Search for units...'
+          fontFamily='Comfortaa_400Regular'
+          notFoundText='No units found'
+          boxStyles={{
+            borderColor: THEME.light.colors.primary,
+          }}
+          dropdownStyles={{
+            borderColor: THEME.light.colors.primary,
+          }}
+        />
+      </View>
 
       {/* Action Buttons */}
       <View className='flex-row gap-3'>
-        <Button
-          className='flex-1'
-          onPress={handleAddItem}
-          disabled={!newItemName.trim() || !newItemAmount.trim() || !newItemUnit.trim()}>
+        <Button className='flex-1' onPress={handleAddItem} disabled={!newItemName || !newItemAmount || !newItemUnit}>
           <Text>Add</Text>
         </Button>
       </View>
-    </>
+    </BasicModal>
   );
 };
 

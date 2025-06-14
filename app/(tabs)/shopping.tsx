@@ -9,10 +9,9 @@ import { useShoppingListStore } from '~/stores/shopping';
 import { Checkbox } from '~/components/ui/checkbox';
 import { FloatingButton } from '~/components/ui/floating-button';
 import { Share2 } from '~/assets/icons';
-import { KeyboardAvoidingView, Modal, Platform, SectionList } from 'react-native';
+import { SectionList } from 'react-native';
 import ShoppingListAddItemModal from '~/components/modals/shopping-list-add-item';
 import { ShoppingListItem as ShoppingListItemType } from '~/types/shopping';
-import BasicModal from '~/components/ui/basic-modal';
 
 const ShoppingListItem = ({
   item,
@@ -33,7 +32,7 @@ const ShoppingListItem = ({
         }}
       />
       <Text className='flex-1 text-lg'>{item.name}</Text>
-      <Text className='text-gray-600 ml-2'>
+      <Text className='font-light text-gray-600 ml-2'>
         {item.amount} {normalizeUnit(item.unit)}
       </Text>
     </View>
@@ -71,7 +70,7 @@ export default function ShoppingListPage() {
   };
 
   return (
-    <SafeAreaView className='flex-1' style={{ padding: 16, paddingBottom: 4 }}>
+    <SafeAreaView className='flex-1' style={{ padding: 16 }} edges={['top']}>
       <Text className='text-3xl font-bold'>Shopping List</Text>
 
       {items.length > 0 && (
@@ -83,11 +82,11 @@ export default function ShoppingListPage() {
             },
             ...(getCheckedItems().length > 0
               ? [
-                {
-                  title: 'Bought',
-                  data: getCheckedItems(),
-                },
-              ]
+                  {
+                    title: 'Bought',
+                    data: getCheckedItems(),
+                  },
+                ]
               : []),
           ]}
           renderSectionHeader={({ section: { title } }) =>
@@ -116,21 +115,19 @@ export default function ShoppingListPage() {
       {items.length === 0 && (
         <View className='flex-1 justify-center items-center'>
           <Text className='text-center max-w-[80vw]'>
-            Your shopping list is empty. find delicious recipes, add tho necessary ingredients to tho shopping list and
-            cook something delicious
+            Your shopping list is empty. Let&apos;s find delicious recipes, add the necessary ingredients to the
+            shopping list and cook something delicious!
           </Text>
         </View>
       )}
 
-      <View className='flex-row justify-center pt-4 rounded-t-3xl'>
+      <View className='flex-row justify-center pt-4 rounded-t-3xl pb-3'>
         <Button className='w-1/2' onPress={() => setShowAddItemModal(true)}>
           <Text>Add item</Text>
         </Button>
       </View>
 
-      <BasicModal isModalOpen={showAddItemModal} setIsModalOpen={setShowAddItemModal} animationType='fade'>
-        <ShoppingListAddItemModal />
-      </BasicModal>
+      <ShoppingListAddItemModal showAddItemModal={showAddItemModal} setShowAddItemModal={setShowAddItemModal} />
 
       <FloatingButton onPress={onShare}>
         <Share2 size={24} />

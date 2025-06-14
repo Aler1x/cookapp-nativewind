@@ -25,9 +25,7 @@ export default function FullscreenModal({
       presentationStyle={presentationStyle}
       onRequestClose={onClose}
       {...modalProps}>
-      <View className='flex-1'>
-        {children}
-      </View>
+      <View className='flex-1'>{children}</View>
     </Modal>
   );
 }

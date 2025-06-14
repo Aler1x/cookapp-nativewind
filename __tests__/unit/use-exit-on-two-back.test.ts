@@ -31,7 +31,7 @@ describe('useExitOnTwoBack Hook', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.useFakeTimers();
-    
+
     // Capture the back press handler
     mockAddEventListener.mockImplementation((event, handler) => {
       if (event === 'hardwareBackPress') {
@@ -49,10 +49,7 @@ describe('useExitOnTwoBack Hook', () => {
   it('sets up back handler and router params on mount', () => {
     renderHook(() => useExitOnTwoBack());
 
-    expect(mockAddEventListener).toHaveBeenCalledWith(
-      'hardwareBackPress',
-      expect.any(Function)
-    );
+    expect(mockAddEventListener).toHaveBeenCalledWith('hardwareBackPress', expect.any(Function));
     expect(mockSetParams).toHaveBeenCalledWith({ backBehavior: 'none' });
   });
 
@@ -173,7 +170,7 @@ describe('useExitOnTwoBack Hook', () => {
 
   it('clears previous timeout when new back press occurs', () => {
     const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout');
-    
+
     renderHook(() => useExitOnTwoBack());
 
     // First back press
@@ -210,4 +207,4 @@ describe('useExitOnTwoBack Hook', () => {
     expect(mockExitApp).toHaveBeenCalledTimes(1);
     expect(mockToastShow).toHaveBeenCalledTimes(1);
   });
-}); 
+});

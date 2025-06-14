@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from '@testing-library/react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import RecipeDetailPage from '~/app/recipes/[slug]';
+import RecipeDetailPage from '~/app/recipes/[id]/[slug]';
 
 // Mock color scheme
 jest.mock('~/lib/useColorScheme', () => ({
@@ -46,7 +46,7 @@ describe('RecipeDetailPage', () => {
 
   it('applies correct styling classes', () => {
     const { UNSAFE_getByType } = render(<RecipeDetailPage />);
-    
+
     const safeAreaView = UNSAFE_getByType(SafeAreaView);
     expect(safeAreaView.props.className).toContain('flex-1');
     expect(safeAreaView.props.className).toContain('items-center');
@@ -55,7 +55,7 @@ describe('RecipeDetailPage', () => {
 
   it('applies light theme background', () => {
     const { UNSAFE_getByType } = render(<RecipeDetailPage />);
-    
+
     const safeAreaView = UNSAFE_getByType(SafeAreaView);
     expect(safeAreaView.props.style.backgroundColor).toBe('#ffffff');
   });
@@ -65,7 +65,7 @@ describe('RecipeDetailPage', () => {
     useColorScheme.mockReturnValue({ isDarkColorScheme: true });
 
     const { UNSAFE_getByType } = render(<RecipeDetailPage />);
-    
+
     const safeAreaView = UNSAFE_getByType(SafeAreaView);
     expect(safeAreaView.props.style.backgroundColor).toBe('#000000');
   });
@@ -73,7 +73,7 @@ describe('RecipeDetailPage', () => {
   it('centers content properly', () => {
     const { getByText } = render(<RecipeDetailPage />);
     const recipeDetailText = getByText('Recipe Detail');
-    
+
     // Text should be rendered within the centered container
     expect(recipeDetailText).toBeTruthy();
   });
@@ -90,4 +90,4 @@ describe('RecipeDetailPage', () => {
     const tree = render(<RecipeDetailPage />).toJSON();
     expect(tree).toMatchSnapshot();
   });
-}); 
+});

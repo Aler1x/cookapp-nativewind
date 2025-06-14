@@ -30,7 +30,7 @@ describe('useFetch Hook', () => {
     });
 
     const { result } = renderHook(() => useFetch());
-    
+
     await act(async () => {
       const response = await result.current('/api/test');
       expect(response).toEqual({ data: 'test' });
@@ -58,7 +58,7 @@ describe('useFetch Hook', () => {
     });
 
     const { result } = renderHook(() => useFetch());
-    
+
     await act(async () => {
       const response = await result.current('/api/test');
       expect(response).toEqual({ data: 'test' });
@@ -85,7 +85,7 @@ describe('useFetch Hook', () => {
     });
 
     const { result } = renderHook(() => useFetch());
-    
+
     await act(async () => {
       const response = await result.current('https://external-api.com/data');
       expect(response).toEqual({ data: 'external' });
@@ -111,7 +111,7 @@ describe('useFetch Hook', () => {
     });
 
     const { result } = renderHook(() => useFetch());
-    
+
     await act(async () => {
       const response = await result.current('/api/text');
       expect(response).toBe('plain text response');
@@ -127,7 +127,7 @@ describe('useFetch Hook', () => {
     });
 
     const { result } = renderHook(() => useFetch());
-    
+
     await act(async () => {
       await result.current('/api/test', {
         headers: {
@@ -159,7 +159,7 @@ describe('useFetch Hook', () => {
     });
 
     const { result } = renderHook(() => useFetch());
-    
+
     await act(async () => {
       const response = await result.current('/api/notfound');
       expect(response).toEqual({ error: 'Not found' });
@@ -175,7 +175,7 @@ describe('useFetch Hook', () => {
     });
 
     const { result } = renderHook(() => useFetch());
-    
+
     await act(async () => {
       const response = await result.current('/api/create', {
         method: 'POST',
@@ -202,7 +202,7 @@ describe('useFetch Hook', () => {
     (fetch as jest.Mock).mockRejectedValueOnce(new Error('Network error'));
 
     const { result } = renderHook(() => useFetch());
-    
+
     await act(async () => {
       try {
         await result.current('/api/test');
@@ -212,4 +212,4 @@ describe('useFetch Hook', () => {
       }
     });
   });
-}); 
+});

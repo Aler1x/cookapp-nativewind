@@ -6,7 +6,8 @@ export interface RecipeFull {
   mainImageUrl: string;
   description?: string;
   source: 'MANUALLY_CREATED' | 'AI' | 'EXTERNAL' | 'ORIGINAL'; // wtf is last one?
-  author?: { // optional, because on db it don't link to user so it's probably null
+  author?: {
+    // optional, because on db it don't link to user so it's probably null
     id: string;
     name: string;
   };
@@ -32,9 +33,9 @@ export type Recipe = {
   difficulty: 'easy' | 'medium' | 'hard';
   slug: string;
   mainImageUrl: string;
-  durationTotal: number; // in minutes
+  duration: number; // in minutes
   servings: number;
-  category: Category;
+  categories: Category[];
   rating?: number;
 };
 
@@ -71,13 +72,4 @@ export type Category = {
     name: string;
   };
   imageUrl: string;
-};
-
-export type RecipesPage = {
-  data: Recipe[];
-  meta: {
-    page: number;
-    totalPages: number;
-    totalItems: number;
-  };
 };

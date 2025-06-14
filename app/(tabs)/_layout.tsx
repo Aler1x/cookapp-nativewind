@@ -11,46 +11,20 @@ export default function RootLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: isDarkColorScheme ? THEME.dark.colors.foreground : THEME.light.colors.foreground,
+        tabBarActiveTintColor: isDarkColorScheme ? THEME.dark.colors.primary : THEME.light.colors.primary,
+        tabBarInactiveTintColor: isDarkColorScheme ? THEME.dark.colors.foreground : THEME.light.colors.foreground,
         tabBarShowLabel: false,
-        tabBarStyle: Platform.select({
-          ios: {
-            position: 'absolute',
-            backgroundColor: isDarkColorScheme ? THEME.dark.colors.background : THEME.light.colors.background,
-            borderTopWidth: 1,
-            borderLeftWidth: 0,
-            borderRightWidth: 0,
-            borderBottomWidth: 0,
-            paddingTop: 30,
-            paddingBottom: 70,
-            paddingLeft: 10,
-            paddingRight: 10,
-            borderTopLeftRadius: 60,
-            borderTopRightRadius: 60,
-          },
-          web: {
-            backgroundColor: isDarkColorScheme ? THEME.dark.colors.background : THEME.light.colors.background,
-            paddingTop: 30,
-            paddingBottom: 65,
-            paddingLeft: 10,
-            paddingRight: 10,
-            borderTopLeftRadius: 60,
-            borderTopRightRadius: 60,
-          },
-          default: {
-            backgroundColor: isDarkColorScheme ? THEME.dark.colors.background : THEME.light.colors.background,
-            borderTopWidth: 1,
-            borderLeftWidth: 0,
-            borderRightWidth: 0,
-            borderBottomWidth: 0,
-            paddingTop: 20,
-            paddingBottom: 80,
-            paddingLeft: 10,
-            paddingRight: 10,
-            borderTopLeftRadius: 60,
-            borderTopRightRadius: 60,
-          },
-        }),
+        tabBarStyle: {
+          backgroundColor: isDarkColorScheme ? THEME.dark.colors.background : THEME.light.colors.background,
+          borderTopWidth: Platform.OS === 'ios' ? 0 : 1,
+          paddingTop: Platform.select({ ios: 30, web: 20, default: 20 }),
+          paddingBottom: Platform.select({ ios: 70, web: 65, default: 80 }),
+          paddingLeft: 10,
+          paddingRight: 10,
+          borderTopLeftRadius: 60,
+          borderTopRightRadius: 60,
+          position: 'absolute',
+        },
         animation: 'shift',
       }}
       initialRouteName='home'>
@@ -66,6 +40,9 @@ export default function RootLayout() {
         options={{
           title: 'Library',
           tabBarIcon: ({ color }) => <LibraryBig size={28} color={color} />,
+          sceneStyle: {
+            paddingBottom: 80,
+          },
         }}
       />
       <Tabs.Screen
@@ -73,6 +50,9 @@ export default function RootLayout() {
         options={{
           title: 'Chat',
           tabBarIcon: ({ color }) => <BotMessageSquare size={28} color={color} />,
+          sceneStyle: {
+            paddingBottom: 80,
+          },
         }}
       />
       <Tabs.Screen
@@ -80,6 +60,9 @@ export default function RootLayout() {
         options={{
           title: 'Shopping',
           tabBarIcon: ({ color }) => <ShoppingBasket size={28} color={color} />,
+          sceneStyle: {
+            paddingBottom: 80,
+          },
         }}
       />
       <Tabs.Screen
@@ -87,6 +70,9 @@ export default function RootLayout() {
         options={{
           title: 'Profile',
           tabBarIcon: ({ color }) => <CircleUserRound size={28} color={color} />,
+          sceneStyle: {
+            paddingBottom: 80,
+          },
         }}
       />
     </Tabs>

@@ -47,7 +47,6 @@ Create a `.env` file in the root directory with the following variables:
 
 ```env
 EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key_here
-EXPO_PUBLIC_LOCAL=true  # Set to false for production
 ```
 
 ### 4. Clerk Authentication Setup
