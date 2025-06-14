@@ -22,32 +22,48 @@ export interface FiltersRequest {
 export interface BadgeFilters {
   id: number;
   name: string;
+  settings: {
+    dishTypes?: string[];
+    diets?: string[];
+    difficulties?: string[];
+    cookTime?: {
+      min: number;
+      max: number;
+    };
+  };
   isActive?: boolean;
 }
 
 export const BADGES: BadgeFilters[] = [
   {
     id: 1,
-    name: 'Popular',
+    name: 'Quick 🔥',
+    settings: {
+      cookTime: {
+        min: 1,
+        max: 30,
+      },
+    },
   },
   {
     id: 2,
-    name: 'Quick',
+    name: 'Italian 🇮🇹',
+    settings: {
+      dishTypes: ['pasta', 'pizza', 'dessert'],
+    },
   },
   {
     id: 3,
-    name: 'Italian 🍝',
+    name: 'Asian 🇯🇵',
+    settings: {
+      dishTypes: ['sushi', 'ramen', 'dessert', 'noodles'],
+    },
   },
   {
     id: 4,
-    name: 'Healthy 🥗',
-  },
-  {
-    id: 5,
-    name: 'Asian 🍙',
-  },
-  {
-    id: 6,
-    name: 'Easy',
+    name: 'Easy 🥳',
+    settings: {
+      difficulties: ['easy'],
+    },
   },
 ];

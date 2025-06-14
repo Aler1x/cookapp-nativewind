@@ -35,6 +35,7 @@ export default function HomePage() {
   });
 
   const [badges, setBadges] = useState<BadgeFilters[]>(BADGES);
+  const [activeBadge, setActiveBadge] = useState<number | null>(null);
 
   // Pagination state
   const [recipes, setRecipes] = useState<Recipe[]>([]);
@@ -48,6 +49,17 @@ export default function HomePage() {
   const handleSearch = (query: string) => {
     setSearchQuery(query);
     setFilters({ ...filters, searchQuery: query });
+  };
+
+  const clearFilters = () => {
+    setFilters({
+      searchQuery: '',
+      cookTime: { min: 5, max: 120 },
+      difficulty: [],
+      dishTypes: [],
+      diets: [],
+      ingredients: { includeIds: [], excludeIds: [] },
+    });
   };
 
   const fetchRecipes = useCallback(
@@ -222,7 +234,20 @@ export default function HomePage() {
   }
 
   const handleBadgePress = (badgeId: number) => {
+    if (activeBadge === badgeId) {
+      setActiveBadge(null);
+      setBadges((prev) => prev.map((badge) => ({ ...badge, isActive: false })));
+      clearFilters();
+      return;
+    }
+
+    setActiveBadge(badgeId);
     setBadges((prev) => prev.map((badge) => ({ ...badge, isActive: badge.id === badgeId })));
+    clearFilters();
+    setFilters((prev) => ({
+      ...prev,
+      ...BADGES.find((badge) => badge.id === badgeId)?.settings,
+    }));
   };
 
   return (
@@ -236,7 +261,7 @@ export default function HomePage() {
         <SearchInput value={searchQuery} onChangeText={handleSearch} onSubmit={handleSearchSubmit} />
         <ScrollView
           horizontal
-          className='mt-2'
+          className='py-1'
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{ gap: 4 }}>
           {badges.map((badge) => (
@@ -271,7 +296,7 @@ export default function HomePage() {
           performSearch(filters, 1, false);
         }}
         ListFooterComponent={renderFooter}
-        ListFooterComponentStyle={{ paddingBottom: 40 }}
+        ListFooterComponentStyle={{ paddingBottom: 120 }}
       />
 
       <View className='absolute bottom-0 left-0 right-0 items-center pb-32'>

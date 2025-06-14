@@ -18,7 +18,6 @@ export default function Page() {
     const fetchRecipe = async () => {
       try {
         const response = await $fetch<RecipeFull>(`${API_ENDPOINTS_PREFIX.public}/recipes/${id}`);
-        console.log(response);
       } catch (error) {
         console.error(error);
       }

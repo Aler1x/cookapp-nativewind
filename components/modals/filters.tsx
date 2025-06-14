@@ -11,6 +11,10 @@ import { API_ENDPOINTS_PREFIX, THEME } from '~/lib/constants';
 import { SuccessResponse } from '~/types';
 import { Slider } from '@miblanchard/react-native-slider';
 
+function capitalize(str: string) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
 interface FilterPillProps {
   name: string;
   selected: boolean;
@@ -24,7 +28,7 @@ function FilterPill({ name, selected, onPress }: FilterPillProps) {
       className={`px-4 py-2 rounded-full mr-2 mb-2 border ${
         selected ? 'bg-primary border-primary' : 'bg-transparent border-gray-300'
       }`}>
-      <Text className={`text-sm ${selected ? 'font-medium' : 'text-gray-700'}`}>{name}</Text>
+      <Text className={`text-sm ${selected ? 'font-medium' : 'text-gray-700'}`}>{capitalize(name)}</Text>
     </TouchableOpacity>
   );
 }

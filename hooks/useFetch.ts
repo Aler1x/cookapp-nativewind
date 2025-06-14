@@ -50,14 +50,12 @@ export function useFetch() {
             text2: error.message,
           });
         }
-        if (error satisfies ErrorResponse) {
-          if (error.message || error.error) {
-            Toast.show({
-              type: 'error',
-              text1: 'Error',
-              text2: error.message || error.error || 'An unknown error occurred',
-            });
-          }
+        if (error.message || error.error) {
+          Toast.show({
+            type: 'error',
+            text1: 'Error',
+            text2: error.message || error.error || 'An unknown error occurred',
+          });
         }
 
         return null as any;

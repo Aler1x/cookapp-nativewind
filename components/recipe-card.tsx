@@ -3,8 +3,9 @@ import { TouchableOpacity, Image, View } from 'react-native';
 import { cn } from '~/lib/utils';
 import { router } from 'expo-router';
 import type { Recipe } from '~/types/recipe';
-import { ImageIcon } from 'lucide-react-native';
+import { ClockIcon, ImageIcon, StarIcon, Utensils } from 'lucide-react-native';
 import React from 'react';
+import { Separator } from './ui/separator';
 
 interface RecipeCardProps {
   recipe: Recipe;
@@ -26,7 +27,7 @@ export default function RecipeCard({ recipe, className }: RecipeCardProps) {
       {recipe.mainImageUrl ? (
         <Image source={{ uri: recipe.mainImageUrl }} className='w-full h-[60%]' resizeMode='cover' />
       ) : (
-        <View className='w-full h-2/3 bg-gray-200 items-center justify-center'>
+        <View className='w-full h-[60%] bg-gray-200 items-center justify-center'>
           <ImageIcon size={48} color='black' />
         </View>
       )}
@@ -35,11 +36,28 @@ export default function RecipeCard({ recipe, className }: RecipeCardProps) {
           {recipe.title}
         </Text>
         <View className='flex-row justify-between items-center px-2'>
-          <View className='flex-row items-center'>
-            <Text className='text-xs mr-1'>★</Text>
+          <View className='flex-row items-center gap-1'>
+            <StarIcon size={12} color='#FFB923' style={{ marginBottom: 1 }} fill='#FFB923' />
             <Text className='text-xs'>{recipe.rating?.toFixed(1)}</Text>
           </View>
-          {recipe.duration !== undefined && <Text className='text-xs text-gray-600'>{recipe.duration} min</Text>}
+
+          <Separator orientation='vertical' className='h-4 bg-black' />
+
+          {recipe.duration && (
+            <View className='flex-row items-center justify-center gap-1'>
+              <ClockIcon size={12} color='black' style={{ marginBottom: 1 }} />
+              <Text className='text-xs'>{recipe.duration} min</Text>
+            </View>
+          )}
+
+          <Separator orientation='vertical' className='h-4 bg-black' />
+
+          {recipe.servings && (
+            <View className='flex-row items-center justify-center gap-1'>
+              <Utensils size={12} color='black' style={{ marginBottom: 1 }} />
+              <Text className='text-xs'>{recipe.servings}</Text>
+            </View>
+          )}
         </View>
       </View>
     </TouchableOpacity>
