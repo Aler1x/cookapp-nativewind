@@ -65,7 +65,8 @@ export default function AuthPage() {
         setActive!({ session: createdSessionId });
       } else {
       }
-    } catch (err) {
+    } catch (error) {
+      console.log(error);
       Toast.show({
         text1: 'Error signing in',
         type: 'error',
@@ -77,7 +78,7 @@ export default function AuthPage() {
 
   return (
     <SafeAreaView className='flex-1 justify-center items-center bg-background gap-4'>
-      <Text className='text-xl font-bold'>Sign in</Text>
+      <Text className='text-xl font-bold'>Sign in to CookApp</Text>
       <Button onPress={onGooglePress} variant='black' className='w-60'>
         <View className='flex-row items-center gap-2'>
           <GoogleIcon width={20} height={20} />

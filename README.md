@@ -46,23 +46,21 @@ cd cookapp-nativewind
 pnpm install
 ```
 
-### 3. Environment Configuration
-
-Create a `.env` file in the root directory with the following variables:
-
-```env
-EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key_here
-```
-
-### 4. Clerk Authentication Setup
+### 3. Clerk Authentication Setup (If you have clerk api key you can skip this)
 
 - Sign up at https://clerk.dev/
 - Create a new application
 - Enable Google, and Apple authentication
 - Copy your Publishable Key to the .env file
-- Configure OAuth redirect URLs:
-  - `cookapp-nativewind://`
-  - `https://auth.clerk.dev/v2/client-redirect?...`
+
+### 4. Environment Configuration
+
+Create a `.env` file in the root directory with the following variables:
+
+```env
+EXPO_PUBLIC_API_URL=
+EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY=
+```
 
 ## Development Commands
 

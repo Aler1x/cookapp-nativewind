@@ -9,9 +9,10 @@ import { useShoppingListStore } from '~/stores/shopping';
 import { Checkbox } from '~/components/ui/checkbox';
 import { FloatingButton } from '~/components/ui/floating-button';
 import { Share2 } from '~/assets/icons';
-import { SectionList } from 'react-native';
+import { SectionList, TouchableOpacity } from 'react-native';
 import ShoppingListAddItemModal from '~/components/modals/shopping-list-add-item';
 import { ShoppingListItem as ShoppingListItemType } from '~/types/shopping';
+import { Plus } from 'lucide-react-native';
 
 const ShoppingListItem = ({
   item,
@@ -70,8 +71,13 @@ export default function ShoppingListPage() {
   };
 
   return (
-    <SafeAreaView className='flex-1' style={{ padding: 16 }} edges={['top']}>
-      <Text className='text-3xl font-bold'>Shopping List</Text>
+    <SafeAreaView className='flex-1 bg-background' style={{ padding: 16 }} edges={['top']}>
+      <View className='flex-row items-center justify-between'>
+        <Text className='text-3xl font-bold'>Shopping List</Text>
+        <TouchableOpacity onPress={onShare} className='p-2'>
+          <Share2 size={24} color='#000' />
+        </TouchableOpacity>
+      </View>
 
       {items.length > 0 && (
         <SectionList
@@ -82,11 +88,11 @@ export default function ShoppingListPage() {
             },
             ...(getCheckedItems().length > 0
               ? [
-                  {
-                    title: 'Bought',
-                    data: getCheckedItems(),
-                  },
-                ]
+                {
+                  title: 'Bought',
+                  data: getCheckedItems(),
+                },
+              ]
               : []),
           ]}
           renderSectionHeader={({ section: { title } }) =>
@@ -109,29 +115,33 @@ export default function ShoppingListPage() {
           renderItem={({ item }) => (
             <ShoppingListItem item={item} toggleItem={toggleItem} normalizeUnit={normalizeUnit} />
           )}
+          ListEmptyComponent={
+            <View className='flex-1 justify-center items-center'>
+              <Text className='text-center max-w-[80vw]'>
+                Your shopping list is empty. Let&apos;s find delicious recipes, add the necessary ingredients to the
+                shopping list and cook something delicious!
+              </Text>
+            </View>
+          }
         />
       )}
 
-      {items.length === 0 && (
-        <View className='flex-1 justify-center items-center'>
-          <Text className='text-center max-w-[80vw]'>
-            Your shopping list is empty. Let&apos;s find delicious recipes, add the necessary ingredients to the
-            shopping list and cook something delicious!
-          </Text>
-        </View>
-      )}
-
-      <View className='flex-row justify-center pt-4 rounded-t-3xl pb-3'>
-        <Button className='w-1/2' onPress={() => setShowAddItemModal(true)}>
-          <Text>Add item</Text>
+      <View className='absolute bottom-0 left-0 right-0 items-center pb-8'>
+        <Button
+          variant='black'
+          className='w-[60%]'
+          onPress={() => setShowAddItemModal(true)}
+          style={{
+            elevation: 10,
+          }}>
+          <View className='flex-row items-center gap-2'>
+            <Plus size={24} color='white' />
+            <Text className='text-white font-medium'>Add Item</Text>
+          </View>
         </Button>
       </View>
 
       <ShoppingListAddItemModal showAddItemModal={showAddItemModal} setShowAddItemModal={setShowAddItemModal} />
-
-      <FloatingButton onPress={onShare}>
-        <Share2 size={24} />
-      </FloatingButton>
     </SafeAreaView>
   );
 }

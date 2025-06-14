@@ -53,7 +53,7 @@
       [
         "expo-router",
         {
-          "origin": "https://n"
+          "origin": "https://cookapp.alerix.dev"
         }
       ],
       [
@@ -84,12 +84,12 @@
     ],
     "extra": {
       "router": {
-        "origin": "https://n"
+        "origin": "https://cookapp.alerix.dev"
       },
       "eas": {
         "projectId": "ed3520ad-df52-44b4-8ad5-fa6d30256b15"
       }
     },
-    "owner": "alerix",
+    "owner": "alerix"
   }
 }

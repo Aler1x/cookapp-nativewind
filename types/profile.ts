@@ -41,3 +41,13 @@ export type PreferencesRequest = {
       ]
     | [];
 };
+
+export type Job = {
+  jobId: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  recipeId?: string;
+  recipeName?: string;
+  error: string;
+};

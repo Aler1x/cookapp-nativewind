@@ -179,7 +179,6 @@ export default function HomePage() {
       return (
         <View className='py-2 items-center'>
           <ActivityIndicator size='large' color={THEME.light.colors.primary} />
-          <Text className='text-muted-foreground mt-2'>Loading more recipes...</Text>
         </View>
       );
     }
@@ -258,32 +257,36 @@ export default function HomePage() {
             <Text className='text-2xl font-bold'>What do you want to cook today?</Text>
           </View>
         )}
-        <SearchInput value={searchQuery} onChangeText={handleSearch} onSubmit={handleSearchSubmit} />
-        <ScrollView
-          horizontal
-          className='py-1'
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ gap: 4 }}>
-          {badges.map((badge) => (
-            <TouchableOpacity key={badge.id} onPress={() => handleBadgePress(badge.id)}>
-              <Badge
-                label={badge.name}
-                variant='outline'
-                className={cn('px-4 py-2', badge.isActive ? 'bg-primary border-primary' : 'bg-background border-black')}
-                labelClasses={cn('text-sm font-medium')}
-                style={{
-                  elevation: 5,
-                }}
-              />
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
+        {isSignedIn && (
+          <>
+            <SearchInput value={searchQuery} onChangeText={handleSearch} onSubmit={handleSearchSubmit} />
+            <ScrollView
+              horizontal
+              className='py-1'
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{ gap: 4 }}>
+              {badges.map((badge) => (
+                <TouchableOpacity key={badge.id} onPress={() => handleBadgePress(badge.id)}>
+                  <Badge
+                    label={badge.name}
+                    variant='outline'
+                    className={cn('px-4 py-2', badge.isActive ? 'bg-primary border-primary' : 'bg-background border-black')}
+                    labelClasses={cn('text-sm font-medium')}
+                    style={{
+                      elevation: 3,
+                    }}
+                  />
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </>
+        )}
       </View>
 
       <FlatList
         data={recipes}
         renderItem={({ item }) => <RecipeCard recipe={item} className='flex-1 h-52 mx-1' />}
-        keyExtractor={(item: Recipe) => item.id.toString()}
+        keyExtractor={(item: Recipe, index: number) => `${item.id}-${index}`}
         numColumns={2}
         contentContainerStyle={{ paddingHorizontal: 16, paddingVertical: 12 }}
         columnWrapperStyle={{ justifyContent: 'space-between', marginBottom: 12 }}
@@ -299,22 +302,24 @@ export default function HomePage() {
         ListFooterComponentStyle={{ paddingBottom: 120 }}
       />
 
-      <View className='absolute bottom-0 left-0 right-0 items-center pb-32'>
-        <Button
-          variant='black'
-          className='w-[80%]'
-          onPress={() => setShowFilters(true)}
-          style={{
-            elevation: 10,
-          }}>
-          <View className='flex-row items-center gap-2'>
-            <Settings2 size={20} color='white' />
-            <Text className='text-white font-medium'>
-              Filters {appliedFiltersCount > 0 && `(${appliedFiltersCount})`}
-            </Text>
-          </View>
-        </Button>
-      </View>
+      {isSignedIn && (
+        <View className='absolute bottom-0 left-0 right-0 items-center pb-32'>
+          <Button
+            variant='black'
+            className='w-[60%]'
+            onPress={() => setShowFilters(true)}
+            style={{
+              elevation: 10,
+            }}>
+            <View className='flex-row items-center gap-2'>
+              <Settings2 size={20} color='white' />
+              <Text className='text-white font-medium'>
+                Filters {appliedFiltersCount > 0 && `(${appliedFiltersCount})`}
+              </Text>
+            </View>
+          </Button>
+        </View>
+      )}
 
       <FullscreenModal visible={showFilters} onClose={() => setShowFilters(false)}>
         <FiltersPage onClose={() => setShowFilters(false)} filters={filters} onApplyFilters={handleApplyFilters} />

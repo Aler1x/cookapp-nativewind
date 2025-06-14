@@ -15,6 +15,7 @@ const floatingButtonVariants = cva(
           'border border-input bg-background web:hover:bg-accent web:hover:text-accent-foreground active:bg-accent',
         secondary: 'bg-secondary web:hover:opacity-80 active:opacity-80',
         ghost: 'web:hover:bg-accent web:hover:text-accent-foreground active:bg-accent',
+        black: 'bg-black',
       },
       size: {
         default: 'h-14 w-14 native:h-16 native:w-16',
@@ -44,6 +45,7 @@ const floatingButtonTextVariants = cva(
         outline: 'group-active:text-accent-foreground',
         secondary: 'text-secondary-foreground group-active:text-secondary-foreground',
         ghost: 'group-active:text-accent-foreground',
+        black: 'text-white',
       },
       size: {
         default: '',

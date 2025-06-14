@@ -12,7 +12,7 @@ import { PlusIcon } from 'lucide-react-native';
 import BasicModal from '~/components/ui/basic-modal';
 import { Input } from '~/components/ui/input';
 import { Button } from '~/components/ui/button';
-import { router } from 'expo-router';
+import AuthPage from '~/components/pages/auth';
 
 export default function LibraryPage() {
   const { isSignedIn } = useAuth();
@@ -68,58 +68,49 @@ export default function LibraryPage() {
     [$fetch, fetchCollections]
   );
 
-  if (!isSignedIn) {
-    return (
-      <SafeAreaView className='flex-1 bg-background' style={{ padding: 16 }}>
-        <Text className='text-3xl font-bold'>Library</Text>
-        <View className='flex-1 items-center justify-center gap-2'>
-          <Text className='text-lg font-medium'>Please sign in to view or create collections</Text>
-          <Button onPress={() => router.push('/(tabs)/profile')} variant='black' className='w-[60vw]'>
-            <Text className='text-sm font-medium'>Sign in</Text>
-          </Button>
-        </View>
-      </SafeAreaView>
-    );
-  }
-
   return (
-    <SafeAreaView className='flex-1 bg-background' style={{ padding: 16 }} edges={['top', 'bottom']}>
-      <Text className='text-3xl font-bold'>Library</Text>
-      <ScrollView className='mt-4' showsVerticalScrollIndicator={false}>
-        <View className='flex flex-row flex-wrap w-full justify-between'>
-          <TouchableOpacity className='w-[48%]' onPress={() => setIsCreateNewCollectionModalOpen(true)}>
-            <View className='border-2 border-dashed border-muted-foreground/30 rounded-xl w-full h-32 items-center justify-center'>
-              <PlusIcon className='w-10 h-10 text-muted-foreground' />
+    <>
+      {!isSignedIn && <AuthPage />}
+      {isSignedIn && (
+        <SafeAreaView className='flex-1 bg-background' style={{ padding: 16 }} edges={['top', 'bottom']}>
+          <Text className='text-3xl font-bold'>Library</Text>
+          <ScrollView className='mt-4' showsVerticalScrollIndicator={false}>
+            <View className='flex flex-row flex-wrap w-full justify-between'>
+              <TouchableOpacity className='w-[48%]' onPress={() => setIsCreateNewCollectionModalOpen(true)}>
+                <View className='border-2 border-dashed border-muted-foreground/30 rounded-xl w-full h-32 items-center justify-center'>
+                  <PlusIcon className='w-10 h-10 text-muted-foreground' />
+                </View>
+                <Text className='font-medium text-left mt-2'>Create New Collection</Text>
+              </TouchableOpacity>
+
+              {collections?.map((collection) => (
+                <LibraryCard key={collection.id} collection={collection} className='mb-2' />
+              ))}
             </View>
-            <Text className='font-medium text-left mt-2'>Create New Collection</Text>
-          </TouchableOpacity>
+          </ScrollView>
 
-          {collections?.map((collection) => (
-            <LibraryCard key={collection.id} collection={collection} className='mb-2' />
-          ))}
-        </View>
-      </ScrollView>
+          {isLoading && (
+            <View className='items-center justify-center absolute top-0 left-0 right-0 bottom-0 p-12'>
+              <ActivityIndicator size='large' color={THEME.light.colors.primary} />
+              <Text className='text-lg font-medium mt-4'>Loading your collections...</Text>
+            </View>
+          )}
 
-      {isLoading && (
-        <View className='items-center justify-center absolute top-0 left-0 right-0 bottom-0 p-12'>
-          <ActivityIndicator size='large' color={THEME.light.colors.primary} />
-          <Text className='text-lg font-medium mt-4'>Loading your collections...</Text>
-        </View>
+          <BasicModal isModalOpen={isCreateNewCollectionModalOpen} setIsModalOpen={setIsCreateNewCollectionModalOpen}>
+            <Text className='text-2xl font-semibold mb-4'>Create New Collection</Text>
+
+            <View className='mb-4'>
+              <Input placeholder='Enter collection name' value={collectionName} onChangeText={setCollectionName} />
+            </View>
+
+            <Button onPress={() => handleCreateNewCollection(collectionName)}>
+              <View className='flex-row items-center gap-2'>
+                <Text className='text-sm font-medium'>Create Collection</Text>
+              </View>
+            </Button>
+          </BasicModal>
+        </SafeAreaView>
       )}
-
-      <BasicModal isModalOpen={isCreateNewCollectionModalOpen} setIsModalOpen={setIsCreateNewCollectionModalOpen}>
-        <Text className='text-2xl font-semibold mb-4'>Create New Collection</Text>
-
-        <View className='mb-4'>
-          <Input placeholder='Enter collection name' value={collectionName} onChangeText={setCollectionName} />
-        </View>
-
-        <Button onPress={() => handleCreateNewCollection(collectionName)}>
-          <View className='flex-row items-center gap-2'>
-            <Text className='text-sm font-medium'>Create Collection</Text>
-          </View>
-        </Button>
-      </BasicModal>
-    </SafeAreaView>
+    </>
   );
 }

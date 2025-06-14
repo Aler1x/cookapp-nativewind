@@ -45,12 +45,6 @@ export default function ProfilePage() {
     }
   };
 
-  const handleSavePreferences = (preferences: Preferences) => {
-    console.log('Preferences saved:', preferences);
-    // Here you would make an API call to save preferences
-    setShowPreferences(false);
-  };
-
   const { getToken } = useAuth();
 
   const handleCopyToken = async () => {
@@ -105,7 +99,7 @@ export default function ProfilePage() {
             </View>
 
             {process.env.NODE_ENV === 'development' && (
-              <Button variant='outline' size='icon' className='w-10 h-10 border-gray-500' onPress={handleCopyToken}>
+              <Button variant='outline' size='icon' className='w-10 h-10 border-gray-500' onPress={handleSignOut}>
                 <UserPen size={24} />
               </Button>
             )}

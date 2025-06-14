@@ -17,6 +17,8 @@ import { ClerkProvider, ClerkLoaded } from '@clerk/clerk-expo';
 import { tokenCache } from '@clerk/clerk-expo/token-cache';
 import DesktopBlocker from '~/components/DesktopBlocker';
 import BaseLayout from '~/components/pages/base-layout';
+import 'expo-dev-client';
+
 
 SplashScreen.preventAutoHideAsync();
 
@@ -44,7 +46,7 @@ export default function Layout() {
 
   return (
     <DesktopBlocker>
-      <ClerkProvider tokenCache={tokenCache} afterSignOutUrl='/'>
+      <ClerkProvider tokenCache={tokenCache} afterSignOutUrl='https://cookapp.alerix.dev'>
         <ClerkLoaded>
           <SafeAreaProvider>
             <ThemeProvider value={isDarkColorScheme ? THEME.dark : THEME.light}>
