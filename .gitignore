@@ -43,3 +43,10 @@ app-example
 coverage/
 
 bundletool.jar
+
+
+# Android
+android/
+
+# iOS
+ios/

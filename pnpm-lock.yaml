@@ -48,7 +48,7 @@ importers:
         specifier: ^2.1.1
         version: 2.1.1
       expo:
-        specifier: ^53.0.11
+        specifier: 53.0.11
         version: 53.0.11(@babel/core@7.27.1)(@expo/metro-runtime@5.0.4(react-native@0.79.3(@babel/core@7.27.1)(@types/react@19.0.14)(react@19.0.0)))(react-native@0.79.3(@babel/core@7.27.1)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)
       expo-asset:
         specifier: ~11.1.5
@@ -72,10 +72,10 @@ importers:
         specifier: ~13.3.1
         version: 13.3.1(expo@53.0.11(@babel/core@7.27.1)(@expo/metro-runtime@5.0.4(react-native@0.79.3(@babel/core@7.27.1)(@types/react@19.0.14)(react@19.0.0)))(react-native@0.79.3(@babel/core@7.27.1)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))(react@19.0.0)
       expo-image:
-        specifier: ~2.2.0
-        version: 2.2.0(expo@53.0.11(@babel/core@7.27.1)(@expo/metro-runtime@5.0.4(react-native@0.79.3(@babel/core@7.27.1)(@types/react@19.0.14)(react@19.0.0)))(react-native@0.79.3(@babel/core@7.27.1)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))(react-native-web@0.20.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-native@0.79.3(@babel/core@7.27.1)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)
+        specifier: ~2.3.0
+        version: 2.3.0(expo@53.0.11(@babel/core@7.27.1)(@expo/metro-runtime@5.0.4(react-native@0.79.3(@babel/core@7.27.1)(@types/react@19.0.14)(react@19.0.0)))(react-native@0.79.3(@babel/core@7.27.1)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))(react-native-web@0.20.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-native@0.79.3(@babel/core@7.27.1)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)
       expo-intent-launcher:
-        specifier: ~12.1.5
+        specifier: ~12.1.4
         version: 12.1.5(expo@53.0.11(@babel/core@7.27.1)(@expo/metro-runtime@5.0.4(react-native@0.79.3(@babel/core@7.27.1)(@types/react@19.0.14)(react@19.0.0)))(react-native@0.79.3(@babel/core@7.27.1)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))
       expo-keep-awake:
         specifier: ~14.1.4
@@ -86,12 +86,15 @@ importers:
       expo-linking:
         specifier: ~7.1.5
         version: 7.1.5(expo@53.0.11(@babel/core@7.27.1)(@expo/metro-runtime@5.0.4(react-native@0.79.3(@babel/core@7.27.1)(@types/react@19.0.14)(react@19.0.0)))(react-native@0.79.3(@babel/core@7.27.1)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))(react-native@0.79.3(@babel/core@7.27.1)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)
+      expo-modules-core:
+        specifier: ~2.4.0
+        version: 2.4.0
       expo-notifications:
         specifier: ^0.31.3
         version: 0.31.3(expo@53.0.11(@babel/core@7.27.1)(@expo/metro-runtime@5.0.4(react-native@0.79.3(@babel/core@7.27.1)(@types/react@19.0.14)(react@19.0.0)))(react-native@0.79.3(@babel/core@7.27.1)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))(react-native@0.79.3(@babel/core@7.27.1)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)
       expo-router:
-        specifier: ~5.0.7
-        version: 5.0.7(fc4daa66c598e3f645c0e0dc078035fd)
+        specifier: ~5.1.0
+        version: 5.1.0(fc4daa66c598e3f645c0e0dc078035fd)
       expo-secure-store:
         specifier: ~14.2.3
         version: 14.2.3(expo@53.0.11(@babel/core@7.27.1)(@expo/metro-runtime@5.0.4(react-native@0.79.3(@babel/core@7.27.1)(@types/react@19.0.14)(react@19.0.0)))(react-native@0.79.3(@babel/core@7.27.1)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))
@@ -3117,8 +3120,8 @@ packages:
       expo: '*'
       react: '*'
 
-  expo-image@2.2.0:
-    resolution: {integrity: sha512-ushj+R0s07hBZeuYziW3ejj/vlgzNtI/uEaYS5zIQdGz6bXQHLp7l7H6NTx7dKBeHE8ESc8mE5yTgf0YZEHITw==}
+  expo-image@2.3.0:
+    resolution: {integrity: sha512-muL8OSbgCskQJsyqenKPNULWXwRm5BY2ruS6WMo/EzFyI3iXI/0mXgb2J/NXUa8xCEYxSyoGkGZFyCBvGY1ofA==}
     peerDependencies:
       expo: '*'
       react: '*'
@@ -3174,8 +3177,8 @@ packages:
       react: '*'
       react-native: '*'
 
-  expo-router@5.0.7:
-    resolution: {integrity: sha512-NlEgRXCKtseDuIHBp87UfkvqsuVrc0MYG+zg33dopaN6wik4RkrWWxUYdNPHub0s/7qMye6zZBY4ZCrXwd/xpA==}
+  expo-router@5.1.0:
+    resolution: {integrity: sha512-mnKpw35W6kKPpZm+ZxQei6HGUx2JO3znzqJZInzqrTZMgfAcHGgvP9AQFjg/Qi/Qy1CxunB9aQnqE9JPbSwbpw==}
     peerDependencies:
       '@react-navigation/drawer': ^7.3.9
       '@testing-library/jest-native': '*'
@@ -5980,7 +5983,7 @@ snapshots:
 
   '@babel/helper-annotate-as-pure@7.27.1':
     dependencies:
-      '@babel/types': 7.27.1
+      '@babel/types': 7.27.6
 
   '@babel/helper-compilation-targets@7.27.2':
     dependencies:
@@ -6024,7 +6027,7 @@ snapshots:
   '@babel/helper-member-expression-to-functions@7.27.1':
     dependencies:
       '@babel/traverse': 7.27.1
-      '@babel/types': 7.27.1
+      '@babel/types': 7.27.6
     transitivePeerDependencies:
       - supports-color
 
@@ -6046,7 +6049,7 @@ snapshots:
 
   '@babel/helper-optimise-call-expression@7.27.1':
     dependencies:
-      '@babel/types': 7.27.1
+      '@babel/types': 7.27.6
 
   '@babel/helper-plugin-utils@7.27.1': {}
 
@@ -6055,7 +6058,7 @@ snapshots:
       '@babel/core': 7.27.1
       '@babel/helper-annotate-as-pure': 7.27.1
       '@babel/helper-wrap-function': 7.27.1
-      '@babel/traverse': 7.27.1
+      '@babel/traverse': 7.27.4
     transitivePeerDependencies:
       - supports-color
 
@@ -6071,7 +6074,7 @@ snapshots:
   '@babel/helper-skip-transparent-expression-wrappers@7.27.1':
     dependencies:
       '@babel/traverse': 7.27.1
-      '@babel/types': 7.27.1
+      '@babel/types': 7.27.6
     transitivePeerDependencies:
       - supports-color
 
@@ -6084,7 +6087,7 @@ snapshots:
   '@babel/helper-wrap-function@7.27.1':
     dependencies:
       '@babel/template': 7.27.2
-      '@babel/traverse': 7.27.1
+      '@babel/traverse': 7.27.4
       '@babel/types': 7.27.6
     transitivePeerDependencies:
       - supports-color
@@ -6238,7 +6241,7 @@ snapshots:
       '@babel/core': 7.27.1
       '@babel/helper-plugin-utils': 7.27.1
       '@babel/helper-remap-async-to-generator': 7.27.1(@babel/core@7.27.1)
-      '@babel/traverse': 7.27.1
+      '@babel/traverse': 7.27.4
     transitivePeerDependencies:
       - supports-color
 
@@ -6311,7 +6314,7 @@ snapshots:
       '@babel/core': 7.27.1
       '@babel/helper-compilation-targets': 7.27.2
       '@babel/helper-plugin-utils': 7.27.1
-      '@babel/traverse': 7.27.1
+      '@babel/traverse': 7.27.4
     transitivePeerDependencies:
       - supports-color
 
@@ -6421,7 +6424,7 @@ snapshots:
       '@babel/helper-module-imports': 7.27.1
       '@babel/helper-plugin-utils': 7.27.1
       '@babel/plugin-syntax-jsx': 7.27.1(@babel/core@7.27.1)
-      '@babel/types': 7.27.1
+      '@babel/types': 7.27.6
     transitivePeerDependencies:
       - supports-color
 
@@ -6943,9 +6946,9 @@ snapshots:
   '@expo/metro-config@0.20.14':
     dependencies:
       '@babel/core': 7.27.1
-      '@babel/generator': 7.27.1
-      '@babel/parser': 7.27.2
-      '@babel/types': 7.27.1
+      '@babel/generator': 7.27.5
+      '@babel/parser': 7.27.5
+      '@babel/types': 7.27.6
       '@expo/config': 11.0.10
       '@expo/env': 1.0.5
       '@expo/json-file': 9.1.4
@@ -7614,7 +7617,7 @@ snapshots:
 
   '@react-native/babel-plugin-codegen@0.79.3(@babel/core@7.27.1)':
     dependencies:
-      '@babel/traverse': 7.27.1
+      '@babel/traverse': 7.27.4
       '@react-native/codegen': 0.79.3(@babel/core@7.27.1)
     transitivePeerDependencies:
       - '@babel/core'
@@ -7937,24 +7940,24 @@ snapshots:
 
   '@types/babel__core@7.20.5':
     dependencies:
-      '@babel/parser': 7.27.2
-      '@babel/types': 7.27.1
+      '@babel/parser': 7.27.5
+      '@babel/types': 7.27.6
       '@types/babel__generator': 7.27.0
       '@types/babel__template': 7.4.4
       '@types/babel__traverse': 7.20.7
 
   '@types/babel__generator@7.27.0':
     dependencies:
-      '@babel/types': 7.27.1
+      '@babel/types': 7.27.6
 
   '@types/babel__template@7.4.4':
     dependencies:
-      '@babel/parser': 7.27.2
-      '@babel/types': 7.27.1
+      '@babel/parser': 7.27.5
+      '@babel/types': 7.27.6
 
   '@types/babel__traverse@7.20.7':
     dependencies:
-      '@babel/types': 7.27.1
+      '@babel/types': 7.27.6
 
   '@types/eslint-scope@3.7.7':
     dependencies:
@@ -8487,7 +8490,7 @@ snapshots:
   babel-plugin-jest-hoist@29.6.3:
     dependencies:
       '@babel/template': 7.27.2
-      '@babel/types': 7.27.1
+      '@babel/types': 7.27.6
       '@types/babel__core': 7.20.5
       '@types/babel__traverse': 7.20.7
 
@@ -9545,7 +9548,7 @@ snapshots:
       fontfaceobserver: 2.3.0
       react: 19.0.0
 
-  expo-image@2.2.0(expo@53.0.11(@babel/core@7.27.1)(@expo/metro-runtime@5.0.4(react-native@0.79.3(@babel/core@7.27.1)(@types/react@19.0.14)(react@19.0.0)))(react-native@0.79.3(@babel/core@7.27.1)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))(react-native-web@0.20.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-native@0.79.3(@babel/core@7.27.1)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0):
+  expo-image@2.3.0(expo@53.0.11(@babel/core@7.27.1)(@expo/metro-runtime@5.0.4(react-native@0.79.3(@babel/core@7.27.1)(@types/react@19.0.14)(react@19.0.0)))(react-native@0.79.3(@babel/core@7.27.1)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0))(react-native-web@0.20.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-native@0.79.3(@babel/core@7.27.1)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0):
     dependencies:
       expo: 53.0.11(@babel/core@7.27.1)(@expo/metro-runtime@5.0.4(react-native@0.79.3(@babel/core@7.27.1)(@types/react@19.0.14)(react@19.0.0)))(react-native@0.79.3(@babel/core@7.27.1)(@types/react@19.0.14)(react@19.0.0))(react@19.0.0)
       react: 19.0.0
@@ -9617,7 +9620,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  expo-router@5.0.7(fc4daa66c598e3f645c0e0dc078035fd):
+  expo-router@5.1.0(fc4daa66c598e3f645c0e0dc078035fd):
     dependencies:
       '@expo/metro-runtime': 5.0.4(react-native@0.79.3(@babel/core@7.27.1)(@types/react@19.0.14)(react@19.0.0))
       '@expo/server': 0.6.2
@@ -10217,7 +10220,7 @@ snapshots:
   istanbul-lib-instrument@5.2.1:
     dependencies:
       '@babel/core': 7.27.1
-      '@babel/parser': 7.27.2
+      '@babel/parser': 7.27.5
       '@istanbuljs/schema': 0.1.3
       istanbul-lib-coverage: 3.2.2
       semver: 6.3.1
@@ -10227,7 +10230,7 @@ snapshots:
   istanbul-lib-instrument@6.0.3:
     dependencies:
       '@babel/core': 7.27.1
-      '@babel/parser': 7.27.2
+      '@babel/parser': 7.27.5
       '@istanbuljs/schema': 0.1.3
       istanbul-lib-coverage: 3.2.2
       semver: 7.7.2
@@ -11009,7 +11012,7 @@ snapshots:
   metro-transform-plugins@0.82.4:
     dependencies:
       '@babel/core': 7.27.1
-      '@babel/generator': 7.27.1
+      '@babel/generator': 7.27.5
       '@babel/template': 7.27.2
       '@babel/traverse': 7.27.1
       flow-enums-runtime: 0.0.6
@@ -11020,9 +11023,9 @@ snapshots:
   metro-transform-worker@0.82.4:
     dependencies:
       '@babel/core': 7.27.1
-      '@babel/generator': 7.27.1
-      '@babel/parser': 7.27.2
-      '@babel/types': 7.27.1
+      '@babel/generator': 7.27.5
+      '@babel/parser': 7.27.5
+      '@babel/types': 7.27.6
       flow-enums-runtime: 0.0.6
       metro: 0.82.4
       metro-babel-transformer: 0.82.4
@@ -11041,11 +11044,11 @@ snapshots:
     dependencies:
       '@babel/code-frame': 7.27.1
       '@babel/core': 7.27.1
-      '@babel/generator': 7.27.1
-      '@babel/parser': 7.27.2
+      '@babel/generator': 7.27.5
+      '@babel/parser': 7.27.5
       '@babel/template': 7.27.2
       '@babel/traverse': 7.27.1
-      '@babel/types': 7.27.1
+      '@babel/types': 7.27.6
       accepts: 1.3.8
       chalk: 4.1.2
       ci-info: 2.0.0

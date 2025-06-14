@@ -13,7 +13,7 @@ export interface RecipeFull {
   };
   duration: number; // in minutes
   servings: number;
-  nutritions?: {
+  nutrition?: {
     calories: number;
     fat: number;
     protein: number;

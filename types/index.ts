@@ -1,17 +1,13 @@
-export type ErrorResponse = {
+export type Response<T> = {
   success: boolean;
+  data?: T;
   message?: string;
   error?: string;
 };
 
-export type SuccessResponse<T> = {
-  success: boolean;
-  data: T;
-};
-
 export type PaginatedResponse<T> = {
-  success?: boolean;
-  data: T[];
+  success?: boolean; // spring doesn't send this
+  data?: T[];
   meta: {
     page: number;
     totalPages: number;

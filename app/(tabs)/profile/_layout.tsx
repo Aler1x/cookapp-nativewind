@@ -1,4 +1,4 @@
-import { Stack } from 'expo-router';
+import { router, Stack } from 'expo-router';
 import { View } from '~/components/ui/view';
 import { Text } from '~/components/ui/text';
 import { TouchableOpacity } from 'react-native';
@@ -14,7 +14,7 @@ export default function Layout() {
             <SafeAreaView>
               <View className='bg-background px-4 py-2 flex-row items-center justify-between'>
                 <TouchableOpacity
-                  onPress={() => props.navigation.goBack()}
+                  onPress={() => router.push('(tabs)/profile')}
                   className='flex-row items-center gap-2 w-10 h-10'>
                   <ChevronLeft size={24} color='#000' />
                 </TouchableOpacity>

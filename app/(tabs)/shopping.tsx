@@ -27,6 +27,7 @@ const ShoppingListItem = ({
     <View key={item.id} className='flex-row items-center py-3 border-b border-gray-200 gap-4'>
       <Checkbox
         className='rounded-md w-7 h-7'
+        variant='black'
         checked={item.isChecked}
         onCheckedChange={() => {
           toggleItem(item.id);
