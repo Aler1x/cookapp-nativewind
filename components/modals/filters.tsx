@@ -8,12 +8,9 @@ import { X } from '~/assets/icons';
 import { FiltersResponse, FiltersRequest } from '~/types/home';
 import { useFetch } from '~/hooks/useFetch';
 import { API_ENDPOINTS_PREFIX, THEME } from '~/lib/constants';
-import { SuccessResponse } from '~/types';
 import { Slider } from '@miblanchard/react-native-slider';
-
-function capitalize(str: string) {
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}
+import { capitalizeFirstLetter } from '~/lib/utils';
+import { Response } from '~/types';
 
 interface FilterPillProps {
   name: string;
@@ -25,10 +22,10 @@ function FilterPill({ name, selected, onPress }: FilterPillProps) {
   return (
     <TouchableOpacity
       onPress={onPress}
-      className={`px-4 py-2 rounded-full mr-2 mb-2 border ${
-        selected ? 'bg-primary border-primary' : 'bg-transparent border-gray-300'
+      className={`mb-2 mr-2 rounded-full border px-4 py-2 ${
+        selected ? 'border-primary bg-primary' : 'border-gray-300 bg-transparent'
       }`}>
-      <Text className={`text-sm ${selected ? 'font-medium' : 'text-gray-700'}`}>{capitalize(name)}</Text>
+      <Text className={`text-sm ${selected ? 'font-medium' : 'text-gray-700'}`}>{capitalizeFirstLetter(name)}</Text>
     </TouchableOpacity>
   );
 }
@@ -58,7 +55,7 @@ function FilterSection({
   return (
     <View className='mb-6'>
       <View className='flex-row items-center justify-between'>
-        <Text className='text-lg font-semibold mb-3'>{title}</Text>
+        <Text className='mb-3 text-lg font-semibold'>{title}</Text>
         {!items && <ActivityIndicator size='small' color={THEME.light.colors.primary} />}
       </View>
       <View className='flex-row flex-wrap'>
@@ -72,9 +69,9 @@ function FilterSection({
         ))}
       </View>
       {hasMore && (
-        <View className='flex-row mt-2'>
+        <View className='mt-2 flex-row'>
           <TouchableOpacity onPress={onToggleShowAll}>
-            <Text className='text-gray-500 text-sm'>{showAll ? 'Show less' : 'Show more'}</Text>
+            <Text className='text-sm text-gray-500'>{showAll ? 'Show less' : 'Show more'}</Text>
           </TouchableOpacity>
         </View>
       )}
@@ -100,7 +97,7 @@ export default function FiltersPage({ onClose, filters, onApplyFilters }: Filter
   useEffect(() => {
     const fetchFilters = async () => {
       try {
-        const response = await $fetch<SuccessResponse<FiltersResponse>>(`${API_ENDPOINTS_PREFIX.node}/recipes/filters`);
+        const response = await $fetch<Response<FiltersResponse>>(`${API_ENDPOINTS_PREFIX.node}/recipes/filters`);
         setAvailableFilters(response.data);
       } catch (error) {
         console.error('Failed to fetch filters:', error);
@@ -187,7 +184,7 @@ export default function FiltersPage({ onClose, filters, onApplyFilters }: Filter
   return (
     <SafeAreaView className='flex-1 bg-background'>
       {/* Header */}
-      <View className='flex-row items-center justify-between px-6 py-6 border-b border-gray-200'>
+      <View className='flex-row items-center justify-between border-b border-gray-200 px-6 py-6'>
         <TouchableOpacity onPress={clearAll}>
           <Text className='text-gray-500'>Clear all</Text>
         </TouchableOpacity>
@@ -199,16 +196,16 @@ export default function FiltersPage({ onClose, filters, onApplyFilters }: Filter
       <ScrollView className='flex-1 px-4 py-6'>
         {/* Title and Description */}
         <View className='mb-6'>
-          <Text className='text-2xl font-bold mb-2'>Filters</Text>
-          <Text className='text-gray-600 text-base leading-relaxed'>
+          <Text className='mb-2 text-2xl font-bold'>Filters</Text>
+          <Text className='text-base leading-relaxed text-gray-600'>
             Customize your recipe search to find exactly what you&apos;re looking for
           </Text>
         </View>
 
         {/* Cooking Time Slider */}
         <View className='mb-6'>
-          <Text className='text-lg font-semibold mb-2'>Cooking Time</Text>
-          <Text className='text-gray-600 text-center'>
+          <Text className='mb-2 text-lg font-semibold'>Cooking Time</Text>
+          <Text className='text-center text-gray-600'>
             {formatCookTime(currentFilters.cookTime.min)} - {formatCookTime(currentFilters.cookTime.max)}
           </Text>
           <Slider
@@ -260,8 +257,8 @@ export default function FiltersPage({ onClose, filters, onApplyFilters }: Filter
 
       {/* Apply Button */}
       <View className='px-4 pb-4'>
-        <Button onPress={handleApply} className='w-full py-4 rounded-full bg-black'>
-          <Text className='text-white font-semibold text-center'>
+        <Button onPress={handleApply} className='w-full rounded-full bg-black py-4'>
+          <Text className='text-center font-semibold text-white'>
             Apply {getAppliedFiltersCount() > 0 && `(${getAppliedFiltersCount()})`}
           </Text>
         </Button>

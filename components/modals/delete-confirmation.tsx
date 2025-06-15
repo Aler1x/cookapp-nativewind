@@ -36,12 +36,12 @@ export default function DeleteConfirmationModal({
   return (
     <BasicModal isModalOpen={isOpen} setIsModalOpen={onClose}>
       <View className='gap-4'>
-        <Text className='text-xl font-bold text-center'>{title}</Text>
+        <Text className='text-center text-xl font-bold'>{title}</Text>
         <Text className='text-center text-muted-foreground'>
           {message} &quot;{itemName}&quot;? This action cannot be undone.
         </Text>
 
-        <View className='flex-row gap-3 mt-4'>
+        <View className='mt-4 flex-row gap-3'>
           <Button variant='outline' className='flex-1' onPress={handleReject}>
             <Text>Cancel</Text>
           </Button>

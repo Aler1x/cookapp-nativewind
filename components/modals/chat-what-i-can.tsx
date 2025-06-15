@@ -12,19 +12,19 @@ export default function ChatWhatICan({ onClose }: ChatWhatICanProps) {
   const options: ChatFeature[] = [
     {
       id: 1,
-      icon: <BookOpen className='w-5 h-5 text-primary' />,
+      icon: <BookOpen className='h-5 w-5 text-primary' />,
       label: 'Recipes',
       description: 'Find recipes for you',
     },
     {
       id: 2,
-      icon: <CookingPot className='w-5 h-5 text-primary' />,
+      icon: <CookingPot className='h-5 w-5 text-primary' />,
       label: 'Create',
       description: 'Create a recipe for you',
     },
     {
       id: 3,
-      icon: <ChefHat className='w-5 h-5 text-primary' />,
+      icon: <ChefHat className='h-5 w-5 text-primary' />,
       label: 'Answer questions',
       description: 'Ask me anything about recipes',
     },
@@ -33,8 +33,8 @@ export default function ChatWhatICan({ onClose }: ChatWhatICanProps) {
   return (
     <>
       {/* Header */}
-      <View className='flex-row items-center justify-center mb-6'>
-        <Text className='text-2xl font-bold text-foreground flex-1 text-center'>What can I do for you?</Text>
+      <View className='mb-6 flex-row items-center justify-center'>
+        <Text className='flex-1 text-center text-2xl font-bold text-foreground'>What can I do for you?</Text>
       </View>
 
       {/* Options */}
@@ -42,15 +42,15 @@ export default function ChatWhatICan({ onClose }: ChatWhatICanProps) {
         {options.map((option) => (
           <View
             key={option.id}
-            className='bg-card rounded-xl p-4 border border-border shadow-sm active:scale-[0.98] transition-transform'>
+            className='rounded-xl border border-border bg-card p-4 shadow-sm transition-transform active:scale-[0.98]'>
             <View className='flex-row items-center'>
               {/* Icon container */}
-              <View className='p-3 rounded-xl bg-primary/10 mr-4'>{option.icon}</View>
+              <View className='mr-4 rounded-xl bg-primary/10 p-3'>{option.icon}</View>
 
               {/* Content */}
               <View className='flex-1'>
-                <Text className='text-lg font-semibold text-foreground mb-1'>{option.label}</Text>
-                <Text className='text-sm text-muted-foreground leading-relaxed'>{option.description}</Text>
+                <Text className='mb-1 text-lg font-semibold text-foreground'>{option.label}</Text>
+                <Text className='text-sm leading-relaxed text-muted-foreground'>{option.description}</Text>
               </View>
             </View>
           </View>

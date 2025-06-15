@@ -86,11 +86,11 @@ export default function ProfilePage() {
           <Text className='text-3xl font-bold'>Profile</Text>
           <View className='flex-row items-center justify-between'>
             <View className='flex-row items-center gap-4'>
-              <Image source={user?.imageUrl} className='w-16 h-16 rounded-full' />
+              <Image source={user?.imageUrl} className='h-16 w-16 rounded-full' />
               <View>
                 <Text className='text-lg font-semibold'>{user?.fullName}</Text>
                 <Text
-                  className='text-sm text-gray-500 font-regular max-w-[60vw]'
+                  className='font-regular max-w-[60vw] text-sm text-gray-500'
                   numberOfLines={1}
                   ellipsizeMode='middle'>
                   {user?.emailAddresses[0].emailAddress}
@@ -99,23 +99,23 @@ export default function ProfilePage() {
             </View>
 
             {process.env.NODE_ENV === 'development' && (
-              <Button variant='outline' size='icon' className='w-10 h-10 border-gray-500' onPress={handleSignOut}>
+              <Button variant='outline' size='icon' className='h-10 w-10 border-gray-500' onPress={handleSignOut}>
                 <UserPen size={24} />
               </Button>
             )}
           </View>
           <View>
             {user?.unsafeMetadata.isPremium ? (
-              <View className='flex-row items-center justify-between bg-[hsl(170,33%,76%)] rounded-3xl py-4 px-6 mb-4'>
+              <View className='mb-4 flex-row items-center justify-between rounded-3xl bg-[hsl(170,33%,76%)] px-6 py-4'>
                 <View className='flex-row items-center gap-4'>
-                  <View className='w-12 h-12 bg-white rounded-full items-center justify-center'>
+                  <View className='h-12 w-12 items-center justify-center rounded-full bg-white'>
                     <CookingPot size={24} color='#4b5563' />
                   </View>
                   <View>
-                    <Text className='text-lg font-bold text-gray-800 text-wrap max-w-[60vw]'>
+                    <Text className='max-w-[60vw] text-wrap text-lg font-bold text-gray-800'>
                       Your Premium Plan is Active
                     </Text>
-                    <Text className='text-sm text-gray-600 text-wrap max-w-[60vw]'>
+                    <Text className='max-w-[60vw] text-wrap text-sm text-gray-600'>
                       You have access to all features
                     </Text>
                   </View>
@@ -123,15 +123,15 @@ export default function ProfilePage() {
               </View>
             ) : (
               <TouchableOpacity
-                className='flex-row items-center justify-between bg-[hsl(170,33%,76%)] rounded-3xl py-4 px-6 mb-4'
+                className='mb-4 flex-row items-center justify-between rounded-3xl bg-[hsl(170,33%,76%)] px-6 py-4'
                 onPress={() => setShowPremium(true)}>
                 <View className='flex-row items-center gap-4'>
-                  <View className='w-12 h-12 bg-white rounded-full items-center justify-center'>
+                  <View className='h-12 w-12 items-center justify-center rounded-full bg-white'>
                     <CookingPot size={24} color='#4b5563' />
                   </View>
                   <View>
-                    <Text className='text-lg font-bold text-gray-800 text-wrap max-w-[60vw]'>Buy Premium</Text>
-                    <Text className='text-sm text-gray-600 text-wrap max-w-[60vw]'>Unlock all features</Text>
+                    <Text className='max-w-[60vw] text-wrap text-lg font-bold text-gray-800'>Buy Premium</Text>
+                    <Text className='max-w-[60vw] text-wrap text-sm text-gray-600'>Unlock all features</Text>
                   </View>
                 </View>
               </TouchableOpacity>
@@ -151,9 +151,9 @@ export default function ProfilePage() {
 
             <TouchableOpacity
               onPress={() => setShowPreferences(true)}
-              className='flex-row items-center justify-between border-b border-gray-500 py-6 px-4'>
+              className='flex-row items-center justify-between border-b border-gray-500 px-4 py-6'>
               <View className='flex-row items-center gap-4'>
-                <View className='w-14 h-14 bg-gray-200 rounded-2xl items-center justify-center'>
+                <View className='h-14 w-14 items-center justify-center rounded-2xl bg-gray-200'>
                   <Heart size={24} color='#666' />
                 </View>
                 <Text className='text-lg font-semibold'>Preferences</Text>
@@ -162,9 +162,9 @@ export default function ProfilePage() {
             </TouchableOpacity>
 
             <Link href='/profile/my-recipes' asChild>
-              <Pressable className='flex-row items-center justify-between border-b border-gray-500 py-6 px-4'>
+              <Pressable className='flex-row items-center justify-between border-b border-gray-500 px-4 py-6'>
                 <View className='flex-row items-center gap-4'>
-                  <View className='w-14 h-14 bg-gray-200 rounded-2xl items-center justify-center'>
+                  <View className='h-14 w-14 items-center justify-center rounded-2xl bg-gray-200'>
                     <CookingPot size={24} color='#666' />
                   </View>
                   <Text className='text-lg font-semibold'>My Recipes</Text>
@@ -175,9 +175,9 @@ export default function ProfilePage() {
 
             <TouchableOpacity
               onPress={() => Linking.openURL('mailto:support@cookapp.ai?subject=Support Request')}
-              className='flex-row items-center justify-between border-b border-gray-500 py-6 px-4'>
+              className='flex-row items-center justify-between border-b border-gray-500 px-4 py-6'>
               <View className='flex-row items-center gap-4'>
-                <View className='w-14 h-14 bg-gray-200 rounded-2xl items-center justify-center'>
+                <View className='h-14 w-14 items-center justify-center rounded-2xl bg-gray-200'>
                   <HelpCircle size={24} color='#666' />
                 </View>
                 <Text className='text-lg font-semibold'>Support</Text>

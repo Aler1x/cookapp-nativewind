@@ -2,14 +2,14 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { View } from '~/components/ui/view';
 import { Text } from '~/components/ui/text';
 import { Button } from '~/components/ui/button';
-import { ScrollView, TouchableOpacity, ActivityIndicator, KeyboardAvoidingView, Platform } from 'react-native';
+import { ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { X } from '~/assets/icons';
 import { Preferences, PreferencesRequest } from '~/types/profile';
 import BasicModal from '../ui/basic-modal';
 import { useFetch } from '~/hooks/useFetch';
 import { API_ENDPOINTS_PREFIX, THEME } from '~/lib/constants';
 import InputWithDropdown, { SelectListData } from '../ui/input-with-dropdown';
-import { SuccessResponse, SearchProduct } from '~/types';
+import { SearchProduct, Response } from '~/types';
 
 interface PreferencePillProps {
   name: string;
@@ -21,8 +21,8 @@ function PreferencePill({ name, selected, onPress }: PreferencePillProps) {
   return (
     <TouchableOpacity
       onPress={onPress}
-      className={`px-4 py-2 rounded-full mr-2 mb-2 border ${
-        selected ? 'bg-secondary border-secondary' : 'bg-transparent border-gray-300'
+      className={`mb-2 mr-2 rounded-full border px-4 py-2 ${
+        selected ? 'border-secondary bg-secondary' : 'border-gray-300 bg-transparent'
       }`}>
       <Text className={`text-sm ${selected ? 'font-medium' : 'text-gray-700'}`}>{name}</Text>
     </TouchableOpacity>
@@ -56,7 +56,7 @@ function PreferenceSection({
   return (
     <View className='mb-6'>
       <View className='flex-row items-center justify-between'>
-        <Text className='text-lg font-semibold mb-3'>{title}</Text>
+        <Text className='mb-3 text-lg font-semibold'>{title}</Text>
         {!items && <ActivityIndicator size='small' color={THEME.light.colors.primary} />}
       </View>
       <View className='flex-row flex-wrap'>
@@ -69,15 +69,15 @@ function PreferenceSection({
           />
         ))}
       </View>
-      <View className='flex-row mt-2'>
+      <View className='mt-2 flex-row'>
         {hasMore && (
           <TouchableOpacity onPress={onToggleShowAll} className='mr-4'>
-            <Text className='text-gray-500 text-sm'>{showAll ? 'Show less' : 'Show more'}</Text>
+            <Text className='text-sm text-gray-500'>{showAll ? 'Show less' : 'Show more'}</Text>
           </TouchableOpacity>
         )}
         {showAddNew && (
           <TouchableOpacity onPress={onAddNew}>
-            <Text className='text-gray-500 text-sm'>Add new</Text>
+            <Text className='text-sm text-gray-500'>Add new</Text>
           </TouchableOpacity>
         )}
       </View>
@@ -108,7 +108,7 @@ export default function PreferencesPage({ onClose }: PreferencesPageProps) {
 
   useEffect(() => {
     const fetchPreferences = async () => {
-      const preferences = await $fetch<{ data: Preferences }>(`${API_ENDPOINTS_PREFIX.node}/preferences`);
+      const preferences = await $fetch<Response<Preferences>>(`${API_ENDPOINTS_PREFIX.node}/preferences`);
       setPreferences(preferences.data);
     };
     fetchPreferences();
@@ -239,13 +239,10 @@ export default function PreferencesPage({ onClose }: PreferencesPageProps) {
 
   const fetchProducts = useCallback(
     async (query: string) => {
-      const products = await $fetch<SuccessResponse<SearchProduct[]>>(
-        `${API_ENDPOINTS_PREFIX.node}/ingredients/search`,
-        {
-          method: 'POST',
-          body: JSON.stringify({ query, limit: 3 }),
-        }
-      );
+      const products = await $fetch<Response<SearchProduct[]>>(`${API_ENDPOINTS_PREFIX.node}/ingredients/search`, {
+        method: 'POST',
+        body: JSON.stringify({ query, limit: 3 }),
+      });
 
       return products.data.map((product) => ({
         id: product.id,
@@ -258,7 +255,7 @@ export default function PreferencesPage({ onClose }: PreferencesPageProps) {
   return (
     <View className='flex-1 bg-background'>
       {/* Header */}
-      <View className='flex-row items-center justify-between px-6 py-6 border-b border-gray-200'>
+      <View className='flex-row items-center justify-between border-b border-gray-200 px-6 py-6'>
         <TouchableOpacity onPress={clearAll}>
           <Text className='text-gray-500'>Clear all</Text>
         </TouchableOpacity>
@@ -270,8 +267,8 @@ export default function PreferencesPage({ onClose }: PreferencesPageProps) {
       <ScrollView className='flex-1 px-4 py-6'>
         {/* Title and Description */}
         <View className='mb-6'>
-          <Text className='text-2xl font-bold mb-2'>Your preferences</Text>
-          <Text className='text-gray-600 text-base leading-relaxed'>
+          <Text className='mb-2 text-2xl font-bold'>Your preferences</Text>
+          <Text className='text-base leading-relaxed text-gray-600'>
             Tell us about your preferences and we can choose the best recipes for you
           </Text>
         </View>
@@ -325,8 +322,8 @@ export default function PreferencesPage({ onClose }: PreferencesPageProps) {
 
       {/* Save Button */}
       <View className='px-4 pb-4'>
-        <Button onPress={savePreferences} className='w-full py-4 rounded-full bg-black'>
-          <Text className='text-white font-semibold text-center'>Save</Text>
+        <Button onPress={savePreferences} className='w-full rounded-full bg-black py-4'>
+          <Text className='text-center font-semibold text-white'>Save</Text>
         </Button>
       </View>
 

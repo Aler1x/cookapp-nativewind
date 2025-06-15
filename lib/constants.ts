@@ -68,8 +68,5 @@ export const THEME = {
 export const API_ENDPOINTS_PREFIX = {
   spring: '/api',
   node: '/personalization',
-  node_video: '/external-sources',
-  node_meme: '/is-possible-url-longer-than-1000-characters-Nadiia-would-definitely-use-this-for-the-api-endpoint',
-  python: '/chatbot',
   public: '/public',
 };

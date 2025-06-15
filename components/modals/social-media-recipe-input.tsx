@@ -35,7 +35,7 @@ export default function SocialMediaRecipeInput({
         </TouchableOpacity>
       </View>
 
-      <View className='gap-4 mb-6'>
+      <View className='mb-6 gap-4'>
         <Text className='text-sm text-gray-600'>Paste a link from Instagram, TikTok, YouTube</Text>
 
         <Input

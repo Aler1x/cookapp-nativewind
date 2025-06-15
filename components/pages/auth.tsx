@@ -77,7 +77,7 @@ export default function AuthPage() {
   }, [startSSOFlow]);
 
   return (
-    <SafeAreaView className='flex-1 justify-center items-center bg-background gap-4'>
+    <SafeAreaView className='flex-1 items-center justify-center gap-4 bg-background'>
       <Text className='text-xl font-bold'>Sign in to CookApp</Text>
       <Button onPress={onGooglePress} variant='black' className='w-60'>
         <View className='flex-row items-center gap-2'>

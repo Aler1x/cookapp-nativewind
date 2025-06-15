@@ -36,12 +36,12 @@ export default function LibraryCard({ collection, className }: LibraryCardProps)
         previews.push(
           <View
             key={i}
-            className='absolute w-full h-full rounded-xl overflow-hidden'
+            className='absolute h-full w-full overflow-hidden rounded-xl'
             style={{
               left: leftOffset,
               zIndex: zIndex,
             }}>
-            <Image source={{ uri: images[i] }} className='w-full h-full' resizeMode='cover' />
+            <Image source={{ uri: images[i] }} className='h-full w-full' resizeMode='cover' />
           </View>
         );
       } else {
@@ -50,7 +50,7 @@ export default function LibraryCard({ collection, className }: LibraryCardProps)
         previews.push(
           <View
             key={i}
-            className={cn('absolute w-full h-full rounded-xl', fallbackColors[colorIndex])}
+            className={cn('absolute h-full w-full rounded-xl', fallbackColors[colorIndex])}
             style={{
               left: leftOffset,
               zIndex: zIndex,
@@ -68,16 +68,16 @@ export default function LibraryCard({ collection, className }: LibraryCardProps)
   return (
     <TouchableOpacity onPress={handlePress} className={cn('w-[48%]', className)} activeOpacity={0.7}>
       {/* Image previews section */}
-      <View className='h-32 mb-3 relative' style={{ marginRight: offsetAmount * 2 }}>
+      <View className='relative mb-3 h-32' style={{ marginRight: offsetAmount * 2 }}>
         {getImagePreviews()}
       </View>
 
       {/* Collection info */}
       <View className='flex-row items-center justify-between'>
-        <Text className='font-semibold text-lg' numberOfLines={1}>
+        <Text className='text-lg font-semibold' numberOfLines={1}>
           {collection.name}
         </Text>
-        <Text className='text-muted-foreground text-sm font-medium'>
+        <Text className='text-sm font-medium text-muted-foreground'>
           {recipeCount} {recipeCount === 1 ? 'recipe' : 'recipes'}
         </Text>
       </View>

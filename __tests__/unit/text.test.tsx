@@ -44,7 +44,7 @@ describe('Text Component', () => {
   });
 
   it('handles multiple font weight classes correctly', () => {
-    const { getByText } = render(<Text className='font-light font-bold text-blue-500'>Multiple Font Classes</Text>);
+    const { getByText } = render(<Text className='font-bold font-light text-blue-500'>Multiple Font Classes</Text>);
     const textElement = getByText('Multiple Font Classes');
 
     // Should use the last font weight class (font-bold)

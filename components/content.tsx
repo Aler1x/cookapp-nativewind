@@ -16,10 +16,10 @@ export default function Content() {
           <View className='flex flex-col items-center gap-4 text-center'>
             <Text
               role='heading'
-              className='text-3xl text-center native:text-4xl tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl'>
+              className='native:text-4xl text-center text-3xl tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl'>
               Welcome to Project ACME
             </Text>
-            <Text className='mx-auto max-w-[700px] text-lg text-center text-gray-500 md:text-xl dark:text-gray-400'>
+            <Text className='mx-auto max-w-[700px] text-center text-lg text-gray-500 dark:text-gray-400 md:text-xl'>
               Discover and collaborate on acme. Explore our services now.
             </Text>
 

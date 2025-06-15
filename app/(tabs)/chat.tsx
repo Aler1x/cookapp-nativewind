@@ -37,7 +37,7 @@ export default function ChatPage() {
             onPress={() => {
               setIsModalOpen(true);
             }}>
-            <Info className='w-8 h-8' />
+            <Info className='h-8 w-8' />
           </TouchableOpacity>
         </View>
 
@@ -46,7 +46,7 @@ export default function ChatPage() {
         </BasicModal>
 
         <ScrollView
-          className='flex-1 w-full flex-col-reverse'
+          className='w-full flex-1 flex-col-reverse'
           contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-end' }}
           keyboardShouldPersistTaps='handled'>
           {messages.map((message) => (
@@ -54,10 +54,10 @@ export default function ChatPage() {
           ))}
         </ScrollView>
 
-        <View className='flex-row items-end gap-2 w-full mb-4'>
+        <View className='mb-4 w-full flex-row items-end gap-2'>
           <Textarea
             placeholder='Ask me anything about recipes'
-            className='flex-1 bg-background rounded-lg p-2'
+            className='flex-1 rounded-lg bg-background p-2'
             value={message}
             numberOfLines={2}
             onChangeText={setMessage}
@@ -79,7 +79,7 @@ export default function ChatPage() {
               ]);
               setMessage('');
             }}>
-            <Send className='w-6 h-6 text-primary' />
+            <Send className='h-6 w-6 text-primary' />
           </Button>
         </View>
       </KeyboardAvoidingView>

@@ -19,7 +19,7 @@ export default function NavBar() {
   };
 
   return (
-    <View className='flex-row justify-around items-center h-16 border-t'>
+    <View className='h-16 flex-row items-center justify-around border-t'>
       <TouchableOpacity
         onPress={() => redirectIfNotOnRoute('/(tabs)/search')}
         className='flex-1 items-center justify-center'>

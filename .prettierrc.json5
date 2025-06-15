@@ -9,4 +9,6 @@
   bracketSpacing: true,
   bracketSameLine: true,
   bracketSpacing: true,
+  plugins: ['prettier-plugin-tailwindcss'],
+  tailwindFunctions: ['cn', 'cva'],
 }

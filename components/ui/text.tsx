@@ -60,7 +60,7 @@ const Text = React.forwardRef<TextRef, TextProps>(({ className, asChild = false,
 
   return (
     <Component
-      className={cn('text-base text-foreground web:select-text tracking-[0.05em]', cleanClassName)}
+      className={cn('text-base tracking-[0.05em] text-foreground web:select-text', cleanClassName)}
       ref={ref}
       style={mergedStyle}
       {...props}

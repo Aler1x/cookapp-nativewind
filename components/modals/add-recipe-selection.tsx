@@ -25,7 +25,7 @@ export default function AddRecipeSelection({
         </TouchableOpacity>
       </View>
 
-      <View className='gap-2 w-full mb-6'>
+      <View className='mb-6 w-full gap-2'>
         <Button onPress={onSelectSocialMedia}>
           <Text>Create from social media</Text>
         </Button>

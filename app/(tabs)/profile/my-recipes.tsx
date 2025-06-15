@@ -83,9 +83,7 @@ export default function Page() {
         if (!append) setJobsIsLoading(true);
         else setJobsIsLoadingMore(true);
 
-        const response = await $fetch<PaginatedResponse<Job>>(
-          `${API_ENDPOINTS_PREFIX.node}/jobs?page=${page}&size=10`
-        );
+        const response = await $fetch<PaginatedResponse<Job>>(`${API_ENDPOINTS_PREFIX.node}/jobs?page=${page}&size=10`);
 
         if (append) {
           setJobs((prev) => [...prev, ...response.data]);
@@ -203,7 +201,7 @@ export default function Page() {
   const renderRecipesFooter = () => {
     if (recipesIsLoadingMore) {
       return (
-        <View className='py-2 items-center'>
+        <View className='items-center py-2'>
           <ActivityIndicator size='large' color={THEME.light.colors.primary} />
         </View>
       );
@@ -211,9 +209,9 @@ export default function Page() {
 
     if (recipes.length > 0 && recipesCurrentPage >= recipesTotalPages) {
       return (
-        <View className='py-2 items-center'>
+        <View className='items-center py-2'>
           <Text className='text-muted-foreground'>You&apos;ve reached the end!</Text>
-          <Text className='text-sm text-muted-foreground mt-1'>
+          <Text className='mt-1 text-sm text-muted-foreground'>
             Found {recipes.length} recipe{recipes.length !== 1 ? 's' : ''}
           </Text>
         </View>
@@ -227,7 +225,7 @@ export default function Page() {
   const renderJobsFooter = () => {
     if (jobsIsLoadingMore) {
       return (
-        <View className='py-2 items-center'>
+        <View className='items-center py-2'>
           <ActivityIndicator size='large' color={THEME.light.colors.primary} />
         </View>
       );
@@ -239,9 +237,9 @@ export default function Page() {
   if (recipesIsLoading && recipes.length === 0) {
     return (
       <SafeAreaView className='flex-1 items-center justify-center' style={{ padding: 16 }} edges={['top']}>
-        <View className='flex-1 justify-center items-center'>
+        <View className='flex-1 items-center justify-center'>
           <ActivityIndicator size='large' color={THEME.light.colors.primary} />
-          <Text className='text-muted-foreground mt-4'>Loading recipes...</Text>
+          <Text className='mt-4 text-muted-foreground'>Loading recipes...</Text>
         </View>
 
         <View className='absolute bottom-0 left-0 right-0 items-center pb-8'>
@@ -252,7 +250,7 @@ export default function Page() {
             style={{ elevation: 10 }}>
             <View className='flex-row items-center gap-2'>
               <Plus size={24} color='white' />
-              <Text className='text-white font-medium'>Create Recipe</Text>
+              <Text className='font-medium text-white'>Create Recipe</Text>
             </View>
           </Button>
         </View>
@@ -263,12 +261,12 @@ export default function Page() {
 
         <FullscreenModal visible={showJobsModal} onClose={() => setShowJobsModal(false)}>
           <SafeAreaView className='flex-1 bg-background' edges={['top', 'bottom']}>
-            <View className='px-4 py-4 border-b border-gray-200'>
+            <View className='border-b border-gray-200 px-4 py-4'>
               <Text className='text-xl font-bold'>Processing Jobs</Text>
             </View>
-            <View className='flex-1 justify-center items-center'>
+            <View className='flex-1 items-center justify-center'>
               <ActivityIndicator size='large' color={THEME.light.colors.primary} />
-              <Text className='text-muted-foreground mt-4'>Loading jobs...</Text>
+              <Text className='mt-4 text-muted-foreground'>Loading jobs...</Text>
             </View>
           </SafeAreaView>
         </FullscreenModal>
@@ -284,7 +282,7 @@ export default function Page() {
     <SafeAreaView className='flex-1 items-center justify-center' style={{ padding: 16 }} edges={['top']}>
       <FlatList
         data={recipes}
-        renderItem={({ item }) => <RecipeCard recipe={item} className='flex-1 h-52 mx-1' />}
+        renderItem={({ item }) => <RecipeCard recipe={item} className='mx-1 h-52 flex-1' />}
         keyExtractor={(item: Recipe, index: number) => `${item.id}-${index}`}
         numColumns={2}
         contentContainerStyle={{ paddingHorizontal: 16, paddingVertical: 12 }}
@@ -314,7 +312,7 @@ export default function Page() {
           style={{ elevation: 10 }}>
           <View className='flex-row items-center gap-2'>
             <Plus size={24} color='white' />
-            <Text className='text-white font-medium'>Create Recipe</Text>
+            <Text className='font-medium text-white'>Create Recipe</Text>
           </View>
         </Button>
       </View>
@@ -326,7 +324,7 @@ export default function Page() {
       <FullscreenModal visible={showJobsModal} onClose={() => setShowJobsModal(false)}>
         <SafeAreaView className='flex-1 bg-background' edges={['top', 'bottom']}>
           {/* Header */}
-          <View className='flex-row items-center justify-between px-6 py-6 border-b border-gray-200'>
+          <View className='flex-row items-center justify-between border-b border-gray-200 px-6 py-6'>
             <Text className='text-xl font-bold'>Processing Jobs</Text>
             <TouchableOpacity onPress={() => setShowJobsModal(false)}>
               <X size={24} color='#000' />
@@ -334,9 +332,9 @@ export default function Page() {
           </View>
 
           {jobsIsLoading && jobs.length === 0 ? (
-            <View className='flex-1 justify-center items-center'>
+            <View className='flex-1 items-center justify-center'>
               <ActivityIndicator size='large' color={THEME.light.colors.primary} />
-              <Text className='text-muted-foreground mt-4'>Loading jobs...</Text>
+              <Text className='mt-4 text-muted-foreground'>Loading jobs...</Text>
             </View>
           ) : (
             <FlatList

@@ -12,13 +12,13 @@ export default function Layout() {
         header(props) {
           return (
             <SafeAreaView>
-              <View className='bg-background px-4 py-2 flex-row items-center justify-between'>
+              <View className='flex-row items-center justify-between bg-background px-4 py-2'>
                 <TouchableOpacity
                   onPress={() => router.push('(tabs)/profile')}
-                  className='flex-row items-center gap-2 w-10 h-10'>
+                  className='h-10 w-10 flex-row items-center gap-2'>
                   <ChevronLeft size={24} color='#000' />
                 </TouchableOpacity>
-                <Text className='font-semibold text-lg'>{props.options.title}</Text>
+                <Text className='text-lg font-semibold'>{props.options.title}</Text>
                 <Croissant size={24} color='#000' />
               </View>
             </SafeAreaView>

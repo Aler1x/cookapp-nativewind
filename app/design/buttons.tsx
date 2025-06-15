@@ -12,7 +12,7 @@ export default function NotFoundScreen() {
         <View className='flex-1 items-center justify-center gap-4 p-4'>
           <Text className='text-2xl font-bold'>Buttons</Text>
         </View>
-        <View className='flex-1 py-2 gap-4 px-10'>
+        <View className='flex-1 gap-4 px-10 py-2'>
           <Button>
             <Text>Basic Button</Text>
           </Button>

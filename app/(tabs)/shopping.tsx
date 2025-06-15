@@ -7,7 +7,6 @@ import { share } from '~/lib/share';
 import Toast from 'react-native-toast-message';
 import { useShoppingListStore } from '~/stores/shopping';
 import { Checkbox } from '~/components/ui/checkbox';
-import { FloatingButton } from '~/components/ui/floating-button';
 import { Share2 } from '~/assets/icons';
 import { SectionList, TouchableOpacity } from 'react-native';
 import ShoppingListAddItemModal from '~/components/modals/shopping-list-add-item';
@@ -24,9 +23,9 @@ const ShoppingListItem = ({
   normalizeUnit: (unit: string) => string;
 }) => {
   return (
-    <View key={item.id} className='flex-row items-center py-3 border-b border-gray-200 gap-4'>
+    <View key={item.id} className='flex-row items-center gap-4 border-b border-gray-200 py-3'>
       <Checkbox
-        className='rounded-md w-7 h-7'
+        className='h-7 w-7 rounded-md'
         variant='black'
         checked={item.isChecked}
         onCheckedChange={() => {
@@ -34,7 +33,7 @@ const ShoppingListItem = ({
         }}
       />
       <Text className='flex-1 text-lg'>{item.name}</Text>
-      <Text className='font-light text-gray-600 ml-2'>
+      <Text className='ml-2 font-light text-gray-600'>
         {item.amount} {normalizeUnit(item.unit)}
       </Text>
     </View>
@@ -89,17 +88,17 @@ export default function ShoppingListPage() {
             },
             ...(getCheckedItems().length > 0
               ? [
-                {
-                  title: 'Bought',
-                  data: getCheckedItems(),
-                },
-              ]
+                  {
+                    title: 'Bought',
+                    data: getCheckedItems(),
+                  },
+                ]
               : []),
           ]}
           renderSectionHeader={({ section: { title } }) =>
             title === 'Bought' ? (
-              <View className='flex-row justify-between items-center py-2'>
-                <Text className='text-lg font-semibold my-2'>{title}</Text>
+              <View className='flex-row items-center justify-between py-2'>
+                <Text className='my-2 text-lg font-semibold'>{title}</Text>
                 <Button
                   variant='outline'
                   onPress={() => {
@@ -110,15 +109,15 @@ export default function ShoppingListPage() {
                 </Button>
               </View>
             ) : (
-              <Text className='text-lg font-semibold my-2'>{title}</Text>
+              <Text className='my-2 text-lg font-semibold'>{title}</Text>
             )
           }
           renderItem={({ item }) => (
             <ShoppingListItem item={item} toggleItem={toggleItem} normalizeUnit={normalizeUnit} />
           )}
           ListEmptyComponent={
-            <View className='flex-1 justify-center items-center'>
-              <Text className='text-center max-w-[80vw]'>
+            <View className='flex-1 items-center justify-center'>
+              <Text className='max-w-[80vw] text-center'>
                 Your shopping list is empty. Let&apos;s find delicious recipes, add the necessary ingredients to the
                 shopping list and cook something delicious!
               </Text>
@@ -137,7 +136,7 @@ export default function ShoppingListPage() {
           }}>
           <View className='flex-row items-center gap-2'>
             <Plus size={24} color='white' />
-            <Text className='text-white font-medium'>Add Item</Text>
+            <Text className='font-medium text-white'>Add Item</Text>
           </View>
         </Button>
       </View>

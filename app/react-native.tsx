@@ -56,14 +56,14 @@ export default function HomeScreen() {
           />
         </Animated.View>
 
-        <View className='flex-1 overflow-hidden gap-4 p-8'>
-          <View className='flex-row gap-2 items-center'>
+        <View className='flex-1 gap-4 overflow-hidden p-8'>
+          <View className='flex-row items-center gap-2'>
             <Text className='text-3xl leading-8'>Welcome!</Text>
             <Animated.View className='animate-wave'>
-              <Text className='text-2xl -mt-[6px]'>👋</Text>
+              <Text className='-mt-[6px] text-2xl'>👋</Text>
             </Animated.View>
           </View>
-          <View className='gap-2 mb-0'>
+          <View className='mb-0 gap-2'>
             <Text className='text-lg font-semibold leading-8'>Step 1: Try it</Text>
             <Text>
               Edit <Text className='font-semibold leading-6'>app/(tabs)/index.tsx</Text> to see changes. Press{' '}
@@ -77,11 +77,11 @@ export default function HomeScreen() {
               to open developer tools.
             </Text>
           </View>
-          <View className='gap-2 mb-0'>
+          <View className='mb-0 gap-2'>
             <Text className='text-lg font-semibold leading-8'>Step 2: Explore</Text>
             <Text>Tap the Explore tab to learn more about what&apos;s included in this starter app.</Text>
           </View>
-          <View className='gap-2 mb-0'>
+          <View className='mb-0 gap-2'>
             <Text className='text-lg font-semibold leading-8'>Step 3: Get a fresh start</Text>
             <Text>
               When you&apos;re ready, run <Text className='font-semibold'>npm run reset-project</Text> to get a fresh{' '}

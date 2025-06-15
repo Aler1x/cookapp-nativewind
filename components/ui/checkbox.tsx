@@ -5,18 +5,21 @@ import { Check } from '~/lib/icons/Check';
 import { cn } from '~/lib/utils';
 import { cva } from 'class-variance-authority';
 
-const checkboxVariants = cva('web:peer h-4 w-4 native:h-[20] native:w-[20] shrink-0 rounded-sm native:rounded border web:ring-offset-background web:focus-visible:outline-none web:focus-visible:ring-2 web:focus-visible:ring-ring web:focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50', {
-  variants: {
-    variant: {
-      primary: 'border-primary',
-      secondary: 'border-secondary',
-      black: 'border-black',
+const checkboxVariants = cva(
+  'web:peer h-4 w-4 native:h-[20] native:w-[20] shrink-0 rounded-sm native:rounded border web:ring-offset-background web:focus-visible:outline-none web:focus-visible:ring-2 web:focus-visible:ring-ring web:focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
+  {
+    variants: {
+      variant: {
+        primary: 'border-primary',
+        secondary: 'border-secondary',
+        black: 'border-black',
+      },
     },
-  },
-  defaultVariants: {
-    variant: 'primary',
-  },
-});
+    defaultVariants: {
+      variant: 'primary',
+    },
+  }
+);
 
 function Checkbox({
   className,
@@ -30,13 +33,9 @@ function Checkbox({
 }) {
   return (
     <CheckboxPrimitive.Root
-      className={cn(
-        checkboxVariants({ variant }),
-        props.checked && 'bg-primary border-primary',
-        className
-      )}
+      className={cn(checkboxVariants({ variant }), props.checked && 'border-primary bg-primary', className)}
       {...props}>
-      <CheckboxPrimitive.Indicator className={cn('items-center justify-center h-full w-full')}>
+      <CheckboxPrimitive.Indicator className={cn('h-full w-full items-center justify-center')}>
         <Check
           size={size}
           strokeWidth={Platform.OS === 'web' ? 2.5 : 3.5}

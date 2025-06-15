@@ -71,7 +71,7 @@ export default function JobCard({ job }: JobCardProps) {
   };
 
   return (
-    <View className='bg-white rounded-lg p-4 mb-3 border border-gray-200 shadow-sm gap-2'>
+    <View className='mb-3 gap-2 rounded-lg border border-gray-200 bg-white p-4 shadow-sm'>
       <View className='flex-row items-center justify-between'>
         <View className='flex-row items-center gap-3'>
           <StatusIcon size={22} color={statusConfig.color} />
@@ -93,9 +93,7 @@ export default function JobCard({ job }: JobCardProps) {
         <>
           <Text className='text-sm text-muted-foreground'>Job ID: {job.jobId}</Text>
 
-          {job.recipeId && (
-            <Text className='text-sm text-muted-foreground'>Recipe ID: {job.recipeId}</Text>
-          )}
+          {job.recipeId && <Text className='text-sm text-muted-foreground'>Recipe ID: {job.recipeId}</Text>}
 
           {job.updatedAt && job.updatedAt !== job.createdAt && (
             <Text className='text-xs text-muted-foreground'>Updated: {formatDate(job.updatedAt)}</Text>
@@ -104,9 +102,9 @@ export default function JobCard({ job }: JobCardProps) {
       )}
 
       {job.error && (
-        <View className='mt-3 p-3 bg-red-50 rounded-md border border-red-200'>
-          <Text className='text-sm text-red-700 font-medium'>Error:</Text>
-          <Text className='text-sm text-red-600 mt-1'>{job.error}</Text>
+        <View className='mt-3 rounded-md border border-red-200 bg-red-50 p-3'>
+          <Text className='text-sm font-medium text-red-700'>Error:</Text>
+          <Text className='mt-1 text-sm text-red-600'>{job.error}</Text>
         </View>
       )}
     </View>

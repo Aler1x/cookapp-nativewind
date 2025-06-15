@@ -67,12 +67,12 @@ export default function LibraryDetailPage() {
   };
 
   const renderRecipeItem = (recipe: Recipe) => (
-    <TouchableOpacity key={recipe.id} className='bg-card rounded-lg p-4 mb-3 shadow-sm'>
+    <TouchableOpacity key={recipe.id} className='mb-3 rounded-lg bg-card p-4 shadow-sm'>
       <View className='flex-row'>
-        <Image source={{ uri: recipe.mainImageUrl }} className='w-16 h-16 rounded-lg mr-3' resizeMode='cover' />
+        <Image source={{ uri: recipe.mainImageUrl }} className='mr-3 h-16 w-16 rounded-lg' resizeMode='cover' />
         <View className='flex-1'>
-          <Text className='font-semibold text-lg mb-1'>{recipe.title}</Text>
-          <Text className='text-muted-foreground text-sm mb-2 capitalize'>{recipe.difficulty}</Text>
+          <Text className='mb-1 text-lg font-semibold'>{recipe.title}</Text>
+          <Text className='mb-2 text-sm capitalize text-muted-foreground'>{recipe.difficulty}</Text>
           <View className='flex-row items-center gap-4'>
             <View className='flex-row items-center gap-1'>
               <Clock size={14} color='#666' />
@@ -95,8 +95,8 @@ export default function LibraryDetailPage() {
   return (
     <SafeAreaView className='flex-1 bg-background'>
       <ScrollView className='flex-1' contentContainerStyle={{ padding: 16 }}>
-        <View className='flex-row items-center justify-between mb-6'>
-          <Text className='text-3xl font-bold flex-1'>{collection?.name || name || 'Collection'}</Text>
+        <View className='mb-6 flex-row items-center justify-between'>
+          <Text className='flex-1 text-3xl font-bold'>{collection?.name || name || 'Collection'}</Text>
           <View className='flex-row gap-2'>
             <Button variant='outline' size='icon' onPress={openEditModal}>
               <Edit size={18} color='#666' />
@@ -109,12 +109,12 @@ export default function LibraryDetailPage() {
 
         {collection?.recipes && collection.recipes.length > 0 ? (
           <View>
-            <Text className='text-lg font-semibold mb-4'>Recipes ({collection.recipes.length})</Text>
+            <Text className='mb-4 text-lg font-semibold'>Recipes ({collection.recipes.length})</Text>
             {collection.recipes.map(renderRecipeItem)}
           </View>
         ) : (
           <View className='flex-1 items-center justify-center py-12'>
-            <Text className='text-muted-foreground text-center'>No recipes in this collection yet</Text>
+            <Text className='text-center text-muted-foreground'>No recipes in this collection yet</Text>
           </View>
         )}
       </ScrollView>
@@ -122,12 +122,12 @@ export default function LibraryDetailPage() {
       {/* Edit Modal */}
       <BasicModal isModalOpen={isEditModalOpen} setIsModalOpen={setIsEditModalOpen}>
         <View className='gap-4'>
-          <Text className='text-xl font-bold text-center'>Edit Collection</Text>
+          <Text className='text-center text-xl font-bold'>Edit Collection</Text>
           <View>
-            <Text className='text-sm font-medium mb-2'>Collection Name</Text>
+            <Text className='mb-2 text-sm font-medium'>Collection Name</Text>
             <Input value={editedName} onChangeText={setEditedName} placeholder='Enter collection name' autoFocus />
           </View>
-          <View className='flex-row gap-3 mt-4'>
+          <View className='mt-4 flex-row gap-3'>
             <Button variant='outline' className='flex-1' onPress={() => setIsEditModalOpen(false)}>
               <Text>Cancel</Text>
             </Button>

@@ -20,22 +20,22 @@ export default function RecipeCard({ recipe, className }: RecipeCardProps) {
   return (
     <TouchableOpacity
       onPress={handlePress}
-      className={cn('rounded-3xl overflow-hidden border border-black flex-1 bg-background', className)}
+      className={cn('flex-1 overflow-hidden rounded-3xl border border-black bg-background', className)}
       style={{
         elevation: 10,
       }}>
       {recipe.mainImageUrl ? (
-        <Image source={{ uri: recipe.mainImageUrl }} className='w-full h-[60%]' resizeMode='cover' />
+        <Image source={{ uri: recipe.mainImageUrl }} className='h-[60%] w-full' resizeMode='cover' />
       ) : (
-        <View className='w-full h-[60%] bg-gray-200 items-center justify-center'>
+        <View className='h-[60%] w-full items-center justify-center bg-gray-200'>
           <ImageIcon size={48} color='black' />
         </View>
       )}
-      <View className='p-[0.4rem] flex-1 justify-between border-t border-black rounded-b-3xl'>
-        <Text className='font-normal text-base' numberOfLines={2}>
+      <View className='flex-1 justify-between rounded-b-3xl border-t border-black p-[0.4rem]'>
+        <Text className='text-base font-normal' numberOfLines={2}>
           {recipe.title}
         </Text>
-        <View className='flex-row justify-between items-center px-2'>
+        <View className='flex-row items-center justify-between px-2'>
           <View className='flex-row items-center gap-1'>
             <StarIcon size={12} color='#FFB923' style={{ marginBottom: 1 }} fill='#FFB923' />
             <Text className='text-xs'>{recipe.rating?.toFixed(1)}</Text>

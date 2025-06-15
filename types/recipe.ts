@@ -50,7 +50,8 @@ export type Ingredient = {
   name: string;
   measurements: {
     amount: number;
-    unit: Unit;
+    unit?: Unit;
+    title: string;
   };
 };
 
@@ -60,7 +61,7 @@ export type Unit = {
     one: string;
     many: string;
   };
-  type: string;
+  type: 'metric' | 'imperial' | 'other';
 };
 
 export type Category = {

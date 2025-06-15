@@ -177,7 +177,7 @@ export default function HomePage() {
   const renderFooter = () => {
     if (isLoadingMore) {
       return (
-        <View className='py-2 items-center'>
+        <View className='items-center py-2'>
           <ActivityIndicator size='large' color={THEME.light.colors.primary} />
         </View>
       );
@@ -185,9 +185,9 @@ export default function HomePage() {
 
     if (recipes.length > 0 && currentPage >= totalPages) {
       return (
-        <View className='py-2 items-center'>
+        <View className='items-center py-2'>
           <Text className='text-muted-foreground'>You&apos;ve reached the end!</Text>
-          <Text className='text-sm text-muted-foreground mt-1'>
+          <Text className='mt-1 text-sm text-muted-foreground'>
             Found {recipes.length} recipe{recipes.length !== 1 ? 's' : ''}
           </Text>
         </View>
@@ -200,7 +200,7 @@ export default function HomePage() {
   if (isLoading && recipes.length === 0) {
     return (
       <SafeAreaView className='flex-1 bg-background'>
-        <View className='px-4 gap-2 mb-2'>
+        <View className='mb-2 gap-2 px-4'>
           {showTitle && (
             <View className='mt-4 max-w-[250px]'>
               <Text className='text-2xl font-bold'>What do you want to cook today?</Text>
@@ -209,16 +209,16 @@ export default function HomePage() {
           <SearchInput value={searchQuery} onChangeText={handleSearch} onSubmit={handleSearchSubmit} />
         </View>
 
-        <View className='flex-1 justify-center items-center'>
+        <View className='flex-1 items-center justify-center'>
           <ActivityIndicator size='large' color={THEME.light.colors.primary} />
-          <Text className='text-muted-foreground mt-4'>Loading recipes...</Text>
+          <Text className='mt-4 text-muted-foreground'>Loading recipes...</Text>
         </View>
 
         <View className='absolute bottom-0 left-0 right-0 items-center'>
           <Button variant='black' className='w-[80%]' onPress={() => setShowFilters(true)}>
             <View className='flex-row items-center gap-2'>
               <Settings2 size={20} color='white' />
-              <Text className='text-white font-medium'>
+              <Text className='font-medium text-white'>
                 Filters {appliedFiltersCount > 0 && `(${appliedFiltersCount})`}
               </Text>
             </View>
@@ -251,7 +251,7 @@ export default function HomePage() {
 
   return (
     <SafeAreaView className='flex-1 bg-background' edges={['top', 'bottom']}>
-      <View className='gap-2 mb-2 px-4'>
+      <View className='mb-2 gap-2 px-4'>
         {showTitle && (
           <View className='mt-4 max-w-[250px]'>
             <Text className='text-2xl font-bold'>What do you want to cook today?</Text>
@@ -270,7 +270,10 @@ export default function HomePage() {
                   <Badge
                     label={badge.name}
                     variant='outline'
-                    className={cn('px-4 py-2', badge.isActive ? 'bg-primary border-primary' : 'bg-background border-black')}
+                    className={cn(
+                      'px-4 py-2',
+                      badge.isActive ? 'border-primary bg-primary' : 'border-black bg-background'
+                    )}
                     labelClasses={cn('text-sm font-medium')}
                     style={{
                       elevation: 3,
@@ -285,7 +288,7 @@ export default function HomePage() {
 
       <FlatList
         data={recipes}
-        renderItem={({ item }) => <RecipeCard recipe={item} className='flex-1 h-52 mx-1' />}
+        renderItem={({ item }) => <RecipeCard recipe={item} className='mx-1 h-52 flex-1' />}
         keyExtractor={(item: Recipe, index: number) => `${item.id}-${index}`}
         numColumns={2}
         contentContainerStyle={{ paddingHorizontal: 16, paddingVertical: 12 }}
@@ -313,7 +316,7 @@ export default function HomePage() {
             }}>
             <View className='flex-row items-center gap-2'>
               <Settings2 size={20} color='white' />
-              <Text className='text-white font-medium'>
+              <Text className='font-medium text-white'>
                 Filters {appliedFiltersCount > 0 && `(${appliedFiltersCount})`}
               </Text>
             </View>

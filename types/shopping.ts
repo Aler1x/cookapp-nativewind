@@ -2,7 +2,7 @@ export interface ShoppingListItem {
   id: string;
   name: string;
   amount: number;
-  unit: string;
+  unit?: string;
   isChecked: boolean;
   category?: string;
   notes?: string;

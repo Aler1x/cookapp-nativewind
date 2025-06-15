@@ -33,8 +33,8 @@ const LandingScreen = () => {
           flex: 1,
           backgroundColor: isDarkColorScheme ? THEME.dark.colors.background : THEME.light.colors.background,
         }}>
-        <View className='flex-1 justify-center items-center px-6'>
-          <Text className='text-4xl mb-4 font-bold'>CookApp</Text>
+        <View className='flex-1 items-center justify-center px-6'>
+          <Text className='mb-4 text-4xl font-bold'>CookApp</Text>
           <Text className='text-lg opacity-70'>Loading your recipes...</Text>
         </View>
       </SafeAreaView>
@@ -48,37 +48,37 @@ const LandingScreen = () => {
       style={{
         backgroundColor: isDarkColorScheme ? THEME.dark.colors.background : THEME.light.colors.background,
       }}>
-      <ScrollView className='flex-1 min-h-screen'>
+      <ScrollView className='min-h-screen flex-1'>
         {/* Mobile Header */}
-        <View className='flex-row justify-between items-center px-4 py-4 border-b border-opacity-10 sticky top-0 bg-background z-10'>
+        <View className='sticky top-0 z-10 flex-row items-center justify-between border-b border-opacity-10 bg-background px-4 py-4'>
           <Text className='text-2xl font-bold'>CookApp</Text>
 
           {/* App would be soon available on the app store */}
-          <Button onPress={() => router.push('/(tabs)/home')} className='px-4 py-2 rounded-full'>
+          <Button onPress={() => router.push('/(tabs)/home')} className='rounded-full px-4 py-2'>
             <Text className='text-sm font-semibold'>Join the waitlist</Text>
           </Button>
         </View>
 
         {/* Mobile Hero Section */}
-        <View className='flex-1 justify-center items-center px-4 py-8'>
+        <View className='flex-1 items-center justify-center px-4 py-8'>
           <View className='w-full items-center'>
-            <Text className='text-4xl text-center mb-6 leading-tight font-bold'>Your Kitchen, Your Rules</Text>
-            <Text className='text-lg text-center mb-8 opacity-80 leading-relaxed px-2'>
+            <Text className='mb-6 text-center text-4xl font-bold leading-tight'>Your Kitchen, Your Rules</Text>
+            <Text className='mb-8 px-2 text-center text-lg leading-relaxed opacity-80'>
               Discover, create, and organize your favorite recipes. Build your personal cookbook and never lose a recipe
               again.
             </Text>
 
             <View className='w-full px-4'>
-              <Button onPress={() => router.push('/(tabs)/home')} className='w-full py-4 rounded-full shadow-lg mb-4'>
-                <Text className='text-lg font-semibold text-center'>Start Cooking</Text>
+              <Button onPress={() => router.push('/(tabs)/home')} className='mb-4 w-full rounded-full py-4 shadow-lg'>
+                <Text className='text-center text-lg font-semibold'>Start Cooking</Text>
               </Button>
 
               {user && (
                 <Button
                   variant='outline'
                   onPress={() => router.push('/(tabs)/profile?showPremium=true')}
-                  className='w-full py-4 rounded-full mb-4'>
-                  <Text className='text-lg font-semibold text-center'>View Premium Features</Text>
+                  className='mb-4 w-full rounded-full py-4'>
+                  <Text className='text-center text-lg font-semibold'>View Premium Features</Text>
                 </Button>
               )}
             </View>
@@ -86,8 +86,8 @@ const LandingScreen = () => {
         </View>
 
         {/* Mobile Features Section */}
-        <View className='px-4 py-8 border-t border-opacity-10'>
-          <Text className='text-2xl text-center mb-4 font-bold'>Everything you need to cook</Text>
+        <View className='border-t border-opacity-10 px-4 py-8'>
+          <Text className='mb-4 text-center text-2xl font-bold'>Everything you need to cook</Text>
 
           <View className='flex flex-col gap-3'>
             {[
@@ -114,9 +114,9 @@ const LandingScreen = () => {
             ].map((feature, index) => (
               <View
                 key={index}
-                className='p-4 rounded-xl border border-opacity-10'
+                className='rounded-xl border border-opacity-10 p-4'
                 style={{ backgroundColor: feature.bgColor }}>
-                <Text className='text-lg mb-2 font-semibold'>{feature.title}</Text>
+                <Text className='mb-2 text-lg font-semibold'>{feature.title}</Text>
                 <Text className='leading-relaxed'>{feature.description}</Text>
               </View>
             ))}

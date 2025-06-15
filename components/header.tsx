@@ -9,8 +9,8 @@ export default function Header() {
 
   return (
     <View style={{ paddingTop: top }}>
-      <View className='px-4 lg:px-6 h-14 flex items-center flex-row justify-between '>
-        <Link className='text-foreground flex-1 items-center justify-center' href='/'>
+      <View className='flex h-14 flex-row items-center justify-between px-4 lg:px-6'>
+        <Link className='flex-1 items-center justify-center text-foreground' href='/'>
           <Text>ACME</Text>
         </Link>
         <View className='flex flex-row gap-4 sm:gap-6'>

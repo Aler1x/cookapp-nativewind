@@ -13,13 +13,13 @@ interface SearchBarProps {
 export default function SearchInput({ placeholder = 'Search...', value, onChangeText, onSubmit }: SearchBarProps) {
   return (
     <View
-      className='flex-row items-center bg-white rounded-full px-4 py-2 border border-black shadow-md'
+      className='flex-row items-center rounded-full border border-black bg-white px-4 py-2 shadow-md'
       style={{
         elevation: 5,
       }}>
       <Search size={20} color={THEME.light.colors.foreground} />
       <TextInput
-        className='flex-1 ml-2 text-base p-1'
+        className='ml-2 flex-1 p-1 text-base'
         placeholder={placeholder}
         value={value}
         onChangeText={onChangeText}

@@ -19,7 +19,6 @@ import DesktopBlocker from '~/components/DesktopBlocker';
 import BaseLayout from '~/components/pages/base-layout';
 import 'expo-dev-client';
 
-
 SplashScreen.preventAutoHideAsync();
 
 export default function Layout() {

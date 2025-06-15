@@ -8,7 +8,7 @@ import { useShoppingListStore } from '~/stores/shopping';
 import { API_ENDPOINTS_PREFIX, THEME } from '~/lib/constants';
 import { useFetch } from '~/hooks/useFetch';
 import { useAuth } from '@clerk/clerk-expo';
-import { SearchProduct, SuccessResponse } from '~/types';
+import { SearchProduct } from '~/types';
 import { SearchUnit } from '~/types/shopping';
 import { TouchableOpacity } from 'react-native';
 import { X } from 'lucide-react-native';
@@ -35,16 +35,20 @@ const ShoppingListAddItemModal = ({ showAddItemModal, setShowAddItemModal }: Sho
       }
 
       try {
-        const response = await $fetch<SuccessResponse<SearchProduct[]>>(
-          `${API_ENDPOINTS_PREFIX.node}/ingredients/search`,
-          {
-            method: 'POST',
-            body: JSON.stringify({ query, limit: 3 }),
-          }
+        // const response = await $fetch<SuccessResponse<SearchProduct[]>>(
+        //   `${API_ENDPOINTS_PREFIX.node}/ingredients/search`,
+        //   {
+        //     method: 'POST',
+        //     body: JSON.stringify({ query, limit: 3 }),
+        //   }
+        // );
+
+        const response = await $fetch<SearchProduct[]>(
+          `${API_ENDPOINTS_PREFIX.spring}/products?name=${encodeURIComponent(query)}`
         );
 
         if (response) {
-          return response.data.map((product) => ({
+          return response.slice(0, 3).map((product) => ({
             id: product.id, // Use name as id so setSelected gets the string value
             value: product.name,
           }));
@@ -73,7 +77,7 @@ const ShoppingListAddItemModal = ({ showAddItemModal, setShowAddItemModal }: Sho
         if (response) {
           return response.slice(0, 3).map((unit) => ({
             id: unit.id, // Use name as id so setSelected gets the string value
-            value: `${unit.name.one} (${unit.name.many})`,
+            value: unit.name.one,
           }));
         }
         return [];
@@ -92,13 +96,13 @@ const ShoppingListAddItemModal = ({ showAddItemModal, setShowAddItemModal }: Sho
   };
 
   const handleAddItem = () => {
-    if (newItemName && newItemAmount && newItemUnit) {
-      const unitName = normalizeUnit(typeof newItemUnit === 'string' ? newItemUnit : newItemUnit.value);
+    if (newItemName && newItemAmount) {
+      const unitName = typeof newItemUnit === 'string' ? newItemUnit : newItemUnit.value;
 
       addItem({
         name: typeof newItemName === 'string' ? newItemName : newItemName.value,
         amount: parseFloat(newItemAmount) || 1,
-        unit: unitName,
+        unit: normalizeUnit(unitName),
       });
       resetForm();
       setShowAddItemModal(false);
@@ -141,7 +145,7 @@ const ShoppingListAddItemModal = ({ showAddItemModal, setShowAddItemModal }: Sho
       <View className='gap-1'>
         <Text className='text-sm font-medium'>Amount</Text>
         <Input
-          className='border border-gray-300 rounded-lg px-3 py-2'
+          className='rounded-lg border border-gray-300 px-3 py-2'
           placeholder='Enter amount'
           value={newItemAmount}
           onChangeText={setNewItemAmount}
@@ -171,7 +175,7 @@ const ShoppingListAddItemModal = ({ showAddItemModal, setShowAddItemModal }: Sho
 
       {/* Action Buttons */}
       <View className='flex-row gap-3'>
-        <Button className='flex-1' onPress={handleAddItem} disabled={!newItemName || !newItemAmount || !newItemUnit}>
+        <Button className='flex-1' onPress={handleAddItem} disabled={!newItemName || !newItemAmount}>
           <Text>Add</Text>
         </Button>
       </View>

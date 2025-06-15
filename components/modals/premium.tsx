@@ -19,13 +19,13 @@ interface FeatureCardProps {
 
 function FeatureCard({ icon, title, description, isPremium = false }: FeatureCardProps) {
   return (
-    <View className='bg-card rounded-xl p-6 border border-border shadow-sm'>
-      <View className='flex-row items-center mb-3'>
-        <View className={`p-3 rounded-full ${isPremium ? 'bg-primary/10' : 'bg-secondary'} mr-3`}>{icon}</View>
+    <View className='rounded-xl border border-border bg-card p-6 shadow-sm'>
+      <View className='mb-3 flex-row items-center'>
+        <View className={`rounded-full p-3 ${isPremium ? 'bg-primary/10' : 'bg-secondary'} mr-3`}>{icon}</View>
         {isPremium && <Badge variant='secondary' className='ml-auto' label='Premium' />}
       </View>
-      <Text className='text-lg font-semibold mb-2'>{title}</Text>
-      <Text className='text-muted-foreground leading-relaxed'>{description}</Text>
+      <Text className='mb-2 text-lg font-semibold'>{title}</Text>
+      <Text className='leading-relaxed text-muted-foreground'>{description}</Text>
     </View>
   );
 }
@@ -55,26 +55,26 @@ function PricingTier({
 }: PricingTierProps) {
   return (
     <View
-      className={`bg-card rounded-2xl p-6 border ${isPopular ? 'border-primary shadow-lg' : 'border-border'} relative`}>
+      className={`rounded-2xl border bg-card p-6 ${isPopular ? 'border-primary shadow-lg' : 'border-border'} relative`}>
       {isPopular && (
         <View className='absolute -top-3 left-0 right-0 items-center'>
           <Badge className='bg-primary' label='Most Popular' />
         </View>
       )}
 
-      <View className='text-center mb-6'>
-        <Text className='text-2xl font-bold mb-2'>{title}</Text>
-        <Text className='text-muted-foreground mb-4'>{description}</Text>
+      <View className='mb-6 text-center'>
+        <Text className='mb-2 text-2xl font-bold'>{title}</Text>
+        <Text className='mb-4 text-muted-foreground'>{description}</Text>
         <View className='flex-row items-baseline justify-center'>
           <Text className='text-4xl font-bold'>{price}</Text>
-          <Text className='text-muted-foreground ml-1'>/{period}</Text>
+          <Text className='ml-1 text-muted-foreground'>/{period}</Text>
         </View>
       </View>
 
-      <View className='gap-2 mb-6'>
+      <View className='mb-6 gap-2'>
         {features.map((feature, index) => (
           <View key={index} className='flex-row items-center'>
-            <Check className='text-primary mr-3' size={16} />
+            <Check className='mr-3 text-primary' size={16} />
             <Text className='flex-1 text-sm'>{feature}</Text>
           </View>
         ))}
@@ -190,22 +190,22 @@ export default function PremiumPage({ onClose, onClickPlan }: PremiumPageProps) 
       </View>
 
       <ScrollView className='flex-1' showsVerticalScrollIndicator={false}>
-        <View className='px-6 py-12 mb-8'>
+        <View className='mb-8 px-6 py-12'>
           <View className='items-center text-center'>
-            <View className='bg-primary-foreground/20 p-4 rounded-full mb-6'>
+            <View className='mb-6 rounded-full bg-primary-foreground/20 p-4'>
               <Crown className='text-primary-foreground' size={32} />
             </View>
-            <Text className='text-3xl font-bold text-primary-foreground mb-4 text-center'>Unlock Premium Features</Text>
-            <Text className='text-primary-foreground/80 text-center leading-relaxed max-w-sm'>
+            <Text className='mb-4 text-center text-3xl font-bold text-primary-foreground'>Unlock Premium Features</Text>
+            <Text className='max-w-sm text-center leading-relaxed text-primary-foreground/80'>
               Take your cooking to the next level with AI-powered recipes, unlimited access, and premium tools.
             </Text>
           </View>
         </View>
 
         {/* Features Section */}
-        <View className='px-6 mb-12'>
-          <Text className='text-2xl font-bold mb-2 text-center'>Premium Features</Text>
-          <Text className='text-muted-foreground text-center mb-8'>Everything you need to become a better cook</Text>
+        <View className='mb-12 px-6'>
+          <Text className='mb-2 text-center text-2xl font-bold'>Premium Features</Text>
+          <Text className='mb-8 text-center text-muted-foreground'>Everything you need to become a better cook</Text>
 
           <View className='gap-4'>
             {premiumFeatures.map((feature, index) => (
@@ -221,9 +221,9 @@ export default function PremiumPage({ onClose, onClickPlan }: PremiumPageProps) 
         </View>
 
         {/* Pricing Section */}
-        <View className='px-6 mb-12'>
-          <Text className='text-2xl font-bold mb-2 text-center'>Choose Your Plan</Text>
-          <Text className='text-muted-foreground text-center mb-8'>
+        <View className='mb-12 px-6'>
+          <Text className='mb-2 text-center text-2xl font-bold'>Choose Your Plan</Text>
+          <Text className='mb-8 text-center text-muted-foreground'>
             Select the perfect plan for your cooking journey
           </Text>
 
@@ -246,17 +246,17 @@ export default function PremiumPage({ onClose, onClickPlan }: PremiumPageProps) 
         </View>
 
         {/* CTA Section */}
-        <View className='px-6 py-8 bg-secondary/30 mx-6 rounded-2xl mb-8'>
+        <View className='mx-6 mb-8 rounded-2xl bg-secondary/30 px-6 py-8'>
           <View className='items-center text-center'>
-            <Zap className='text-primary mb-4' size={32} />
-            <Text className='text-xl font-bold mb-2'>Start Your Premium Journey</Text>
-            <Text className='text-muted-foreground text-center mb-6 leading-relaxed'>
+            <Zap className='mb-4 text-primary' size={32} />
+            <Text className='mb-2 text-xl font-bold'>Start Your Premium Journey</Text>
+            <Text className='mb-6 text-center leading-relaxed text-muted-foreground'>
               Join thousands of home cooks who have transformed their kitchen experience with our premium features.
             </Text>
             <Button size='lg' className='w-full' onPress={() => onClickPlan('Premium')}>
-              <Text className='text-primary-foreground font-semibold'>Try Premium Free for 7 Days</Text>
+              <Text className='font-semibold text-primary-foreground'>Try Premium Free for 7 Days</Text>
             </Button>
-            <Text className='text-xs text-muted-foreground mt-3 text-center'>
+            <Text className='mt-3 text-center text-xs text-muted-foreground'>
               Cancel anytime. No commitment required.
             </Text>
           </View>
@@ -264,21 +264,21 @@ export default function PremiumPage({ onClose, onClickPlan }: PremiumPageProps) 
 
         {/* Loading overlay */}
         <BasicModal isModalOpen={false} setIsModalOpen={() => {}}>
-          <View className='bg-white p-6 rounded-2xl items-center'>
+          <View className='items-center rounded-2xl bg-white p-6'>
             {!paymentMessage && (
               <>
                 <ActivityIndicator size='large' color='#007AFF' />
                 <Text className='mt-4 text-lg font-semibold'>Processing Payment...</Text>
-                <Text className='text-muted-foreground text-center mb-6 leading-relaxed'>
+                <Text className='mb-6 text-center leading-relaxed text-muted-foreground'>
                   Please wait while we process your payment. This may take a few seconds.
                 </Text>
               </>
             )}
             {paymentMessage && (
-              <View className='bg-white p-6 rounded-2xl items-center'>
+              <View className='items-center rounded-2xl bg-white p-6'>
                 <Text
                   className={cn(
-                    'text-center mb-6 leading-relaxed',
+                    'mb-6 text-center leading-relaxed',
                     isError ? 'text-red-500' : 'text-muted-foreground'
                   )}>
                   {paymentMessage}

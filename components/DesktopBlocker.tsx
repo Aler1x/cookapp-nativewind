@@ -32,11 +32,11 @@ const DesktopBlocker: React.FC<DesktopBlockerProps> = ({ children }) => {
           flex: 1,
           backgroundColor: isDarkColorScheme ? THEME.dark.colors.background : THEME.light.colors.background,
         }}>
-        <View className='flex-1 justify-center items-center px-8'>
+        <View className='flex-1 items-center justify-center px-8'>
           <View className='max-w-md items-center'>
             {/* App Icon/Logo */}
             <View
-              className='w-20 h-20 rounded-full mb-8 justify-center items-center'
+              className='mb-8 h-20 w-20 items-center justify-center rounded-full'
               style={{
                 backgroundColor: isDarkColorScheme ? THEME.dark.colors.primary : THEME.light.colors.primary,
               }}>
@@ -52,7 +52,7 @@ const DesktopBlocker: React.FC<DesktopBlockerProps> = ({ children }) => {
 
             {/* Main Message */}
             <Text
-              className='text-4xl text-center mb-6'
+              className='mb-6 text-center text-4xl'
               style={{
                 color: isDarkColorScheme ? THEME.dark.colors.foreground : THEME.light.colors.foreground,
                 fontFamily: 'Comfortaa_700Bold',
@@ -61,7 +61,7 @@ const DesktopBlocker: React.FC<DesktopBlockerProps> = ({ children }) => {
             </Text>
 
             <Text
-              className='text-xl font-semibold text-center mb-4'
+              className='mb-4 text-center text-xl font-semibold'
               style={{
                 color: isDarkColorScheme ? THEME.dark.colors.foreground : THEME.light.colors.foreground,
                 fontFamily: 'Comfortaa_600SemiBold',
@@ -70,7 +70,7 @@ const DesktopBlocker: React.FC<DesktopBlockerProps> = ({ children }) => {
             </Text>
 
             <Text
-              className='text-lg text-center mb-8 opacity-80 leading-relaxed'
+              className='mb-8 text-center text-lg leading-relaxed opacity-80'
               style={{
                 color: isDarkColorScheme ? THEME.dark.colors.foreground : THEME.light.colors.foreground,
                 fontFamily: 'Comfortaa_400Regular',
@@ -81,13 +81,13 @@ const DesktopBlocker: React.FC<DesktopBlockerProps> = ({ children }) => {
 
             {/* Instructions */}
             <View
-              className='w-full p-6 rounded-xl border border-opacity-20 mb-6'
+              className='mb-6 w-full rounded-xl border border-opacity-20 p-6'
               style={{
                 borderColor: isDarkColorScheme ? THEME.dark.colors.border : THEME.light.colors.border,
                 backgroundColor: isDarkColorScheme ? THEME.dark.colors.card : THEME.light.colors.card,
               }}>
               <Text
-                className='text-lg font-semibold mb-3 text-center'
+                className='mb-3 text-center text-lg font-semibold'
                 style={{
                   color: isDarkColorScheme ? THEME.dark.colors.foreground : THEME.light.colors.foreground,
                   fontFamily: 'Comfortaa_600SemiBold',
@@ -117,7 +117,7 @@ const DesktopBlocker: React.FC<DesktopBlockerProps> = ({ children }) => {
 
             {/* Footer */}
             <Text
-              className='text-sm opacity-60 text-center'
+              className='text-center text-sm opacity-60'
               style={{
                 color: isDarkColorScheme ? THEME.dark.colors.foreground : THEME.light.colors.foreground,
                 fontFamily: 'Comfortaa_300Light',

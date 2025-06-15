@@ -131,13 +131,13 @@ export const useShoppingListStore = create<ShoppingListStore>()(
       addItem: (item) => {
         set((state) => {
           // Use the units store for normalization
-          const normalizedUnit = get().normalizeUnit(item.unit);
+          const normalizedUnit = get().normalizeUnit(item.unit || '');
 
           // Check if item with same name and unit already exists
           const existingItemIndex = state.items.findIndex(
             (existingItem) =>
               existingItem.name.toLowerCase() === String(item.name).toLowerCase() &&
-              get().normalizeUnit(existingItem.unit) === normalizedUnit
+              get().normalizeUnit(existingItem.unit || '') === normalizedUnit
           );
 
           if (existingItemIndex !== -1) {
@@ -202,6 +202,9 @@ export const useShoppingListStore = create<ShoppingListStore>()(
         return get()
           .items.filter((item) => !item.isChecked)
           .map((item) => {
+            if (!item.unit) {
+              return `${item.amount} ${item.name}`;
+            }
             // Try to get the proper unit display name
             const unit = get().normalizeUnit(item.unit);
             const displayUnit = item.amount === 1 || unit.endsWith('s') ? unit : unit + 's';

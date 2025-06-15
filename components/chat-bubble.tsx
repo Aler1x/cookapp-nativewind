@@ -11,7 +11,7 @@ export default function ChatBubble({ message, isUser }: ChatBubbleProps) {
     <View className={`flex-row ${isUser ? 'justify-end' : 'justify-start'} mb-2`}>
       <View className='relative max-w-[75%]'>
         {/* Main bubble */}
-        <View className={`px-4 py-3 rounded-2xl ${isUser ? 'bg-primary rounded-br-sm' : 'bg-secondary rounded-bl-sm'}`}>
+        <View className={`rounded-2xl px-4 py-3 ${isUser ? 'rounded-br-sm bg-primary' : 'rounded-bl-sm bg-secondary'}`}>
           <Text className='text-foreground'>{message}</Text>
         </View>
       </View>
