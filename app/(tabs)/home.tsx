@@ -7,98 +7,46 @@ import { useFetch } from '~/hooks/useFetch';
 import { useAuth } from '@clerk/clerk-expo';
 import { API_ENDPOINTS_PREFIX, THEME } from '~/lib/constants';
 import { Recipe } from '~/types/recipe';
-import { FiltersRequest, BadgeFilters, BADGES } from '~/types/home';
+import { FiltersRequest, QuickFiltersResponse } from '~/types/home';
 import RecipeCard from '~/components/recipe-card';
 import { Button } from '~/components/ui/button';
 import { Settings2 } from '~/assets/icons';
 import FullscreenModal from '~/components/ui/fullscreen-modal';
 import FiltersPage from '~/components/modals/filters';
-import { PaginatedResponse } from '~/types';
+import { PaginatedResponse, Response } from '~/types';
 import SearchInput from '~/components/search-input';
-import { throttle } from 'lodash';
 import { Badge } from '~/components/ui/badge';
 import { cn } from '~/lib/utils';
 import BasicModal from '~/components/ui/basic-modal';
 import AddRecipeToCollectionModal from '~/components/modals/add-recipe-to-collection';
 import Toast from 'react-native-toast-message';
+import { usePaginated } from '~/hooks/usePaginated';
+import HomeSkeleton from '~/components/pages/home/skeleton';
+
+const INITIAL_FILTERS = {
+  searchQuery: '',
+  cookTime: { min: 5, max: 120 },
+  difficulty: [],
+  dishTypes: [],
+  diets: [],
+  cuisines: [],
+  ingredients: { includeIds: [], excludeIds: [] },
+};
 
 export default function HomePage() {
   const { isSignedIn } = useAuth();
 
-  const [showTitle, setShowTitle] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const [isAddToCollectionModalOpen, setIsAddToCollectionModalOpen] = useState(false);
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
-  const [filters, setFilters] = useState<FiltersRequest>({
-    searchQuery: '',
-    cookTime: { min: 5, max: 120 },
-    difficulty: [],
-    dishTypes: [],
-    diets: [],
-    cuisines: [],
-    ingredients: { includeIds: [], excludeIds: [] },
-  });
+  const [filters, setFilters] = useState<FiltersRequest>(INITIAL_FILTERS);
 
-  const [badges, setBadges] = useState<BadgeFilters[]>(BADGES);
-  const [activeBadge, setActiveBadge] = useState<number | null>(null);
+  const [ingredients, setIngredients] = useState<{ id: number; name: string, isSelected: boolean, type: 'include' | 'exclude' }[]>([]);
 
-  // Pagination state
-  const [recipes, setRecipes] = useState<Recipe[]>([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [activeBadge, setActiveBadge] = useState<string>('');
 
   const $fetch = useFetch();
-
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
-    setFilters({ ...filters, searchQuery: query });
-  };
-
-  const clearFilters = () => {
-    setFilters({
-      searchQuery: '',
-      cookTime: { min: 5, max: 120 },
-      difficulty: [],
-      dishTypes: [],
-      diets: [],
-      cuisines: [],
-      ingredients: { includeIds: [], excludeIds: [] },
-    });
-  };
-
-  const fetchRecipes = useCallback(
-    async (page: number = 1, append: boolean = false) => {
-      try {
-        if (!append) setIsLoading(true);
-        else setIsLoadingMore(true);
-
-        const url = isSignedIn
-          ? `${API_ENDPOINTS_PREFIX.node}/recommendations?page=${page}&size=10`
-          : `${API_ENDPOINTS_PREFIX.public}/recipes?page=${page}&size=10`;
-
-        const response = await $fetch<PaginatedResponse<Recipe>>(url);
-
-        if (append) {
-          setRecipes((prev) => [...prev, ...response.data]);
-        } else {
-          setRecipes(response.data);
-        }
-
-        setCurrentPage(response.meta.page);
-        setTotalPages(response.meta.totalPages);
-      } catch (error) {
-        console.error('Error fetching recipes:', error);
-        if (!append) setRecipes([]);
-      } finally {
-        setIsLoading(false);
-        setIsLoadingMore(false);
-      }
-    },
-    [$fetch, isSignedIn]
-  );
 
   const appliedFiltersCount = useMemo(() => {
     let count = 0;
@@ -117,69 +65,125 @@ export default function HomePage() {
     return count;
   }, [filters]);
 
-  const performSearch = useCallback(
-    throttle(async (searchFilters: FiltersRequest, page: number = 1, append: boolean = false) => {
-      try {
-        if (!append) setIsLoading(true);
-        else setIsLoadingMore(true);
+  const fetcher = useCallback(async (page: number) => {
+    const size = 10;
+        
+    if (filters.searchQuery || appliedFiltersCount > 0) {
+      setActiveBadge('');
+      const url = `${API_ENDPOINTS_PREFIX.node}/recipes/search?page=${page}&size=${size}`;
+      return await $fetch<PaginatedResponse<Recipe>>(url, {
+        method: 'POST',
+        body: JSON.stringify(filters),
+      });
+    } else if (activeBadge) {
+      const url = `${API_ENDPOINTS_PREFIX.node}/recipes/quick-filters/${activeBadge}?page=${page}&size=${size}`;
+      return await $fetch<PaginatedResponse<Recipe>>(url);
+    } else {
+      const url = isSignedIn
+        ? `${API_ENDPOINTS_PREFIX.node}/recommendations?page=${page}&size=${size}`
+        : `${API_ENDPOINTS_PREFIX.public}/recipes?page=${page}&size=${size}`;
+      return await $fetch<PaginatedResponse<Recipe>>(url);
+    }
+  }, [$fetch, isSignedIn, activeBadge, appliedFiltersCount, filters]);
+  
+  const {
+    data: recipes,
+    currentPage,
+    totalPages,
+    isLoading,
+    isLoadingMore,
+    fetchPage,
+    refresh,
+    loadMore,
+  } = usePaginated<Recipe>(fetcher);
 
-        if (appliedFiltersCount === 0 && !searchFilters.searchQuery) {
-          await fetchRecipes(page, append);
-          return;
-        }
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    setFilters({ ...filters, searchQuery: query });
+  };
 
-        const response = await $fetch<PaginatedResponse<Recipe>>(
-          `${API_ENDPOINTS_PREFIX.node}/recipes/search?page=${page}&size=10`,
-          {
-            method: 'POST',
-            body: JSON.stringify(searchFilters),
-          }
-        );
+  const clearFilters = () => {
+    setFilters(INITIAL_FILTERS);
+  };
 
-        if (append) {
-          setRecipes((prev) => [...prev, ...response.data]);
-        } else {
-          setRecipes(response.data);
-        }
+  const handleSearchSubmit = useCallback(() => {
+    fetchPage(1);
+  }, [fetchPage]);
 
-        setCurrentPage(response.meta.page);
-        setTotalPages(response.meta.totalPages);
-      } catch (error) {
-        console.error('Error searching recipes:', error);
-        if (!append) setRecipes([]);
-      } finally {
-        setIsLoading(false);
-        setIsLoadingMore(false);
-      }
-    }, 500),
-    [$fetch, fetchRecipes, appliedFiltersCount]
-  );
-
-  const handleSearchSubmit = useCallback(async () => {
-    setCurrentPage(1);
-    await performSearch(filters, 1, false);
-  }, [filters, performSearch]);
-
-  const loadMoreRecipes = useCallback(async () => {
-    if (isLoadingMore || currentPage >= totalPages) return;
-
-    const nextPage = currentPage + 1;
-    await performSearch(filters, nextPage, true);
-  }, [currentPage, totalPages, isLoadingMore, filters, performSearch]);
-
-  useEffect(() => {
-    setCurrentPage(1);
-    handleSearchSubmit();
-  }, [searchQuery, handleSearchSubmit]);
-
-  useEffect(() => {
-    fetchRecipes();
-  }, [isSignedIn, fetchRecipes]);
-
-  const handleApplyFilters = async (newFilters: FiltersRequest) => {
+  const handleApplyFilters = async (
+    newFilters: FiltersRequest,
+    ingredientData?: {
+      include: { id: number; name: string }[];
+      exclude: { id: number; name: string }[];
+    }
+  ) => {
     setFilters(newFilters);
-    setCurrentPage(1);
-    await performSearch(newFilters, 1, false);
+
+    if (ingredientData) {
+      const allIngredients = [
+        ...ingredientData.include.map(ing => ({ ...ing, isSelected: true, type: 'include' as const })),
+        ...ingredientData.exclude.map(ing => ({ ...ing, isSelected: true, type: 'exclude' as const })),
+      ];
+      setIngredients(allIngredients);
+    }
+
+    await fetchPage(1);
+  };
+
+  const getIngredientsForFilters = () => {
+    const include = ingredients.filter(ing => ing.type === 'include').map(ing => ({ id: ing.id, name: ing.name }));
+    const exclude = ingredients.filter(ing => ing.type === 'exclude').map(ing => ({ id: ing.id, name: ing.name }));
+    return { include, exclude };
+  };
+
+  const [quickFilters, setQuickFilters] = useState<QuickFiltersResponse>();
+
+  const fetchQuickFilters = useCallback(async () => {
+    const response = await $fetch<Response<QuickFiltersResponse>>(`${API_ENDPOINTS_PREFIX.node}/recipes/quick-filters`);
+    setQuickFilters(response.data);
+  }, [$fetch]);
+
+  useEffect(() => {
+    fetchQuickFilters();
+  }, [fetchQuickFilters]);
+
+  const handleBadgePress = (badgeId: string) => {
+    if (activeBadge === badgeId) {
+      setActiveBadge('');
+    } else {
+      clearFilters();
+      setActiveBadge(badgeId);
+    }
+  };
+
+  useEffect(() => {
+    fetchPage(1);
+  }, [activeBadge, fetchPage]);
+
+  const handleRecipeLongPress = (recipe: Recipe) => {
+    if (!isSignedIn) {
+      Toast.show({
+        type: 'info',
+        text1: 'Sign In Required',
+        text2: 'Please sign in to add recipes to collections',
+      });
+      return;
+    }
+
+    setSelectedRecipe(recipe);
+    setIsAddToCollectionModalOpen(true);
+  };
+
+  const handleAddToCollectionSuccess = () => {
+    if (selectedRecipe) {
+      Toast.show({
+        type: 'success',
+        text1: 'Recipe Added!',
+        text2: `"${selectedRecipe.title}" has been added to your collection`,
+      });
+    }
+    setIsAddToCollectionModalOpen(false);
+    setSelectedRecipe(null);
   };
 
   const renderFooter = () => {
@@ -207,90 +211,16 @@ export default function HomePage() {
 
   if (isLoading && recipes.length === 0) {
     return (
-      <SafeAreaView className='flex-1 bg-background'>
-        <View className='mb-2 gap-2 px-4'>
-          {showTitle && (
-            <View className='mt-4 max-w-[250px]'>
-              <Text className='text-2xl font-bold'>What do you want to cook today?</Text>
-            </View>
-          )}
-          <SearchInput value={searchQuery} onChangeText={handleSearch} onSubmit={handleSearchSubmit} />
-        </View>
-
-        <View className='flex-1 items-center justify-center'>
-          <ActivityIndicator size='large' color={THEME.light.colors.primary} />
-          <Text className='mt-4 text-muted-foreground'>Loading recipes...</Text>
-        </View>
-
-        <View className='absolute bottom-0 left-0 right-0 items-center'>
-          <Button variant='black' className='w-[80%]' onPress={() => setShowFilters(true)}>
-            <View className='flex-row items-center gap-2'>
-              <Settings2 size={20} color='white' />
-              <Text className='font-medium text-white'>
-                Filters {appliedFiltersCount > 0 && `(${appliedFiltersCount})`}
-              </Text>
-            </View>
-          </Button>
-        </View>
-
-        <FullscreenModal visible={showFilters} onClose={() => setShowFilters(false)}>
-          <FiltersPage onClose={() => setShowFilters(false)} filters={filters} onApplyFilters={handleApplyFilters} />
-        </FullscreenModal>
-      </SafeAreaView>
+      <HomeSkeleton />
     );
   }
-
-  const handleBadgePress = (badgeId: number) => {
-    if (activeBadge === badgeId) {
-      setActiveBadge(null);
-      setBadges((prev) => prev.map((badge) => ({ ...badge, isActive: false })));
-      clearFilters();
-      return;
-    }
-
-    setActiveBadge(badgeId);
-    setBadges((prev) => prev.map((badge) => ({ ...badge, isActive: badge.id === badgeId })));
-    clearFilters();
-    setFilters((prev) => ({
-      ...prev,
-      ...BADGES.find((badge) => badge.id === badgeId)?.settings,
-    }));
-  };
-
-  const handleRecipeLongPress = (recipe: Recipe) => {
-    if (!isSignedIn) {
-      Toast.show({
-        type: 'info',
-        text1: 'Sign In Required',
-        text2: 'Please sign in to add recipes to collections',
-      });
-      return;
-    }
-    
-    setSelectedRecipe(recipe);
-    setIsAddToCollectionModalOpen(true);
-  };
-
-  const handleAddToCollectionSuccess = () => {
-    if (selectedRecipe) {
-      Toast.show({
-        type: 'success',
-        text1: 'Recipe Added!',
-        text2: `"${selectedRecipe.title}" has been added to your collection`,
-      });
-    }
-    setIsAddToCollectionModalOpen(false);
-    setSelectedRecipe(null);
-  };
 
   return (
     <SafeAreaView className='flex-1 bg-background' edges={['top', 'bottom']}>
       <View className='mb-2 gap-2 px-4'>
-        {showTitle && (
-          <View className='mt-4 max-w-[250px]'>
-            <Text className='text-2xl font-bold'>What do you want to cook today?</Text>
-          </View>
-        )}
+        <View className='mt-4 max-w-[250px]'>
+          <Text className='text-2xl font-bold'>What do you want to cook today?</Text>
+        </View>
         {isSignedIn && (
           <>
             <SearchInput value={searchQuery} onChangeText={handleSearch} onSubmit={handleSearchSubmit} />
@@ -299,14 +229,14 @@ export default function HomePage() {
               className='py-1'
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={{ gap: 4 }}>
-              {badges.map((badge) => (
+              {quickFilters?.filters.map((badge) => (
                 <TouchableOpacity key={badge.id} onPress={() => handleBadgePress(badge.id)}>
                   <Badge
                     label={badge.name}
                     variant='outline'
                     className={cn(
                       'px-4 py-2',
-                      badge.isActive ? 'border-primary bg-primary' : 'border-black bg-background'
+                      activeBadge === badge.id ? 'border-primary bg-primary' : 'border-black bg-background'
                     )}
                     labelClasses={cn('text-sm font-medium')}
                     style={{
@@ -323,9 +253,9 @@ export default function HomePage() {
       <FlatList
         data={recipes}
         renderItem={({ item }) => (
-          <RecipeCard 
-            recipe={item} 
-            className='mx-1 h-52 flex-1' 
+          <RecipeCard
+            recipe={item}
+            className='mx-1 h-52 flex-1'
             onLongPress={handleRecipeLongPress}
           />
         )}
@@ -334,13 +264,10 @@ export default function HomePage() {
         contentContainerStyle={{ paddingHorizontal: 16, paddingVertical: 12 }}
         columnWrapperStyle={{ justifyContent: 'space-between', marginBottom: 12 }}
         showsVerticalScrollIndicator={false}
-        onEndReached={loadMoreRecipes}
+        onEndReached={loadMore}
         onEndReachedThreshold={0.5}
         refreshing={isLoading}
-        onRefresh={() => {
-          setCurrentPage(1);
-          performSearch(filters, 1, false);
-        }}
+        onRefresh={refresh}
         ListFooterComponent={renderFooter}
         ListFooterComponentStyle={{ paddingBottom: 120 }}
       />
@@ -365,20 +292,24 @@ export default function HomePage() {
       )}
 
       <FullscreenModal visible={showFilters} onClose={() => setShowFilters(false)}>
-        <FiltersPage onClose={() => setShowFilters(false)} filters={filters} onApplyFilters={handleApplyFilters} />
+        <FiltersPage
+          onClose={() => setShowFilters(false)}
+          filters={filters}
+          onApplyFilters={handleApplyFilters}
+          initialIngredients={getIngredientsForFilters()}
+        />
       </FullscreenModal>
 
-      {/* Add to Collection Modal */}
       {selectedRecipe && (
-        <BasicModal 
-          isModalOpen={isAddToCollectionModalOpen} 
+        <BasicModal
+          isModalOpen={isAddToCollectionModalOpen}
           setIsModalOpen={(open) => {
             setIsAddToCollectionModalOpen(open);
             if (!open) setSelectedRecipe(null);
           }}
         >
-          <AddRecipeToCollectionModal 
-            recipeId={selectedRecipe.id} 
+          <AddRecipeToCollectionModal
+            recipeId={selectedRecipe.id}
             recipeName={selectedRecipe.title}
             onSuccess={handleAddToCollectionSuccess}
             onClose={() => {

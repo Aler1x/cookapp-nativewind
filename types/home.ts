@@ -21,6 +21,14 @@ export interface FiltersRequest {
   };
 }
 
+export interface QuickFiltersResponse {
+  filters: {
+    id: string;
+    name: string;
+    description: string;
+  }[];
+}
+
 export interface BadgeFilters {
   id: number;
   name: string;

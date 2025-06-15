@@ -12,7 +12,9 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "jest --watchAll",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "build:development": "eas build -p android --profile development",
+    "build:preview": "eas build -p android --profile preview"
   },
   "dependencies": {
     "@clerk/clerk-expo": "^2.11.8",

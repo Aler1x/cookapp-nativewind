@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { View } from '~/components/ui/view';
 import { Text } from '~/components/ui/text';
 import { Button } from '~/components/ui/button';
@@ -10,7 +10,9 @@ import { useFetch } from '~/hooks/useFetch';
 import { API_ENDPOINTS_PREFIX, THEME } from '~/lib/constants';
 import { Slider } from '@miblanchard/react-native-slider';
 import { capitalizeFirstLetter } from '~/lib/utils';
-import { Response } from '~/types';
+import { Response, SearchProduct } from '~/types';
+import BasicModal from '../ui/basic-modal';
+import InputWithDropdown, { SelectListData } from '../ui/input-with-dropdown';
 
 interface FilterPillProps {
   name: string;
@@ -79,19 +81,93 @@ function FilterSection({
   );
 }
 
+interface IngredientSectionProps {
+  title: string;
+  ingredients: { id: number; name: string }[];
+  onRemoveIngredient: (id: number) => void;
+  onAddNew: () => void;
+  showAll: boolean;
+  onToggleShowAll: () => void;
+  visibleCount: number;
+}
+
+function IngredientSection({
+  title,
+  ingredients,
+  onRemoveIngredient,
+  onAddNew,
+  showAll,
+  onToggleShowAll,
+  visibleCount,
+}: IngredientSectionProps) {
+  const displayIngredients = showAll ? ingredients : ingredients.slice(0, visibleCount);
+  const hasMore = ingredients.length > visibleCount;
+
+  return (
+    <View className='mb-6'>
+      <View className='flex-row items-center justify-between'>
+        <Text className='mb-3 text-lg font-semibold'>{title}</Text>
+      </View>
+      <View className='flex-row flex-wrap'>
+        {displayIngredients.map((ingredient) => (
+          <FilterPill
+            key={ingredient.id}
+            name={ingredient.name}
+            selected={true}
+            onPress={() => onRemoveIngredient(ingredient.id)}
+          />
+        ))}
+      </View>
+      <View className='mt-2 flex-row'>
+        {hasMore && (
+          <TouchableOpacity onPress={onToggleShowAll} className='mr-4'>
+            <Text className='text-sm text-gray-500'>{showAll ? 'Show less' : 'Show more'}</Text>
+          </TouchableOpacity>
+        )}
+        <TouchableOpacity onPress={onAddNew}>
+          <Text className='text-sm text-gray-500'>Add new</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+}
+
 interface FiltersPageProps {
   onClose?: () => void;
   filters: FiltersRequest;
-  onApplyFilters: (filters: FiltersRequest) => void;
+  onApplyFilters: (filters: FiltersRequest, ingredientData?: {
+    include: { id: number; name: string }[];
+    exclude: { id: number; name: string }[];
+  }) => void;
+  initialIngredients?: {
+    include: { id: number; name: string }[];
+    exclude: { id: number; name: string }[];
+  };
 }
 
-export default function FiltersPage({ onClose, filters, onApplyFilters }: FiltersPageProps) {
+export default function FiltersPage({ onClose, filters, onApplyFilters, initialIngredients }: FiltersPageProps) {
   const [availableFilters, setAvailableFilters] = useState<FiltersResponse | null>(null);
   const [currentFilters, setCurrentFilters] = useState<FiltersRequest>(filters);
   const [showAllDifficulties, setShowAllDifficulties] = useState(false);
   const [showAllDishTypes, setShowAllDishTypes] = useState(false);
   const [showAllDiets, setShowAllDiets] = useState(false);
   const [showAllCuisines, setShowAllCuisines] = useState(false);
+  const [showAllIncludeIngredients, setShowAllIncludeIngredients] = useState(false);
+    const [showAllExcludeIngredients, setShowAllExcludeIngredients] = useState(false);
+  
+  // Modal states
+  const [modalVisible, setModalVisible] = useState(false);
+  const [newItemText, setNewItemText] = useState<string>('');
+  const [newItem, setNewItem] = useState<SelectListData | null>(null);
+  const [currentIngredientSection, setCurrentIngredientSection] = useState<'include' | 'exclude'>('include');
+  
+  // Ingredient states - initialize from props if available
+  const [includeIngredients, setIncludeIngredients] = useState<{ id: number; name: string }[]>(
+    initialIngredients?.include || []
+  );
+  const [excludeIngredients, setExcludeIngredients] = useState<{ id: number; name: string }[]>(
+    initialIngredients?.exclude || []
+  );
 
   const $fetch = useFetch();
 
@@ -106,6 +182,8 @@ export default function FiltersPage({ onClose, filters, onApplyFilters }: Filter
     };
     fetchFilters();
   }, [$fetch]);
+
+
 
   const toggleFilterItem = (
     section: keyof Pick<FiltersRequest, 'dishTypes' | 'diets' | 'difficulty' | 'cuisines'>,
@@ -142,6 +220,8 @@ export default function FiltersPage({ onClose, filters, onApplyFilters }: Filter
       cuisines: [],
       ingredients: { includeIds: [], excludeIds: [] },
     });
+    setIncludeIngredients([]);
+    setExcludeIngredients([]);
   };
 
   const getAppliedFiltersCount = () => {
@@ -162,7 +242,11 @@ export default function FiltersPage({ onClose, filters, onApplyFilters }: Filter
   };
 
   const handleApply = () => {
-    onApplyFilters(currentFilters);
+    // Pass both filters and ingredient data back to parent
+    onApplyFilters(currentFilters, {
+      include: includeIngredients,
+      exclude: excludeIngredients,
+    });
     onClose?.();
   };
 
@@ -183,6 +267,105 @@ export default function FiltersPage({ onClose, filters, onApplyFilters }: Filter
         return a.localeCompare(b);
       })
     : null;
+
+  const openAddIngredientModal = (section: 'include' | 'exclude') => {
+    setCurrentIngredientSection(section);
+    setNewItemText('');
+    setNewItem(null);
+    setModalVisible(true);
+  };
+
+  const addNewIngredient = (selectedItem: SelectListData | null) => {
+    if (!selectedItem) return;
+
+    const ingredientId = parseInt(selectedItem.id);
+    const ingredientName = selectedItem.value;
+    
+    setModalVisible(false);
+    setNewItemText('');
+    setNewItem(null);
+
+    if (currentIngredientSection === 'include') {
+      // Check if already in exclude list
+      if (currentFilters.ingredients.excludeIds.includes(ingredientId)) {
+        return; // Don't add if already in exclude list
+      }
+      
+      // Check if already in include list
+      if (!currentFilters.ingredients.includeIds.includes(ingredientId)) {
+        setCurrentFilters((prev) => ({
+          ...prev,
+          ingredients: {
+            ...prev.ingredients,
+            includeIds: [...prev.ingredients.includeIds, ingredientId],
+          },
+        }));
+        
+        setIncludeIngredients((prev) => [
+          ...prev,
+          { id: ingredientId, name: ingredientName },
+        ]);
+      }
+    } else {
+      // Check if already in include list
+      if (currentFilters.ingredients.includeIds.includes(ingredientId)) {
+        return; // Don't add if already in include list
+      }
+      
+      // Check if already in exclude list
+      if (!currentFilters.ingredients.excludeIds.includes(ingredientId)) {
+        setCurrentFilters((prev) => ({
+          ...prev,
+          ingredients: {
+            ...prev.ingredients,
+            excludeIds: [...prev.ingredients.excludeIds, ingredientId],
+          },
+        }));
+        
+        setExcludeIngredients((prev) => [
+          ...prev,
+          { id: ingredientId, name: ingredientName },
+        ]);
+      }
+    }
+  };
+
+  const removeIncludeIngredient = (id: number) => {
+    setCurrentFilters((prev) => ({
+      ...prev,
+      ingredients: {
+        ...prev.ingredients,
+        includeIds: prev.ingredients.includeIds.filter((ingredientId) => ingredientId !== id),
+      },
+    }));
+    setIncludeIngredients((prev) => prev.filter((ingredient) => ingredient.id !== id));
+  };
+
+  const removeExcludeIngredient = (id: number) => {
+    setCurrentFilters((prev) => ({
+      ...prev,
+      ingredients: {
+        ...prev.ingredients,
+        excludeIds: prev.ingredients.excludeIds.filter((ingredientId) => ingredientId !== id),
+      },
+    }));
+    setExcludeIngredients((prev) => prev.filter((ingredient) => ingredient.id !== id));
+  };
+
+  const fetchProducts = useCallback(
+    async (query: string) => {
+      const products = await $fetch<Response<SearchProduct[]>>(`${API_ENDPOINTS_PREFIX.node}/ingredients/search`, {
+        method: 'POST',
+        body: JSON.stringify({ query, limit: 3 }),
+      });
+
+      return products.data.map((product) => ({
+        id: product.id,
+        value: product.name,
+      })) as SelectListData[];
+    },
+    [$fetch]
+  );
 
   return (
     <SafeAreaView className='flex-1 bg-background'>
@@ -223,6 +406,28 @@ export default function FiltersPage({ onClose, filters, onApplyFilters }: Filter
             thumbStyle={{ backgroundColor: THEME.light.colors.primary }}
           />
         </View>
+
+        {/* Include Ingredients */}
+        <IngredientSection
+          title='Include Ingredients'
+          ingredients={includeIngredients}
+          onRemoveIngredient={removeIncludeIngredient}
+          onAddNew={() => openAddIngredientModal('include')}
+          showAll={showAllIncludeIngredients}
+          onToggleShowAll={() => setShowAllIncludeIngredients(!showAllIncludeIngredients)}
+          visibleCount={6}
+        />
+
+        {/* Exclude Ingredients */}
+        <IngredientSection
+          title='Exclude Ingredients'
+          ingredients={excludeIngredients}
+          onRemoveIngredient={removeExcludeIngredient}
+          onAddNew={() => openAddIngredientModal('exclude')}
+          showAll={showAllExcludeIngredients}
+          onToggleShowAll={() => setShowAllExcludeIngredients(!showAllExcludeIngredients)}
+          visibleCount={6}
+        />
 
         {/* Difficulty */}
         <FilterSection
@@ -277,6 +482,42 @@ export default function FiltersPage({ onClose, filters, onApplyFilters }: Filter
           </Text>
         </Button>
       </View>
+
+      {/* Add New Ingredient Modal */}
+      <BasicModal isModalOpen={modalVisible} setIsModalOpen={setModalVisible} className='gap-4'>
+        <View className='flex-row items-center justify-between'>
+          <Text className='text-lg font-semibold'>
+            Add ingredient to {currentIngredientSection === 'include' ? 'include' : 'exclude'}
+          </Text>
+          <TouchableOpacity onPress={() => setModalVisible(false)}>
+            <X size={24} color='#000' />
+          </TouchableOpacity>
+        </View>
+
+        <InputWithDropdown
+          setSelected={(value) => {
+            setNewItemText(value.value);
+            setNewItem(value);
+          }}
+          data={[]}
+          value={newItemText}
+          fetchItems={fetchProducts}
+          fontFamily='Comfortaa_400Regular'
+          notFoundText='No results found'
+          dropdownStyles={{
+            borderColor: THEME.light.colors.primary,
+          }}
+          boxStyles={{
+            borderColor: THEME.light.colors.primary,
+          }}
+        />
+
+        <View className='flex-row gap-3'>
+          <Button className='flex-1 bg-primary' onPress={() => addNewIngredient(newItem)}>
+            <Text className='text-white'>Add</Text>
+          </Button>
+        </View>
+      </BasicModal>
     </SafeAreaView>
   );
 }
