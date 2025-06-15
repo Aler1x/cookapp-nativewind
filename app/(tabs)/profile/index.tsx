@@ -4,14 +4,13 @@ import { Text } from '~/components/ui/text';
 import { Image } from '~/components/ui/image';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button } from '~/components/ui/button';
-import { TouchableOpacity, Pressable, Linking, KeyboardAvoidingView, Platform } from 'react-native';
+import { TouchableOpacity, Pressable, Linking } from 'react-native';
 import { useAuth, useUser } from '@clerk/clerk-expo';
 import { useRouter, useLocalSearchParams, Link } from 'expo-router';
 import AuthPage from '~/components/pages/auth';
 import FullscreenModal from '~/components/ui/fullscreen-modal';
 import PreferencesPage from '~/components/modals/preferences';
-import { UserPen, ChevronRight, Heart, CookingPot, Palette, HelpCircle } from '~/assets/icons';
-import { Preferences } from '~/types/profile';
+import { UserPen, ChevronRight, Heart, CookingPot, HelpCircle } from '~/assets/icons';
 import PremiumPage from '~/components/modals/premium';
 import Toast from 'react-native-toast-message';
 

@@ -27,7 +27,7 @@
     "@rn-primitives/types": "^1.2.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "expo": "53.0.11",
+    "expo": "53.0.9",
     "expo-asset": "~11.1.5",
     "expo-auth-session": "~6.2.0",
     "expo-blur": "~14.1.5",

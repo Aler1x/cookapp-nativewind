@@ -178,6 +178,16 @@ const InputWithDropdown: React.FC<SelectListProps> = ({
     }
   }, [dropdown, search, searchQuery, debouncedFetch]);
 
+  const getText = () => {
+    if (selectedVal !== '') {
+      return selectedVal;
+    }
+    if (searchQuery !== '') {
+      return searchQuery;
+    }
+    return placeholder ? placeholder : 'Select option';
+  }
+
   return (
     <View>
       {dropdown && search ? (
@@ -215,7 +225,7 @@ const InputWithDropdown: React.FC<SelectListProps> = ({
             }
           }}>
           <Text style={[{ fontFamily }, inputStyles]}>
-            {selectedVal == '' ? (placeholder ? placeholder : 'Select option') : selectedVal}
+            {getText()}
           </Text>
           <ChevronDown size={20} color={THEME.light.colors.primary} />
         </TouchableOpacity>
