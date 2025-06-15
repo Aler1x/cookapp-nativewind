@@ -355,9 +355,6 @@ export default function PreferencesPage({ onClose }: PreferencesPageProps) {
         />
 
         <View className='flex-row gap-3'>
-          <Button variant='outline' className='flex-1' onPress={() => setModalVisible(false)}>
-            <Text>Cancel</Text>
-          </Button>
           <Button className='flex-1 bg-primary' onPress={() => addNewItem(newItem)}>
             <Text className='text-white'>Add</Text>
           </Button>

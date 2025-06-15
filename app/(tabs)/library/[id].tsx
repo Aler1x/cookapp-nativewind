@@ -1,18 +1,19 @@
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text } from '~/components/ui/text';
-import { TouchableOpacity, ScrollView, Image } from 'react-native';
+import { TouchableOpacity, ScrollView, Image, FlatList, ActivityIndicator } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { useFetch } from '~/hooks/useFetch';
 import { Collection } from '~/types/library';
 import { Recipe } from '~/types/recipe';
-import { API_ENDPOINTS_PREFIX } from '~/lib/constants';
+import { API_ENDPOINTS_PREFIX, THEME } from '~/lib/constants';
 import { View } from '~/components/ui/view';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
 import BasicModal from '~/components/ui/basic-modal';
 import DeleteConfirmationModal from '~/components/modals/delete-confirmation';
 import { Edit, Trash2, Clock, Users } from 'lucide-react-native';
+import RecipeCard from '~/components/recipe-card';
 
 export default function LibraryDetailPage() {
   const { id, name } = useLocalSearchParams();
@@ -21,11 +22,21 @@ export default function LibraryDetailPage() {
   const [collection, setCollection] = useState<Collection | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isDeleteRecipeModalOpen, setIsDeleteRecipeModalOpen] = useState(false);
   const [editedName, setEditedName] = useState('');
+  const [recipeToDelete, setRecipeToDelete] = useState<Recipe | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchCollection = async () => {
-    const data = await $fetch<Collection>(`${API_ENDPOINTS_PREFIX.spring}/recipes/collection/${id}`);
-    setCollection(data);
+    try {
+      setIsLoading(true);
+      const data = await $fetch<Collection>(`${API_ENDPOINTS_PREFIX.spring}/recipes/collection/${id}`);
+      setCollection(data);
+    } catch (error) {
+      console.error('Error fetching collection:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleEditCollection = async () => {
@@ -61,32 +72,35 @@ export default function LibraryDetailPage() {
     }
   };
 
+  const handleRecipeLongPress = (recipe: Recipe) => {
+    setRecipeToDelete(recipe);
+    setIsDeleteRecipeModalOpen(true);
+  };
+
+  const handleDeleteRecipe = async () => {
+    if (!recipeToDelete) return;
+
+    try {
+      await $fetch(`${API_ENDPOINTS_PREFIX.spring}/recipes/collection/${id}/recipe/${recipeToDelete.id}`, {
+        method: 'DELETE',
+      });
+
+      // Update local state by removing the deleted recipe
+      if (collection) {
+        const updatedRecipes = collection.recipes.filter((recipe) => recipe.id !== recipeToDelete.id);
+        setCollection({ ...collection, recipes: updatedRecipes });
+      }
+
+      setRecipeToDelete(null);
+    } catch (error) {
+      console.error('Error removing recipe from collection:', error);
+    }
+  };
+
   const openEditModal = () => {
     setEditedName(collection?.name || name?.toString() || '');
     setIsEditModalOpen(true);
   };
-
-  const renderRecipeItem = (recipe: Recipe) => (
-    <TouchableOpacity key={recipe.id} className='mb-3 rounded-lg bg-card p-4 shadow-sm'>
-      <View className='flex-row'>
-        <Image source={{ uri: recipe.mainImageUrl }} className='mr-3 h-16 w-16 rounded-lg' resizeMode='cover' />
-        <View className='flex-1'>
-          <Text className='mb-1 text-lg font-semibold'>{recipe.title}</Text>
-          <Text className='mb-2 text-sm capitalize text-muted-foreground'>{recipe.difficulty}</Text>
-          <View className='flex-row items-center gap-4'>
-            <View className='flex-row items-center gap-1'>
-              <Clock size={14} color='#666' />
-              <Text className='text-xs text-muted-foreground'>{recipe.duration} min</Text>
-            </View>
-            <View className='flex-row items-center gap-1'>
-              <Users size={14} color='#666' />
-              <Text className='text-xs text-muted-foreground'>{recipe.servings} servings</Text>
-            </View>
-          </View>
-        </View>
-      </View>
-    </TouchableOpacity>
-  );
 
   useEffect(() => {
     fetchCollection();
@@ -94,7 +108,7 @@ export default function LibraryDetailPage() {
 
   return (
     <SafeAreaView className='flex-1 bg-background'>
-      <ScrollView className='flex-1' contentContainerStyle={{ padding: 16 }}>
+      <View className='flex-1' style={{ padding: 16 }}>
         <View className='mb-6 flex-row items-center justify-between'>
           <Text className='flex-1 text-3xl font-bold'>{collection?.name || name || 'Collection'}</Text>
           <View className='flex-row gap-2'>
@@ -107,17 +121,36 @@ export default function LibraryDetailPage() {
           </View>
         </View>
 
-        {collection?.recipes && collection.recipes.length > 0 ? (
-          <View>
+        {isLoading ? (
+          <View className='flex-1 items-center justify-center'>
+            <ActivityIndicator size='large' color={THEME.light.colors.primary} />
+            <Text className='mt-4 text-lg font-medium'>Loading collection...</Text>
+          </View>
+        ) : collection?.recipes && collection.recipes.length > 0 ? (
+          <View className='flex-1'>
             <Text className='mb-4 text-lg font-semibold'>Recipes ({collection.recipes.length})</Text>
-            {collection.recipes.map(renderRecipeItem)}
+            <FlatList
+              data={collection.recipes}
+              renderItem={({ item }) => (
+                <RecipeCard recipe={item} className='mx-1 h-52 flex-1' onLongPress={handleRecipeLongPress} />
+              )}
+              keyExtractor={(item: Recipe, index: number) => `${item.id}-${index}`}
+              numColumns={2}
+              columnWrapperStyle={{ justifyContent: 'space-between', marginBottom: 12 }}
+              showsVerticalScrollIndicator={false}
+              ListEmptyComponent={
+                <View className='flex-1 items-center justify-center py-12'>
+                  <Text className='text-center text-muted-foreground'>No recipes in this collection yet</Text>
+                </View>
+              }
+            />
           </View>
         ) : (
           <View className='flex-1 items-center justify-center py-12'>
             <Text className='text-center text-muted-foreground'>No recipes in this collection yet</Text>
           </View>
         )}
-      </ScrollView>
+      </View>
 
       {/* Edit Modal */}
       <BasicModal isModalOpen={isEditModalOpen} setIsModalOpen={setIsEditModalOpen}>
@@ -138,7 +171,21 @@ export default function LibraryDetailPage() {
         </View>
       </BasicModal>
 
-      {/* Delete Modal */}
+      {/* Delete Recipe Modal */}
+      <DeleteConfirmationModal
+        isOpen={isDeleteRecipeModalOpen}
+        onClose={() => {
+          setIsDeleteRecipeModalOpen(false);
+          setRecipeToDelete(null);
+        }}
+        onReject={() => console.log('Recipe delete cancelled')}
+        onApprove={handleDeleteRecipe}
+        itemName={recipeToDelete?.title || 'this recipe'}
+        message='Are you sure you want to remove'
+        title='Remove Recipe'
+      />
+
+      {/* Delete Collection Modal */}
       <DeleteConfirmationModal
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}

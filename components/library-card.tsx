@@ -41,7 +41,7 @@ export default function LibraryCard({ collection, className }: LibraryCardProps)
               left: leftOffset,
               zIndex: zIndex,
             }}>
-            <Image source={{ uri: images[i] }} className='h-full w-full' resizeMode='cover' />
+            <Image source={{ uri: images[i].mainImageUrl }} className='h-full w-full' resizeMode='cover' />
           </View>
         );
       } else {

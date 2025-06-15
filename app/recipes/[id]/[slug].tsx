@@ -13,11 +13,13 @@ import { API_ENDPOINTS_PREFIX } from '~/lib/constants';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useFetch } from '~/hooks/useFetch';
 import { RecipeFull } from '~/types/recipe';
-import { ChevronLeft, Star } from '~/assets/icons';
+import { BookmarkPlus, ChevronLeft, Star } from '~/assets/icons';
 import { Response } from '~/types';
 import { capitalizeFirstLetter } from '~/lib/utils';
 import { useAuth } from '@clerk/clerk-expo';
 import { useShoppingListStore } from '~/stores/shopping';
+import BasicModal from '~/components/ui/basic-modal';
+import AddRecipeToCollectionModal from '~/components/modals/add-recipe-to-collection';
 
 const { width: screenWidth } = Dimensions.get('window');
 const IMAGE_HEIGHT = 350;
@@ -30,9 +32,9 @@ export default function Page() {
   const [recipe, setRecipe] = useState<RecipeFull | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('details');
-  const [servings, setServings] = useState(5);
   const [checkedIngredients, setCheckedIngredients] = useState<Set<string>>(new Set());
   const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
+  const [isAddToCollectionModalOpen, setIsAddToCollectionModalOpen] = useState(false);
 
   const $fetch = useFetch();
   const { addItem } = useShoppingListStore();
@@ -41,11 +43,12 @@ export default function Page() {
     const fetchRecipe = async () => {
       try {
         setLoading(true);
-        const url = isSignedIn ? `${API_ENDPOINTS_PREFIX.node}/recipes/${id}` : `${API_ENDPOINTS_PREFIX.public}/recipes/${id}`;
+        const url = isSignedIn
+          ? `${API_ENDPOINTS_PREFIX.node}/recipes/${id}`
+          : `${API_ENDPOINTS_PREFIX.public}/recipes/${id}`;
         const response = await $fetch<Response<RecipeFull>>(url);
         if (response.success && response.data) {
           setRecipe(response.data);
-          setServings(response.data.servings);
         } else {
           console.error(response.message);
         }
@@ -126,12 +129,19 @@ export default function Page() {
         <View className='absolute inset-0 bg-gradient-to-b from-black/20 to-transparent' />
       </View>
 
-      <SafeAreaView className='absolute left-0 top-0 z-20'>
+      <SafeAreaView className='absolute left-0 top-0 z-20' style={{ elevation: 10 }}>
         <TouchableOpacity
           onPress={() => (router.canGoBack() ? router.back() : router.push('/(tabs)/home'))}
-          className='m-4 h-10 w-10 items-center justify-center rounded-full bg-black/50'
-          style={{ elevation: 10 }}>
+          className='m-4 h-10 w-10 items-center justify-center rounded-full bg-black/50'>
           <ChevronLeft size={24} color='white' />
+        </TouchableOpacity>
+      </SafeAreaView>
+
+      <SafeAreaView className='absolute right-0 top-0 z-20' style={{ elevation: 10 }}>
+        <TouchableOpacity
+          onPress={() => setIsAddToCollectionModalOpen(true)}
+          className='m-4 h-10 w-10 items-center justify-center rounded-full bg-black/50'>
+          <BookmarkPlus size={24} color='white' />
         </TouchableOpacity>
       </SafeAreaView>
 
@@ -221,6 +231,17 @@ export default function Page() {
           </TabsProvider>
         </View>
       </ScrollView>
+
+      {isSignedIn && (
+        <SafeAreaView edges={['bottom']} className='bg-background'>
+          <BasicModal
+            isModalOpen={isAddToCollectionModalOpen}
+            setIsModalOpen={setIsAddToCollectionModalOpen}
+            className='bg-background'>
+            <AddRecipeToCollectionModal recipeId={recipe.id} onClose={() => setIsAddToCollectionModalOpen(false)} />
+          </BasicModal>
+        </SafeAreaView>
+      )}
     </View>
   );
 }

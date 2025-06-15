@@ -8,11 +8,40 @@ import { useFetch } from '~/hooks/useFetch';
 import { API_ENDPOINTS_PREFIX, THEME } from '~/lib/constants';
 import type { CollectionPage } from '~/types/library';
 import { useAuth } from '@clerk/clerk-expo';
-import { PlusIcon } from 'lucide-react-native';
+import { PlusIcon, Info } from 'lucide-react-native';
+import { BookmarkPlus, Edit, Trash2, Heart } from '~/assets/icons';
 import BasicModal from '~/components/ui/basic-modal';
 import { Input } from '~/components/ui/input';
 import { Button } from '~/components/ui/button';
 import AuthPage from '~/components/pages/auth';
+import HelpModal, { Option } from '~/components/modals/information';
+
+export const LIBRARY_HELP_OPTIONS: Option[] = [
+  {
+    id: 1,
+    icon: <BookmarkPlus className='h-5 w-5 text-primary' />,
+    label: 'Create Collections',
+    description: 'Organize your favorite recipes into custom collections',
+  },
+  {
+    id: 2,
+    icon: <Heart className='h-5 w-5 text-primary' />,
+    label: 'Save Recipes',
+    description: 'Add recipes to your collections from any recipe page',
+  },
+  {
+    id: 3,
+    icon: <Edit className='h-5 w-5 text-primary' />,
+    label: 'Manage Collections',
+    description: 'Edit collection names or delete entire collections',
+  },
+  {
+    id: 4,
+    icon: <Trash2 className='h-5 w-5 text-primary' />,
+    label: 'Remove Recipes',
+    description: 'Long press any recipe in a collection to remove it',
+  },
+];
 
 export default function LibraryPage() {
   const { isSignedIn } = useAuth();
@@ -20,6 +49,7 @@ export default function LibraryPage() {
 
   const [collections, setCollections] = useState<CollectionPage[]>([]);
   const [isCreateNewCollectionModalOpen, setIsCreateNewCollectionModalOpen] = useState(false);
+  const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
 
   // Create New Collection
   const [collectionName, setCollectionName] = useState('');
@@ -73,7 +103,12 @@ export default function LibraryPage() {
       {!isSignedIn && <AuthPage />}
       {isSignedIn && (
         <SafeAreaView className='flex-1 bg-background' style={{ padding: 16 }} edges={['top', 'bottom']}>
-          <Text className='text-3xl font-bold'>Library</Text>
+          <View className='w-full flex-row items-center justify-between'>
+            <Text className='text-3xl font-bold'>Library</Text>
+            <TouchableOpacity className='p-2' onPress={() => setIsHelpModalOpen(true)}>
+              <Info className='h-8 w-8' />
+            </TouchableOpacity>
+          </View>
           <ScrollView className='mt-4' showsVerticalScrollIndicator={false}>
             <View className='flex w-full flex-row flex-wrap justify-between'>
               <TouchableOpacity className='w-[48%]' onPress={() => setIsCreateNewCollectionModalOpen(true)}>
@@ -95,6 +130,14 @@ export default function LibraryPage() {
               <Text className='mt-4 text-lg font-medium'>Loading your collections...</Text>
             </View>
           )}
+
+          <BasicModal isModalOpen={isHelpModalOpen} setIsModalOpen={setIsHelpModalOpen}>
+            <HelpModal
+              title='How to use your Library'
+              options={LIBRARY_HELP_OPTIONS}
+              onClose={() => setIsHelpModalOpen(false)}
+            />
+          </BasicModal>
 
           <BasicModal isModalOpen={isCreateNewCollectionModalOpen} setIsModalOpen={setIsCreateNewCollectionModalOpen}>
             <Text className='mb-4 text-2xl font-semibold'>Create New Collection</Text>

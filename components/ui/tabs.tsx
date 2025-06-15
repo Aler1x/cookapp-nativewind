@@ -56,7 +56,7 @@ export function Tabs({ tabs, defaultTab, onTabChange, className, tabIndicator }:
     <View className={cn('relative rounded-full bg-white p-1', className)}>
       {/* Animated Indicator */}
       <Animated.View
-        className='absolute bottom-1 top-1 rounded-full bg-primary z-10'
+        className='absolute bottom-1 top-1 z-10 rounded-full bg-primary'
         style={[
           {
             left: tabIndicatorAnimation.interpolate({

@@ -1,7 +1,6 @@
 import { useAuth } from '@clerk/clerk-expo';
 import { useCallback } from 'react';
 import Toast from 'react-native-toast-message';
-import { ErrorResponse } from '~/types';
 
 const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || '';
 

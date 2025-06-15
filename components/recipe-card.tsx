@@ -10,16 +10,22 @@ import { Separator } from './ui/separator';
 interface RecipeCardProps {
   recipe: Recipe;
   className?: string;
+  onLongPress?: (recipe: Recipe) => void;
 }
 
-export default function RecipeCard({ recipe, className }: RecipeCardProps) {
+export default function RecipeCard({ recipe, className, onLongPress }: RecipeCardProps) {
   const handlePress = () => {
     router.push(`/recipes/${recipe.id}/${recipe.slug}`);
+  };
+
+  const handleLongPress = () => {
+    onLongPress?.(recipe);
   };
 
   return (
     <TouchableOpacity
       onPress={handlePress}
+      onLongPress={onLongPress ? handleLongPress : undefined}
       className={cn('flex-1 overflow-hidden rounded-3xl border border-black bg-background', className)}
       style={{
         elevation: 10,

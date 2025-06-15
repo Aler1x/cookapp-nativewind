@@ -1,14 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { FloatingButton } from '~/components/ui/floating-button';
-import { Plus, List, X } from 'lucide-react-native';
+import { Plus, X } from 'lucide-react-native';
 import { View } from '~/components/ui/view';
 import { useFetch } from '~/hooks/useFetch';
 import { Recipe } from '~/types/recipe';
 import { PaginatedResponse } from '~/types';
 import RecipeCard from '~/components/recipe-card';
 import { Text } from '~/components/ui/text';
-import { useAuth } from '@clerk/clerk-expo';
 import { API_ENDPOINTS_PREFIX, THEME } from '~/lib/constants';
 import BasicModal from '~/components/ui/basic-modal';
 import Toast from 'react-native-toast-message';
@@ -19,10 +17,13 @@ import { Job } from '~/types/profile';
 import { Button } from '~/components/ui/button';
 import FullscreenModal from '~/components/ui/fullscreen-modal';
 import JobCard from '~/components/job-card';
+import { useModal } from '~/contexts/modal-context';
 
 type ModalStep = 'selection' | 'social-media-input';
 
 export default function Page() {
+  const { showJobsModal, setShowJobsModal } = useModal();
+
   // Recipe state
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [recipesCurrentPage, setRecipesCurrentPage] = useState(1);
@@ -42,7 +43,6 @@ export default function Page() {
   const [modalStep, setModalStep] = useState<ModalStep>('selection');
   const [socialMediaUrl, setSocialMediaUrl] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
-  const [showJobsModal, setShowJobsModal] = useState(false);
 
   const $fetch = useFetch();
 
@@ -157,6 +157,7 @@ export default function Page() {
         Toast.show({
           type: 'success',
           text1: 'Recipe Processing Started',
+          text2: 'You can check status by clicking the croissant icon on top right corner',
         });
         // Refresh recipes list
         fetchRecipes();
@@ -255,10 +256,6 @@ export default function Page() {
           </Button>
         </View>
 
-        <FloatingButton onPress={() => setShowJobsModal(true)}>
-          <List size={24} color='#000' />
-        </FloatingButton>
-
         <FullscreenModal visible={showJobsModal} onClose={() => setShowJobsModal(false)}>
           <SafeAreaView className='flex-1 bg-background' edges={['top', 'bottom']}>
             <View className='border-b border-gray-200 px-4 py-4'>
@@ -279,13 +276,12 @@ export default function Page() {
   }
 
   return (
-    <SafeAreaView className='flex-1 items-center justify-center' style={{ padding: 16 }} edges={['top']}>
+    <SafeAreaView className='flex-1 bg-background' style={{ padding: 16 }} edges={['top']}>
       <FlatList
         data={recipes}
         renderItem={({ item }) => <RecipeCard recipe={item} className='mx-1 h-52 flex-1' />}
         keyExtractor={(item: Recipe, index: number) => `${item.id}-${index}`}
         numColumns={2}
-        contentContainerStyle={{ paddingHorizontal: 16, paddingVertical: 12 }}
         columnWrapperStyle={{ justifyContent: 'space-between', marginBottom: 12 }}
         showsVerticalScrollIndicator={false}
         onEndReached={loadMoreRecipes}
@@ -316,10 +312,6 @@ export default function Page() {
           </View>
         </Button>
       </View>
-
-      <FloatingButton onPress={() => setShowJobsModal(true)}>
-        <List size={24} color='#000' />
-      </FloatingButton>
 
       <FullscreenModal visible={showJobsModal} onClose={() => setShowJobsModal(false)}>
         <SafeAreaView className='flex-1 bg-background' edges={['top', 'bottom']}>

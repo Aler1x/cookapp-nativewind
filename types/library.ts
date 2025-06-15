@@ -11,7 +11,7 @@ export type CollectionPage = {
   id: number;
   name: string;
   recipeCount: number;
-  recipes: string[];
+  recipes: Pick<Recipe, 'id' | 'mainImageUrl'>[];
 };
 
 export type CollectionPreview = Pick<Collection, 'id' | 'name'>;

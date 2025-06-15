@@ -18,7 +18,7 @@ const badgeVariants = cva('flex flex-row items-center rounded-full px-2 py-1 tex
   },
 });
 
-const badgeTextVariants = cva('font-medium text-center text-xs', {
+const badgeTextVariants = cva('text-center text-xs font-medium', {
   variants: {
     variant: {
       default: 'text-primary-foreground',

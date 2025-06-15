@@ -85,11 +85,11 @@ export function RecipeIngredients({
       <Text className='mb-4 text-xl font-bold'>{recipe.ingredients.length} Items</Text>
 
       {/* Ingredients List */}
-      <View className='space-y-4'>
-        {recipe.ingredients.map((ingredient) => {
+      <View className='gap-4'>
+        {recipe.ingredients.map((ingredient, index) => {
           const isInList = isIngredientInList(ingredient.name);
           return (
-            <View key={ingredient.id} className='flex-row items-center justify-between py-3'>
+            <View key={`${ingredient.id}-${index}`} className='flex-row items-center justify-between py-3'>
               <TouchableOpacity
                 onPress={() => onIngredientCheck(ingredient.id)}
                 className='flex-1 flex-row items-center gap-3'>
@@ -124,11 +124,7 @@ export function RecipeIngredients({
                       'h-10 w-10 items-center justify-center rounded-full bg-primary/10',
                       isInList && 'bg-green-100'
                     )}>
-                    {isInList ? (
-                      <Check size={22} color='green' />
-                    ) : (
-                      <ShoppingBasket size={22} color='#F97316' />
-                    )}
+                    {isInList ? <Check size={22} color='green' /> : <ShoppingBasket size={22} color='#F97316' />}
                   </TouchableOpacity>
                 )}
               </View>
