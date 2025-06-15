@@ -91,6 +91,7 @@ export default function FiltersPage({ onClose, filters, onApplyFilters }: Filter
   const [showAllDifficulties, setShowAllDifficulties] = useState(false);
   const [showAllDishTypes, setShowAllDishTypes] = useState(false);
   const [showAllDiets, setShowAllDiets] = useState(false);
+  const [showAllCuisines, setShowAllCuisines] = useState(false);
 
   const $fetch = useFetch();
 
@@ -107,7 +108,7 @@ export default function FiltersPage({ onClose, filters, onApplyFilters }: Filter
   }, [$fetch]);
 
   const toggleFilterItem = (
-    section: keyof Pick<FiltersRequest, 'dishTypes' | 'diets' | 'difficulty'>,
+    section: keyof Pick<FiltersRequest, 'dishTypes' | 'diets' | 'difficulty' | 'cuisines'>,
     item: string
   ) => {
     setCurrentFilters((prev) => {
@@ -138,6 +139,7 @@ export default function FiltersPage({ onClose, filters, onApplyFilters }: Filter
       difficulty: [],
       dishTypes: [],
       diets: [],
+      cuisines: [],
       ingredients: { includeIds: [], excludeIds: [] },
     });
   };
@@ -152,6 +154,7 @@ export default function FiltersPage({ onClose, filters, onApplyFilters }: Filter
     count += currentFilters.difficulty.length;
     count += currentFilters.dishTypes.length;
     count += currentFilters.diets.length;
+    count += currentFilters.cuisines.length;
     count += currentFilters.ingredients.includeIds.length;
     count += currentFilters.ingredients.excludeIds.length;
 
@@ -253,10 +256,21 @@ export default function FiltersPage({ onClose, filters, onApplyFilters }: Filter
           showAll={showAllDiets}
           onToggleShowAll={() => setShowAllDiets(!showAllDiets)}
         />
+
+        {/* Cuisines */}
+        <FilterSection
+          title='Cuisines'
+          items={availableFilters?.cuisines}
+          selectedItems={currentFilters.cuisines}
+          onToggleItem={(item) => toggleFilterItem('cuisines', item)}
+          visibleCount={6}
+          showAll={showAllCuisines}
+          onToggleShowAll={() => setShowAllCuisines(!showAllCuisines)}
+        />
       </ScrollView>
 
       {/* Apply Button */}
-      <View className='px-4 pb-4'>
+      <View className='p-4'>
         <Button onPress={handleApply} className='w-full rounded-full bg-black py-4'>
           <Text className='text-center font-semibold text-white'>
             Apply {getAppliedFiltersCount() > 0 && `(${getAppliedFiltersCount()})`}

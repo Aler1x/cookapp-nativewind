@@ -39,7 +39,7 @@ function Checkbox({
         <Check
           size={size}
           strokeWidth={Platform.OS === 'web' ? 2.5 : 3.5}
-          className={cn('text-primary-foreground text-white')}
+          className={cn('text-primary-foreground')}
         />
       </CheckboxPrimitive.Indicator>
     </CheckboxPrimitive.Root>

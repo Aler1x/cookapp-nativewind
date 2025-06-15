@@ -36,6 +36,7 @@ export default function HomePage() {
     difficulty: [],
     dishTypes: [],
     diets: [],
+    cuisines: [],
     ingredients: { includeIds: [], excludeIds: [] },
   });
 
@@ -63,6 +64,7 @@ export default function HomePage() {
       difficulty: [],
       dishTypes: [],
       diets: [],
+      cuisines: [],
       ingredients: { includeIds: [], excludeIds: [] },
     });
   };
@@ -108,6 +110,7 @@ export default function HomePage() {
     count += filters.difficulty.length;
     count += filters.dishTypes.length;
     count += filters.diets.length;
+    count += filters.cuisines.length;
     count += filters.ingredients.includeIds.length;
     count += filters.ingredients.excludeIds.length;
 

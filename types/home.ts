@@ -2,6 +2,7 @@ export interface FiltersResponse {
   dishTypes: string[];
   diets: string[];
   difficulties: string[];
+  cuisines: string[];
 }
 
 export interface FiltersRequest {
@@ -13,6 +14,7 @@ export interface FiltersRequest {
   difficulty: string[];
   dishTypes: string[];
   diets: string[];
+  cuisines: string[];
   ingredients: {
     includeIds: number[];
     excludeIds: number[];
@@ -25,6 +27,7 @@ export interface BadgeFilters {
   settings: {
     dishTypes?: string[];
     diets?: string[];
+    cuisines?: string[];
     difficulties?: string[];
     cookTime?: {
       min: number;
