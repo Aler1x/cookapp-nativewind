@@ -12,10 +12,17 @@ import Toast from 'react-native-toast-message';
 
 interface AddRecipeToCollectionModalProps {
   recipeId: string;
+  recipeName?: string;
   onClose: () => void;
+  onSuccess?: () => void;
 }
 
-export default function AddRecipeToCollectionModal({ recipeId, onClose }: AddRecipeToCollectionModalProps) {
+export default function AddRecipeToCollectionModal({ 
+  recipeId, 
+  recipeName, 
+  onClose, 
+  onSuccess 
+}: AddRecipeToCollectionModalProps) {
   const $fetch = useFetch();
   const [collections, setCollections] = useState<CollectionPreview[]>([]);
   const [selectedCollectionId, setSelectedCollectionId] = useState<string>('');
@@ -61,11 +68,17 @@ export default function AddRecipeToCollectionModal({ recipeId, onClose }: AddRec
         }
       );
 
-      Toast.show({
-        type: 'success',
-        text1: 'Success',
-        text2: 'Recipe added to collection!',
-      });
+      if (onSuccess) {
+        onSuccess();
+      } else {
+        Toast.show({
+          type: 'success',
+          text1: 'Success',
+          text2: recipeName 
+            ? `"${recipeName}" added to collection!`
+            : 'Recipe added to collection!',
+        });
+      }
     } catch (error) {
       console.error('Error adding recipe to collection:', error);
       Toast.show({

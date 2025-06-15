@@ -18,6 +18,9 @@ import SearchInput from '~/components/search-input';
 import { throttle } from 'lodash';
 import { Badge } from '~/components/ui/badge';
 import { cn } from '~/lib/utils';
+import BasicModal from '~/components/ui/basic-modal';
+import AddRecipeToCollectionModal from '~/components/modals/add-recipe-to-collection';
+import Toast from 'react-native-toast-message';
 
 export default function HomePage() {
   const { isSignedIn } = useAuth();
@@ -25,6 +28,8 @@ export default function HomePage() {
   const [showTitle, setShowTitle] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [showFilters, setShowFilters] = useState(false);
+  const [isAddToCollectionModalOpen, setIsAddToCollectionModalOpen] = useState(false);
+  const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [filters, setFilters] = useState<FiltersRequest>({
     searchQuery: '',
     cookTime: { min: 5, max: 120 },
@@ -249,6 +254,32 @@ export default function HomePage() {
     }));
   };
 
+  const handleRecipeLongPress = (recipe: Recipe) => {
+    if (!isSignedIn) {
+      Toast.show({
+        type: 'info',
+        text1: 'Sign In Required',
+        text2: 'Please sign in to add recipes to collections',
+      });
+      return;
+    }
+    
+    setSelectedRecipe(recipe);
+    setIsAddToCollectionModalOpen(true);
+  };
+
+  const handleAddToCollectionSuccess = () => {
+    if (selectedRecipe) {
+      Toast.show({
+        type: 'success',
+        text1: 'Recipe Added!',
+        text2: `"${selectedRecipe.title}" has been added to your collection`,
+      });
+    }
+    setIsAddToCollectionModalOpen(false);
+    setSelectedRecipe(null);
+  };
+
   return (
     <SafeAreaView className='flex-1 bg-background' edges={['top', 'bottom']}>
       <View className='mb-2 gap-2 px-4'>
@@ -288,7 +319,13 @@ export default function HomePage() {
 
       <FlatList
         data={recipes}
-        renderItem={({ item }) => <RecipeCard recipe={item} className='mx-1 h-52 flex-1' />}
+        renderItem={({ item }) => (
+          <RecipeCard 
+            recipe={item} 
+            className='mx-1 h-52 flex-1' 
+            onLongPress={handleRecipeLongPress}
+          />
+        )}
         keyExtractor={(item: Recipe, index: number) => `${item.id}-${index}`}
         numColumns={2}
         contentContainerStyle={{ paddingHorizontal: 16, paddingVertical: 12 }}
@@ -327,6 +364,27 @@ export default function HomePage() {
       <FullscreenModal visible={showFilters} onClose={() => setShowFilters(false)}>
         <FiltersPage onClose={() => setShowFilters(false)} filters={filters} onApplyFilters={handleApplyFilters} />
       </FullscreenModal>
+
+      {/* Add to Collection Modal */}
+      {selectedRecipe && (
+        <BasicModal 
+          isModalOpen={isAddToCollectionModalOpen} 
+          setIsModalOpen={(open) => {
+            setIsAddToCollectionModalOpen(open);
+            if (!open) setSelectedRecipe(null);
+          }}
+        >
+          <AddRecipeToCollectionModal 
+            recipeId={selectedRecipe.id} 
+            recipeName={selectedRecipe.title}
+            onSuccess={handleAddToCollectionSuccess}
+            onClose={() => {
+              setIsAddToCollectionModalOpen(false);
+              setSelectedRecipe(null);
+            }}
+          />
+        </BasicModal>
+      )}
     </SafeAreaView>
   );
 }

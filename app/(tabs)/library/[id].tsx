@@ -1,8 +1,8 @@
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text } from '~/components/ui/text';
-import { TouchableOpacity, ScrollView, Image, FlatList, ActivityIndicator } from 'react-native';
+import { FlatList, ActivityIndicator } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useFetch } from '~/hooks/useFetch';
 import { Collection } from '~/types/library';
 import { Recipe } from '~/types/recipe';
@@ -12,7 +12,7 @@ import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
 import BasicModal from '~/components/ui/basic-modal';
 import DeleteConfirmationModal from '~/components/modals/delete-confirmation';
-import { Edit, Trash2, Clock, Users } from 'lucide-react-native';
+import { Edit, Trash2 } from 'lucide-react-native';
 import RecipeCard from '~/components/recipe-card';
 
 export default function LibraryDetailPage() {
@@ -27,7 +27,7 @@ export default function LibraryDetailPage() {
   const [recipeToDelete, setRecipeToDelete] = useState<Recipe | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const fetchCollection = async () => {
+  const fetchCollection = useCallback(async () => {
     try {
       setIsLoading(true);
       const data = await $fetch<Collection>(`${API_ENDPOINTS_PREFIX.spring}/recipes/collection/${id}`);
@@ -37,7 +37,7 @@ export default function LibraryDetailPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [$fetch, id]);
 
   const handleEditCollection = async () => {
     if (!editedName.trim()) return;
@@ -138,6 +138,8 @@ export default function LibraryDetailPage() {
               numColumns={2}
               columnWrapperStyle={{ justifyContent: 'space-between', marginBottom: 12 }}
               showsVerticalScrollIndicator={false}
+              refreshing={isLoading}
+              onRefresh={fetchCollection}
               ListEmptyComponent={
                 <View className='flex-1 items-center justify-center py-12'>
                   <Text className='text-center text-muted-foreground'>No recipes in this collection yet</Text>
