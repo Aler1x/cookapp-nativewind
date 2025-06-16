@@ -15,7 +15,7 @@ const formatNutrition = (value: number, unit: string) => {
 
 const NutritionItem = ({ value, unit, label }: { value: number; unit: string; label: string }) => {
   return (
-    <View className='native:p-4 items-center rounded-lg bg-white web:p-3'>
+    <View className='items-center rounded-lg bg-white p-3'>
       <Text className='text-2xl font-bold web:text-lg web:font-semibold'>{formatNutrition(value, unit)}</Text>
       <Text className='text-gray-600 web:text-sm'>{label}</Text>
     </View>

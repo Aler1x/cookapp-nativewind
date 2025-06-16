@@ -1,27 +1,25 @@
-export interface ChatMessage {
-  role: 'USER' | 'ASSISTANT';
-  content: string | AssistantMessageContent;
+import { Recipe } from "./recipe";
+
+export type ChatMessage = {
+  role: 'USER';
+  content: string;
+} | {
+  role: 'ASSISTANT';
+  content: AssistantMessageContent;
 }
 
-export interface AssistantMessageContent {
-  messageType: 'TEXT' | 'GALLERY' | 'RECIPE_DETAILS' | 'JOB_STATUS';
+export type AssistantMessageContent = {
+  messageType: 'TEXT';
   message: string;
-  recipes?: Recipe[];
-  gallery?: GalleryItem[];
-  jobStatus?: JobStatus;
-}
-
-export interface Recipe {
-  id: string;
-  title: string;
-  description: string;
-  imageUrl?: string;
-  prepTime?: number;
-  cookTime?: number;
-  servings?: number;
-  difficulty?: 'Easy' | 'Medium' | 'Hard';
-  ingredients?: string[];
-  instructions?: string[];
+} | {
+  messageType: 'RECIPE_DETAILS';
+  recipe: Recipe;
+} | {
+  messageType: 'GALLERY';
+  gallery: GalleryItem[];
+} | {
+  messageType: 'JOB_STATUS';
+  jobStatus: JobStatus;
 }
 
 export interface GalleryItem {
@@ -31,7 +29,7 @@ export interface GalleryItem {
   description?: string;
 }
 
-export interface JobStatus {
+export type JobStatus = {
   status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'FAILED';
   progress?: number;
   message?: string;
@@ -59,4 +57,3 @@ export interface StreamChunk {
   content: string;
   isComplete: boolean;
 }
-

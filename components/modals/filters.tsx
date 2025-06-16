@@ -135,10 +135,13 @@ function IngredientSection({
 interface FiltersPageProps {
   onClose?: () => void;
   filters: FiltersRequest;
-  onApplyFilters: (filters: FiltersRequest, ingredientData?: {
-    include: { id: number; name: string }[];
-    exclude: { id: number; name: string }[];
-  }) => void;
+  onApplyFilters: (
+    filters: FiltersRequest,
+    ingredientData?: {
+      include: { id: number; name: string }[];
+      exclude: { id: number; name: string }[];
+    }
+  ) => void;
   initialIngredients?: {
     include: { id: number; name: string }[];
     exclude: { id: number; name: string }[];
@@ -153,14 +156,14 @@ export default function FiltersPage({ onClose, filters, onApplyFilters, initialI
   const [showAllDiets, setShowAllDiets] = useState(false);
   const [showAllCuisines, setShowAllCuisines] = useState(false);
   const [showAllIncludeIngredients, setShowAllIncludeIngredients] = useState(false);
-    const [showAllExcludeIngredients, setShowAllExcludeIngredients] = useState(false);
-  
+  const [showAllExcludeIngredients, setShowAllExcludeIngredients] = useState(false);
+
   // Modal states
   const [modalVisible, setModalVisible] = useState(false);
   const [newItemText, setNewItemText] = useState<string>('');
   const [newItem, setNewItem] = useState<SelectListData | null>(null);
   const [currentIngredientSection, setCurrentIngredientSection] = useState<'include' | 'exclude'>('include');
-  
+
   // Ingredient states - initialize from props if available
   const [includeIngredients, setIncludeIngredients] = useState<{ id: number; name: string }[]>(
     initialIngredients?.include || []
@@ -182,8 +185,6 @@ export default function FiltersPage({ onClose, filters, onApplyFilters, initialI
     };
     fetchFilters();
   }, [$fetch]);
-
-
 
   const toggleFilterItem = (
     section: keyof Pick<FiltersRequest, 'dishTypes' | 'diets' | 'difficulty' | 'cuisines'>,
@@ -280,7 +281,7 @@ export default function FiltersPage({ onClose, filters, onApplyFilters, initialI
 
     const ingredientId = parseInt(selectedItem.id);
     const ingredientName = selectedItem.value;
-    
+
     setModalVisible(false);
     setNewItemText('');
     setNewItem(null);
@@ -290,7 +291,7 @@ export default function FiltersPage({ onClose, filters, onApplyFilters, initialI
       if (currentFilters.ingredients.excludeIds.includes(ingredientId)) {
         return; // Don't add if already in exclude list
       }
-      
+
       // Check if already in include list
       if (!currentFilters.ingredients.includeIds.includes(ingredientId)) {
         setCurrentFilters((prev) => ({
@@ -300,18 +301,15 @@ export default function FiltersPage({ onClose, filters, onApplyFilters, initialI
             includeIds: [...prev.ingredients.includeIds, ingredientId],
           },
         }));
-        
-        setIncludeIngredients((prev) => [
-          ...prev,
-          { id: ingredientId, name: ingredientName },
-        ]);
+
+        setIncludeIngredients((prev) => [...prev, { id: ingredientId, name: ingredientName }]);
       }
     } else {
       // Check if already in include list
       if (currentFilters.ingredients.includeIds.includes(ingredientId)) {
         return; // Don't add if already in include list
       }
-      
+
       // Check if already in exclude list
       if (!currentFilters.ingredients.excludeIds.includes(ingredientId)) {
         setCurrentFilters((prev) => ({
@@ -321,11 +319,8 @@ export default function FiltersPage({ onClose, filters, onApplyFilters, initialI
             excludeIds: [...prev.ingredients.excludeIds, ingredientId],
           },
         }));
-        
-        setExcludeIngredients((prev) => [
-          ...prev,
-          { id: ingredientId, name: ingredientName },
-        ]);
+
+        setExcludeIngredients((prev) => [...prev, { id: ingredientId, name: ingredientName }]);
       }
     }
   };

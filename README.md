@@ -100,7 +100,6 @@ pnpm test:coverage  # Run tests with coverage report
 cookapp-nativewind/
 ├── app/                    # Main application with file-based routing
 │   ├── (tabs)/             # Tab navigation structure
-│   │   ├── home/           # Home tab - Recipe discovery
 │   │   ├── library/        # Library tab - Saved recipes
 │   │   └── profile/        # Profile tab - User settings
 │   ├── recipes/            # Recipe detail screens

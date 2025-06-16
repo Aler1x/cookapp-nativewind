@@ -42,7 +42,9 @@ export default function HomePage() {
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [filters, setFilters] = useState<FiltersRequest>(INITIAL_FILTERS);
 
-  const [ingredients, setIngredients] = useState<{ id: number; name: string, isSelected: boolean, type: 'include' | 'exclude' }[]>([]);
+  const [ingredients, setIngredients] = useState<
+    { id: number; name: string; isSelected: boolean; type: 'include' | 'exclude' }[]
+  >([]);
 
   const [activeBadge, setActiveBadge] = useState<string>('');
 
@@ -65,27 +67,30 @@ export default function HomePage() {
     return count;
   }, [filters]);
 
-  const fetcher = useCallback(async (page: number) => {
-    const size = 10;
-        
-    if (filters.searchQuery || appliedFiltersCount > 0) {
-      setActiveBadge('');
-      const url = `${API_ENDPOINTS_PREFIX.node}/recipes/search?page=${page}&size=${size}`;
-      return await $fetch<PaginatedResponse<Recipe>>(url, {
-        method: 'POST',
-        body: JSON.stringify(filters),
-      });
-    } else if (activeBadge) {
-      const url = `${API_ENDPOINTS_PREFIX.node}/recipes/quick-filters/${activeBadge}?page=${page}&size=${size}`;
-      return await $fetch<PaginatedResponse<Recipe>>(url);
-    } else {
-      const url = isSignedIn
-        ? `${API_ENDPOINTS_PREFIX.node}/recommendations?page=${page}&size=${size}`
-        : `${API_ENDPOINTS_PREFIX.public}/recipes?page=${page}&size=${size}`;
-      return await $fetch<PaginatedResponse<Recipe>>(url);
-    }
-  }, [$fetch, isSignedIn, activeBadge, appliedFiltersCount, filters]);
-  
+  const fetcher = useCallback(
+    async (page: number) => {
+      const size = 10;
+
+      if ((filters.searchQuery && filters.searchQuery.length > 0) || appliedFiltersCount > 0) {
+        setActiveBadge('');
+        const url = `${API_ENDPOINTS_PREFIX.node}/recipes/search?page=${page}&size=${size}`;
+        return await $fetch<PaginatedResponse<Recipe>>(url, {
+          method: 'POST',
+          body: JSON.stringify(filters),
+        });
+      } else if (activeBadge) {
+        const url = `${API_ENDPOINTS_PREFIX.node}/recipes/quick-filters/${activeBadge}?page=${page}&size=${size}`;
+        return await $fetch<PaginatedResponse<Recipe>>(url);
+      } else {
+        const url = isSignedIn
+          ? `${API_ENDPOINTS_PREFIX.node}/recommendations?page=${page}&size=${size}&diversityFactor=0.7`
+          : `${API_ENDPOINTS_PREFIX.public}/recipes?page=${page}&size=${size}`;
+        return await $fetch<PaginatedResponse<Recipe>>(url);
+      }
+    },
+    [$fetch, isSignedIn, activeBadge, appliedFiltersCount, filters, searchQuery]
+  );
+
   const {
     data: recipes,
     currentPage,
@@ -121,8 +126,8 @@ export default function HomePage() {
 
     if (ingredientData) {
       const allIngredients = [
-        ...ingredientData.include.map(ing => ({ ...ing, isSelected: true, type: 'include' as const })),
-        ...ingredientData.exclude.map(ing => ({ ...ing, isSelected: true, type: 'exclude' as const })),
+        ...ingredientData.include.map((ing) => ({ ...ing, isSelected: true, type: 'include' as const })),
+        ...ingredientData.exclude.map((ing) => ({ ...ing, isSelected: true, type: 'exclude' as const })),
       ];
       setIngredients(allIngredients);
     }
@@ -131,8 +136,8 @@ export default function HomePage() {
   };
 
   const getIngredientsForFilters = () => {
-    const include = ingredients.filter(ing => ing.type === 'include').map(ing => ({ id: ing.id, name: ing.name }));
-    const exclude = ingredients.filter(ing => ing.type === 'exclude').map(ing => ({ id: ing.id, name: ing.name }));
+    const include = ingredients.filter((ing) => ing.type === 'include').map((ing) => ({ id: ing.id, name: ing.name }));
+    const exclude = ingredients.filter((ing) => ing.type === 'exclude').map((ing) => ({ id: ing.id, name: ing.name }));
     return { include, exclude };
   };
 
@@ -156,9 +161,28 @@ export default function HomePage() {
     }
   };
 
+  // keep a ref to always call the latest fetchPage without re-triggering the effect when
+  // fetchPage reference changes on each filters update. This prevents extra network
+  // requests on every keystroke when the search query updates.
+  const fetchPageRef = React.useRef(fetchPage);
+
+  // update ref whenever the callback instance changes
   useEffect(() => {
-    fetchPage(1);
-  }, [activeBadge, fetchPage]);
+    fetchPageRef.current = fetchPage;
+  }, [fetchPage]);
+
+  // fetch when the active quick-filter badge changes or on initial mount
+  useEffect(() => {
+    fetchPageRef.current(1);
+  }, [activeBadge]);
+
+  // If the user clears the search bar (and no other filters are applied), automatically
+  // refresh to show recommendations without requiring an extra submit tap.
+  useEffect(() => {
+    if (searchQuery === '' && appliedFiltersCount === 0 && activeBadge === '') {
+      fetchPageRef.current(1);
+    }
+  }, [searchQuery, appliedFiltersCount, activeBadge]);
 
   const handleRecipeLongPress = (recipe: Recipe) => {
     if (!isSignedIn) {
@@ -210,9 +234,7 @@ export default function HomePage() {
   };
 
   if (isLoading && recipes.length === 0) {
-    return (
-      <HomeSkeleton />
-    );
+    return <HomeSkeleton />;
   }
 
   return (
@@ -253,11 +275,7 @@ export default function HomePage() {
       <FlatList
         data={recipes}
         renderItem={({ item }) => (
-          <RecipeCard
-            recipe={item}
-            className='mx-1 h-52 flex-1'
-            onLongPress={handleRecipeLongPress}
-          />
+          <RecipeCard recipe={item} className='mx-1 h-52 flex-1' onLongPress={handleRecipeLongPress} />
         )}
         keyExtractor={(item: Recipe, index: number) => `${item.id}-${index}`}
         numColumns={2}
@@ -306,8 +324,7 @@ export default function HomePage() {
           setIsModalOpen={(open) => {
             setIsAddToCollectionModalOpen(open);
             if (!open) setSelectedRecipe(null);
-          }}
-        >
+          }}>
           <AddRecipeToCollectionModal
             recipeId={selectedRecipe.id}
             recipeName={selectedRecipe.title}

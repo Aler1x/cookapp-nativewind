@@ -3,7 +3,7 @@
 ## Project Overview
 
 CookApp is a modern mobile cooking application built with Expo and React Native.
-The app helps users discover, create, save, and share cooking recipes with a 
+The app helps users discover, create, save, and share cooking recipes with a
 beautiful, responsive UI powered by NativeWind (Tailwind CSS for React Native).
 
 ## Tech Stack
@@ -32,41 +32,45 @@ Before setting up the project, ensure you have the following installed:
 ## Initial Setup
 
 ### 1. Clone the Repository
+
 ```bash
 git clone <repository-url>
 cd cookapp-nativewind
 ```
 
 ### 2. Install Dependencies
+
 ```bash
 pnpm install
 ```
 
-### 3. Environment Configuration
-Create a `.env` file in the root directory with the following variables:
+### 3. Clerk Authentication Setup (If you have clerk api key you can skip this)
 
-```env
-EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key_here
-```
-
-### 4. Clerk Authentication Setup
 - Sign up at https://clerk.dev/
 - Create a new application
 - Enable Google, and Apple authentication
 - Copy your Publishable Key to the .env file
-- Configure OAuth redirect URLs:
-  * `cookapp-nativewind://`
-  * `https://auth.clerk.dev/v2/client-redirect?...`
+
+### 4. Environment Configuration
+
+Create a `.env` file in the root directory with the following variables:
+
+```env
+EXPO_PUBLIC_API_URL=
+EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY=
+```
 
 ## Development Commands
 
 ### Start Development Server
+
 ```bash
 pnpm start          # Start Expo development server
 pnpm dev            # Alias for pnpm start
 ```
 
 ### Platform-Specific Development
+
 ```bash
 pnpm android        # Run on Android device/emulator
 pnpm ios            # Run on iOS device/simulator
@@ -74,6 +78,7 @@ pnpm web            # Run in web browser
 ```
 
 ### Code Quality
+
 ```bash
 pnpm lint           # Run ESLint
 pnpm format         # Format code with Prettier
@@ -81,6 +86,7 @@ pnpm format:check   # Check code formatting
 ```
 
 ### Testing
+
 ```bash
 pnpm test           # Run tests in watch mode
 pnpm test:coverage  # Run tests with coverage report
@@ -92,7 +98,6 @@ pnpm test:coverage  # Run tests with coverage report
 cookapp-nativewind/
 ├── app/                    # Main application with file-based routing
 │   ├── (tabs)/             # Tab navigation structure
-│   │   ├── home/           # Home tab - Recipe discovery
 │   │   ├── library/        # Library tab - Saved recipes
 │   │   └── profile/        # Profile tab - User settings
 │   ├── recipes/            # Recipe detail screens
@@ -112,22 +117,26 @@ cookapp-nativewind/
 ## Development Workflow
 
 ### 1. Starting Development
+
 - Run `pnpm start` to start the Expo development server
 - Use Expo Go app on your device or run on simulator/emulator
 - The app supports hot reloading for fast development
 
 ### 2. Making Changes
+
 - Follow the existing code structure and patterns
 - Use TypeScript for type safety
 - Follow the component architecture with UI/Page separation
 - Use NativeWind classes for styling
 
 ### 3. Testing
+
 - Write unit tests for utility functions
 - Test components with React Native Testing Library
 - Run tests before committing changes
 
 ### 4. Code Style
+
 - Use Prettier for code formatting
 - Follow ESLint rules
 - Use meaningful component and variable names
@@ -146,21 +155,25 @@ cookapp-nativewind/
 ## Common Development Tasks
 
 ### 1. Adding New Screens
+
 - Create new files in the `app/` directory
 - Use Expo Router file-based routing conventions
 - Follow the existing layout patterns
 
 ### 2. Creating Components
+
 - Add reusable components to `components/ui/`
 - Add complete reusable page components to `components/pages/`
 - Use TypeScript interfaces for props
 
 ### 3. Styling
+
 - Use NativeWind classes for styling
 - Follow the design system color scheme
 - Ensure responsive design for different screen sizes
 
 ### 4. State Management
+
 - Use Zustand stores for global state
 - Keep component state local when possible
 - Follow the existing store patterns
@@ -170,19 +183,23 @@ cookapp-nativewind/
 ### Common Issues
 
 1. **Metro bundler cache issues**:
+
    ```bash
    npx expo start --reset-cache
    ```
 
 2. **iOS simulator not working**:
+
    - Ensure Xcode is properly installed
    - Try: `npx expo run:ios`
 
 3. **Android emulator issues**:
+
    - Check Android Studio SDK configuration
    - Try: `npx expo run:android`
 
 4. **Authentication not working**:
+
    - Verify Clerk configuration
    - Check environment variables
    - Ensure redirect URLs are properly configured
@@ -195,6 +212,7 @@ cookapp-nativewind/
 ## Deployment
 
 ### For Production Builds
+
 1. Update `app.json` with production configuration
 2. Configure EAS Build: `npx eas build:configure`
 3. Build for platforms: `npx eas build --platform all`
@@ -206,4 +224,4 @@ cookapp-nativewind/
 - [React Native Documentation](https://reactnative.dev/)
 - [NativeWind Documentation](https://www.nativewind.dev/)
 - [Clerk Documentation](https://clerk.com/docs)
-- [Zustand Documentation](https://github.com/pmndrs/zustand) 
+- [Zustand Documentation](https://github.com/pmndrs/zustand)

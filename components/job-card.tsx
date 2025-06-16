@@ -47,7 +47,7 @@ const getStatusConfig = (status: string) => {
   }
 };
 
-const isDevMode = __DEV__;
+const isDevMode = process.env.NODE_ENV === 'development';
 
 export default function JobCard({ job }: JobCardProps) {
   const statusConfig = getStatusConfig(job.status);

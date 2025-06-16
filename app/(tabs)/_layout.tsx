@@ -27,7 +27,7 @@ export default function RootLayout() {
         },
         animation: 'shift',
       }}
-      initialRouteName='home'>
+      initialRouteName='chat'>
       <Tabs.Screen
         name='home'
         options={{

@@ -33,6 +33,22 @@ export function useFetch() {
           },
         });
 
+        if (process.env.NODE_ENV === 'development') {
+          console.group(`🌐 API Request: ${fetchOptions.method || 'GET'} ${endpoint}`);
+          console.log('📍 URL:', url);
+          console.log('📤 Request:', {
+            method: fetchOptions.method || 'GET',
+            body: fetchOptions.body ? JSON.parse(fetchOptions.body as string) : undefined,
+          });
+          console.log('📥 Response:', {
+            status: response.status,
+            statusText: response.statusText,
+            ok: response.ok,
+            headers: Object.fromEntries(response.headers.entries()),
+          });
+          console.groupEnd();
+        }
+
         const contentType = response.headers.get('content-type');
         if (contentType?.includes('application/json')) {
           return response.json() as Promise<T>;
@@ -58,10 +74,6 @@ export function useFetch() {
         }
 
         return null as any;
-      } finally {
-        if (process.env.NODE_ENV === 'development') {
-          // console.log(response);
-        }
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps -- getToken isn't a useCallback so we get on one call fucking 1 thousand calls

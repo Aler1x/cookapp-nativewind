@@ -36,11 +36,7 @@ function Checkbox({
       className={cn(checkboxVariants({ variant }), props.checked && 'border-primary bg-primary', className)}
       {...props}>
       <CheckboxPrimitive.Indicator className={cn('h-full w-full items-center justify-center')}>
-        <Check
-          size={size}
-          strokeWidth={Platform.OS === 'web' ? 2.5 : 3.5}
-          className={cn('text-primary-foreground')}
-        />
+        <Check size={size} strokeWidth={Platform.OS === 'web' ? 2.5 : 3.5} className={cn('text-primary-foreground')} />
       </CheckboxPrimitive.Indicator>
     </CheckboxPrimitive.Root>
   );

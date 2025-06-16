@@ -30,9 +30,9 @@ export default function AddRecipeSelection({
           <Text>Create from social media</Text>
         </Button>
 
-        <Button onPress={onSelectFromScratch}>
+        {/* <Button onPress={onSelectFromScratch}>
           <Text>Create from scratch</Text>
-        </Button>
+        </Button> */}
       </View>
     </>
   );

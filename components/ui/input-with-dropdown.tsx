@@ -186,7 +186,7 @@ const InputWithDropdown: React.FC<SelectListProps> = ({
       return searchQuery;
     }
     return placeholder ? placeholder : 'Select option';
-  }
+  };
 
   return (
     <View>
@@ -224,9 +224,7 @@ const InputWithDropdown: React.FC<SelectListProps> = ({
               slideup();
             }
           }}>
-          <Text style={[{ fontFamily }, inputStyles]}>
-            {getText()}
-          </Text>
+          <Text style={[{ fontFamily }, inputStyles]}>{getText()}</Text>
           <ChevronDown size={20} color={THEME.light.colors.primary} />
         </TouchableOpacity>
       )}
