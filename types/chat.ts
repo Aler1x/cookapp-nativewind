@@ -1,3 +1,4 @@
+import { Job } from "./profile";
 import { Recipe } from "./recipe";
 
 export type ChatMessage = {
@@ -13,26 +14,16 @@ export type AssistantMessageContent = {
   message: string;
 } | {
   messageType: 'RECIPE_DETAILS';
+  message: string;
   recipe: Recipe;
 } | {
   messageType: 'GALLERY';
-  gallery: GalleryItem[];
+  message: string;
+  recipes: Recipe[];
 } | {
   messageType: 'JOB_STATUS';
-  jobStatus: JobStatus;
-}
-
-export interface GalleryItem {
-  id: string;
-  imageUrl: string;
-  title: string;
-  description?: string;
-}
-
-export type JobStatus = {
-  status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'FAILED';
-  progress?: number;
-  message?: string;
+  message: string;
+  jobInfo: Job;
 }
 
 export interface ChatRequest {

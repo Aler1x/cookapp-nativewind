@@ -25,28 +25,24 @@ export function useFetch() {
       }
 
       try {
+        // Add timeout for mobile networks
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+
         const response = await fetch(url, {
           ...fetchOptions,
           headers: {
             ...headers,
             ...fetchOptions.headers,
           },
+          signal: controller.signal,
         });
 
-        if (process.env.NODE_ENV === 'development') {
-          console.group(`🌐 API Request: ${fetchOptions.method || 'GET'} ${endpoint}`);
-          console.log('📍 URL:', url);
-          console.log('📤 Request:', {
-            method: fetchOptions.method || 'GET',
-            body: fetchOptions.body ? JSON.parse(fetchOptions.body as string) : undefined,
-          });
-          console.log('📥 Response:', {
-            status: response.status,
-            statusText: response.statusText,
-            ok: response.ok,
-            headers: Object.fromEntries(response.headers.entries()),
-          });
-          console.groupEnd();
+        clearTimeout(timeoutId);
+
+        // Check if response is ok
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
 
         const contentType = response.headers.get('content-type');
@@ -58,22 +54,23 @@ export function useFetch() {
       } catch (error) {
         console.error('Error fetching data', error);
 
-        if (error instanceof Error) {
-          Toast.show({
-            type: 'error',
-            text1: 'Error',
-            text2: error.message,
-          });
-        }
-        if (error.message || error.error) {
-          Toast.show({
-            type: 'error',
-            text1: 'Error',
-            text2: error.message || error.error || 'An unknown error occurred',
-          });
+        let errorMessage = 'An unknown error occurred';
+        
+        if (error.name === 'AbortError') {
+          errorMessage = 'Request timed out. Please check your connection and try again.';
+        } else if (error instanceof Error) {
+          errorMessage = error.message;
+        } else if (error.message || error.error) {
+          errorMessage = error.message || error.error;
         }
 
-        return null as any;
+        Toast.show({
+          type: 'error',
+          text1: 'Network Error',
+          text2: errorMessage,
+        });
+
+        throw error; // Re-throw so calling code can handle it
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps -- getToken isn't a useCallback so we get on one call fucking 1 thousand calls

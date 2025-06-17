@@ -300,7 +300,7 @@ export default function Page() {
         }
       />
 
-      <View className='absolute bottom-0 left-0 right-0 items-center pb-8'>
+      <View className='absolute bottom-0 left-0 right-0 items-center pb-8 web:pb-2'>
         <Button
           variant='black'
           className='w-[60%]'

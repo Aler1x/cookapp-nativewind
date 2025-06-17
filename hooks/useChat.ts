@@ -1,52 +1,104 @@
-import { useChatStore } from "~/stores/chat";
 import { API_ENDPOINTS_PREFIX } from "~/lib/constants";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useFetch } from "~/hooks/useFetch";
-import { ChatHistoryItem, ChatResponse } from "~/types/chat";
+import { ChatHistoryItem, ChatMessage, ChatResponse } from "~/types/chat";
+import Toast from "react-native-toast-message";
 
 export const useChat = () => {
+  const [currentChat, setCurrentChat] = useState<ChatResponse | null>(null);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [userChats, setUserChats] = useState<ChatHistoryItem[]>([]);
+
   const $fetch = useFetch();
 
-  const { currentChat, addMessage } = useChatStore();
+  const appendMessage = useCallback((message: ChatMessage) => {
+    setMessages(prevMessages => [...prevMessages, message]);
+  }, []);
 
-  const fetchUserChats = useCallback(async () => {
-    const response = await $fetch<ChatHistoryItem[]>(`${API_ENDPOINTS_PREFIX.spring}/chat-history`);
-    useChatStore.setState({ userChats: response });
+  const loadChatHistory = useCallback(async (chatId: string) => {
+    const response = await $fetch<ChatResponse>(`${API_ENDPOINTS_PREFIX.spring}/chat-history/${chatId}`);
+    setCurrentChat(response);
+    setMessages(response.messages);
     return response;
   }, [$fetch]);
 
+  const fetchUserChats = useCallback(async () => {
+    const response = await $fetch<ChatHistoryItem[]>(`${API_ENDPOINTS_PREFIX.spring}/chat-history`);
+    setUserChats(response);
+    if (response.length > 0) {
+      loadChatHistory(response[response.length - 1].chatId);
+    }
+  }, [$fetch, loadChatHistory]);
+
   const createNewChat = useCallback(async () => {
     const response = await $fetch<ChatResponse>(`${API_ENDPOINTS_PREFIX.spring}/chat-history/initial`);
-    console.log('new chat', response);
-    useChatStore.setState({ currentChat: response });
+    setCurrentChat(response);
+    setMessages(response.messages);
     return response;
   }, [$fetch]);
 
   const sendMessage = useCallback(async (message: string) => {
-    console.log('send message', message, currentChat);
-
     if (!currentChat?.chatId) {
-      const newChat = await createNewChat();
-      useChatStore.setState({ currentChat: newChat });
-      return newChat;
+      Toast.show({
+        type: 'error',
+        text1: 'No active chat',
+        text2: 'Please create a new chat (use the button on the top right corner)',
+      });
+      return;
     }
 
-    const response = await $fetch<ChatResponse>(`${API_ENDPOINTS_PREFIX.spring}/chat`, {
-      method: 'POST',
-      body: JSON.stringify({
-        chatId: currentChat.chatId,
-        request: message,
-      }),
-    });
+    appendMessage({ role: 'USER', content: message } as ChatMessage);
 
-    addMessage(response.messages[response.messages.length - 1]);
+    try {
+      const response = await $fetch<ChatResponse>(`${API_ENDPOINTS_PREFIX.spring}/chat`, {
+        method: 'POST',
+        body: JSON.stringify({
+          chatId: currentChat?.chatId,
+          request: message,
+        }),
+      });
 
-    return response;
-  }, [currentChat, createNewChat, $fetch, addMessage]);
+      // Validate response
+      if (!response || !response.messages || !Array.isArray(response.messages) || response.messages.length === 0) {
+        throw new Error('Invalid response from server');
+      }
+
+      // response contains only last message
+      appendMessage(response.messages[0] as ChatMessage);
+
+      return response;
+    } catch (error) {
+      console.error('Error sending message:', error);
+      
+      // Add error message to chat
+      appendMessage({
+        role: 'ASSISTANT',
+        content: {
+          messageType: 'TEXT',
+          message: 'Sorry, I encountered an error processing your request. Please try again.',
+        }
+      } as ChatMessage);
+
+      Toast.show({
+        type: 'error',
+        text1: 'Message failed',
+        text2: 'Please check your connection and try again',
+      });
+
+      throw error; // Re-throw so the UI can handle loading state
+    }
+  }, [$fetch, currentChat, appendMessage]);
 
   return {
+    // actions
     fetchUserChats,
     createNewChat,
     sendMessage,
+    loadChatHistory,
+
+    // state
+    currentChat,
+    messages,
+    userChats,
   };
 };

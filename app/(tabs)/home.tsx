@@ -291,7 +291,7 @@ export default function HomePage() {
       />
 
       {isSignedIn && (
-        <View className='absolute bottom-0 left-0 right-0 items-center pb-32'>
+        <View className='absolute bottom-0 left-0 right-0 items-center pb-32 web:pb-24'>
           <Button
             variant='black'
             className='w-[60%]'

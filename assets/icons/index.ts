@@ -49,6 +49,10 @@ import {
   Trash,
   History,
   MessageSquarePlus,
+  CheckCircle,
+  Clock,
+  XCircle,
+  AlertCircle,
 } from 'lucide-react-native';
 import GoogleIcon from './google';
 import AppleIcon from './apple';
@@ -104,6 +108,10 @@ iconWithClassName(MinusCircle);
 iconWithClassName(Trash);
 iconWithClassName(History);
 iconWithClassName(MessageSquarePlus);
+iconWithClassName(CheckCircle);
+iconWithClassName(Clock);
+iconWithClassName(XCircle);
+iconWithClassName(AlertCircle);
 
 export {
   MoonStar,
@@ -158,4 +166,8 @@ export {
   Trash,
   History,
   MessageSquarePlus,
+  CheckCircle,
+  Clock,
+  XCircle,
+  AlertCircle,
 };

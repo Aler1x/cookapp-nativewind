@@ -1,18 +1,19 @@
 import { View } from '~/components/ui/view';
 import { Text } from '~/components/ui/text';
 import { Button } from '~/components/ui/button';
-import { useEffect, useState } from 'react';
-import { ScrollView, TouchableOpacity, Platform, KeyboardAvoidingView } from 'react-native';
+import { useEffect, useState, useRef, useCallback } from 'react';
+import { ScrollView, TouchableOpacity, Platform, KeyboardAvoidingView, ActivityIndicator, FlatList } from 'react-native';
 import ChatBubble from '~/components/chat-bubble';
-import { BookOpen, ChefHat, CookingPot, History, Info, MessageSquarePlus, Send } from '~/assets/icons';
+import { BookOpen, ChefHat, CookingPot, Info, MessageSquarePlus, Send } from '~/assets/icons';
 import { Textarea } from '~/components/ui/textarea';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BasicModal from '~/components/ui/basic-modal';
 import HelpModal, { Option } from '~/components/modals/information';
 import { useChat } from '~/hooks/useChat';
-import { useChatStore } from '~/stores/chat';
 import { useAuth } from '@clerk/clerk-expo';
 import AuthPage from '~/components/pages/auth';
+import { THEME } from '~/lib/constants';
+import { ChatMessage } from '~/types/chat';
 
 export const CHAT_HELP_OPTIONS: Option[] = [
   {
@@ -38,17 +39,52 @@ export const CHAT_HELP_OPTIONS: Option[] = [
 export default function ChatPage() {
   const { isSignedIn } = useAuth();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isHistoryModalOpen, setIsHistoryModalOpen] = useState(false);
   const [message, setMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const flatListRef = useRef<FlatList>(null);
+  const [contentHeight, setContentHeight] = useState(0);
 
-  const { sendMessage, fetchUserChats, createNewChat } = useChat();
-  const { userChats, currentChat } = useChatStore();
+  const { sendMessage, fetchUserChats, createNewChat, messages } = useChat();
 
   useEffect(() => {
     if (isSignedIn) {
       fetchUserChats();
     }
   }, [fetchUserChats, isSignedIn]);
+
+  // Auto-scroll to bottom when messages change
+  useEffect(() => {
+    if (messages.length > 0) {
+      setTimeout(() => {
+        // Use scrollToOffset for better web compatibility
+        if (Platform.OS === 'web') {
+          flatListRef.current?.scrollToOffset({
+            offset: contentHeight,
+            animated: true
+          });
+        } else {
+          flatListRef.current?.scrollToEnd({ animated: true });
+        }
+      }, 50);
+    }
+  }, [messages, contentHeight]);
+
+  const handleSendMessage = useCallback(async () => {
+    if (message.trim() === '' || isLoading) {
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const response = await sendMessage(message);
+      console.log(response);
+    } catch (error) {
+      console.error('Failed to send message:', error);
+    } finally {
+      setMessage('');
+      setIsLoading(false);
+    }
+  }, [message, isLoading, sendMessage]);
 
   if (!isSignedIn) {
     return <AuthPage />;
@@ -71,16 +107,6 @@ export default function ChatPage() {
               <MessageSquarePlus className='h-8 w-8' />
             </TouchableOpacity>
 
-            {process.env.NODE_ENV === 'development' &&
-              <TouchableOpacity
-                className='p-2'
-                onPress={() => {
-                  setIsHistoryModalOpen(true);
-                }}>
-                <History className='h-8 w-8' />
-              </TouchableOpacity>
-            }
-
             <TouchableOpacity
               className='p-2'
               onPress={() => {
@@ -91,29 +117,48 @@ export default function ChatPage() {
           </View>
         </View>
 
-        <BasicModal isModalOpen={isHistoryModalOpen} setIsModalOpen={setIsHistoryModalOpen}>
-          <Text className='text-lg font-bold'>History</Text>
-          <View className='flex-col gap-2'>
-            {userChats.map((chat) => (
-              <View key={chat.chatId} className='border border-border p-2'>
-                <Text>{chat.chatId}</Text>
-              </View>
-            ))}
-          </View>
-        </BasicModal>
-
         <BasicModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen}>
           <HelpModal title='What can I do for you?' options={CHAT_HELP_OPTIONS} onClose={() => setIsModalOpen(false)} />
         </BasicModal>
 
-        <ScrollView
-          className='w-full flex-1 flex-col-reverse'
+        <FlatList
+          ref={flatListRef}
+          data={messages}
+          renderItem={({ item }) => <ChatBubble chatMessage={item} />}
+          keyExtractor={(item: ChatMessage, index: number) => `${item.role}-${index}`}
           contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-end' }}
-          keyboardShouldPersistTaps='handled'>
-          {currentChat?.messages.map((message, index) => (
-            <ChatBubble key={`${message.role}-${index}`} chatMessage={message} />
-          ))}
-        </ScrollView>
+          onContentSizeChange={(width, height) => {
+            setContentHeight(height);
+            if (Platform.OS === 'web') {
+              flatListRef.current?.scrollToOffset({
+                offset: height,
+                animated: true
+              });
+            } else {
+              flatListRef.current?.scrollToEnd({ animated: true });
+            }
+          }}
+          onLayout={() => {
+            if (Platform.OS === 'web') {
+              flatListRef.current?.scrollToOffset({
+                offset: contentHeight,
+                animated: false
+              });
+            } else {
+              flatListRef.current?.scrollToEnd({ animated: false });
+            }
+          }}
+          onScrollToIndexFailed={() => {
+            if (Platform.OS === 'web') {
+              flatListRef.current?.scrollToOffset({
+                offset: contentHeight,
+                animated: true
+              });
+            } else {
+              flatListRef.current?.scrollToEnd({ animated: true });
+            }
+          }}
+        />
 
         <View className='mb-4 w-full flex-row items-end gap-2'>
           <Textarea
@@ -126,11 +171,12 @@ export default function ChatPage() {
 
           <Button
             variant='outline'
-            onPress={() => {
-              sendMessage(message);
-              setMessage('');
-            }}>
-            <Send className='h-6 w-6 text-primary' />
+            onPress={handleSendMessage}>
+            {isLoading ? (
+              <ActivityIndicator size='small' color={THEME.light.colors.primary} />
+            ) : (
+              <Send className='h-6 w-6 text-primary' />
+            )}
           </Button>
         </View>
       </KeyboardAvoidingView>

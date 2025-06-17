@@ -35,7 +35,7 @@ export type Recipe = {
   mainImageUrl: string;
   duration: number; // in minutes
   servings: number;
-  categories: Category[];
+  categories?: Category[];
   rating?: number;
 };
 
