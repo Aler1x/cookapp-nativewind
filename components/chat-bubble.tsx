@@ -50,11 +50,16 @@ export default function ChatBubble({ chatMessage }: ChatBubbleProps) {
   }
 
   if (chatMessage.content.messageType === 'GALLERY') {
+    const recipeCount = chatMessage.content.recipes.length;
+    
     return (
       <View className='flex-row justify-start mb-4'>
         <View className='w-full'>
           <View className='rounded-2xl px-4 py-3 bg-secondary mb-2'>
             <Text className='text-foreground'>{chatMessage.content.message}</Text>
+            <Text className='text-xs text-gray-600 mt-1'>
+              {recipeCount} recipe{recipeCount !== 1 ? 's' : ''} found
+            </Text>
           </View>
           <ScrollView 
             horizontal 

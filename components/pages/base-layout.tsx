@@ -10,7 +10,8 @@ import { usePushNotifications } from '~/hooks/usePushNotifications';
 export default function BaseLayout() {
   const { isDarkColorScheme } = useColorScheme();
 
-  usePushNotifications();
+  // FIX: With expo go this is not working
+  // usePushNotifications();
 
   return (
     <>

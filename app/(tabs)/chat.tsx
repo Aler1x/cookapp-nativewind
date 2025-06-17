@@ -42,6 +42,8 @@ export default function ChatPage() {
   const [isChatSelectorOpen, setIsChatSelectorOpen] = useState(false);
   const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [loadingChatId, setLoadingChatId] = useState<string | null>(null);
   const flatListRef = useRef<FlatList>(null);
   const [contentHeight, setContentHeight] = useState(0);
 
@@ -89,12 +91,30 @@ export default function ChatPage() {
     }
   }, [message, isLoading, sendMessage]);
 
+  const handleRefresh = useCallback(async () => {
+    setIsRefreshing(true);
+    try {
+      await fetchUserChats(false); // Don't auto-load last chat on refresh
+      // If there's a current chat, reload its messages
+      if (currentChat?.chatId) {
+        await loadChatHistory(currentChat.chatId);
+      }
+    } catch (error) {
+      console.error('Failed to refresh chat history:', error);
+    } finally {
+      setIsRefreshing(false);
+    }
+  }, [fetchUserChats, loadChatHistory, currentChat?.chatId]);
+
   const handleChatSelection = async (chatId: string) => {
+    setLoadingChatId(chatId);
     try {
       await loadChatHistory(chatId);
       setIsChatSelectorOpen(false);
     } catch (error) {
       console.error('Failed to load chat:', error);
+    } finally {
+      setLoadingChatId(null);
     }
   };
 
@@ -183,7 +203,8 @@ export default function ChatPage() {
                       ? 'border-primary bg-primary/10' 
                       : 'border-gray-200 bg-white'
                   }`}
-                  onPress={() => handleChatSelection(chat.chatId)}>
+                  onPress={() => handleChatSelection(chat.chatId)}
+                  disabled={loadingChatId !== null}>
                   <View className='flex-row items-center justify-between'>
                     <View className='flex-1'>
                       <Text className='text-sm font-medium'>
@@ -193,9 +214,11 @@ export default function ChatPage() {
                         {formatChatDate(chat.updatedAt)}
                       </Text>
                     </View>
-                    {currentChat?.chatId === chat.chatId && (
+                    {loadingChatId === chat.chatId ? (
+                      <ActivityIndicator size='small' color={THEME.light.colors.primary} />
+                    ) : currentChat?.chatId === chat.chatId ? (
                       <View className='ml-2 h-2 w-2 rounded-full bg-primary' />
-                    )}
+                    ) : null}
                   </View>
                 </TouchableOpacity>
               ))}
@@ -209,6 +232,8 @@ export default function ChatPage() {
           renderItem={({ item }) => <ChatBubble chatMessage={item} />}
           keyExtractor={(item: ChatMessage, index: number) => `${item.role}-${index}`}
           contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-end' }}
+          refreshing={isRefreshing}
+          onRefresh={handleRefresh}
           onContentSizeChange={(width, height) => {
             setContentHeight(height);
             if (Platform.OS === 'web') {
