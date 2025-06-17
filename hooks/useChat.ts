@@ -89,12 +89,52 @@ export const useChat = () => {
     }
   }, [$fetch, currentChat, appendMessage]);
 
+  const sendMessageWithoutAppend = useCallback(async (message: string) => {
+    if (!currentChat?.chatId) {
+      Toast.show({
+        type: 'error',
+        text1: 'No active chat',
+        text2: 'Please create a new chat (use the button on the top right corner)',
+      });
+      return;
+    }
+
+    try {
+      const response = await $fetch<ChatResponse>(`${API_ENDPOINTS_PREFIX.spring}/chat`, {
+        method: 'POST',
+        body: JSON.stringify({
+          chatId: currentChat?.chatId,
+          request: message,
+        }),
+      }, 120000);
+
+      // Validate response
+      if (!response || !response.messages || !Array.isArray(response.messages) || response.messages.length === 0) {
+        throw new Error('Invalid response from server');
+      }
+
+      return response;
+    } catch (error) {
+      console.error('Error sending message:', error);
+      
+      Toast.show({
+        type: 'error',
+        text1: 'Message failed',
+        text2: 'Please check your connection and try again',
+      });
+
+      throw error; // Re-throw so the UI can handle loading state
+    }
+  }, [$fetch, currentChat]);
+
   return {
     // actions
     fetchUserChats,
     createNewChat,
     sendMessage,
+    sendMessageWithoutAppend,
     loadChatHistory,
+    setMessages,
 
     // state
     currentChat,

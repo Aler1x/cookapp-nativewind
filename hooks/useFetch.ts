@@ -8,7 +8,7 @@ export function useFetch() {
   const { getToken, isSignedIn } = useAuth();
 
   const $fetch = useCallback(
-    async <T>(endpoint: string, options: RequestInit = {}): Promise<T> => {
+    async <T>(endpoint: string, options: RequestInit = {}, timeout = 30000): Promise<T> => {
       const { ...fetchOptions } = options;
       const url = endpoint.startsWith('http') ? endpoint : `${API_BASE_URL}${endpoint}`;
 
@@ -27,7 +27,7 @@ export function useFetch() {
       try {
         // Add timeout for mobile networks
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+        const timeoutId = setTimeout(() => controller.abort(), timeout); // 30 second timeout
 
         const response = await fetch(url, {
           ...fetchOptions,

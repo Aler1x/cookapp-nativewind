@@ -22,9 +22,10 @@ export default function BaseLayout() {
           contentStyle: {
             backgroundColor: isDarkColorScheme ? THEME.dark.colors.background : THEME.light.colors.background,
           },
-        }}>
+        }}
+        initialRouteName='(tabs)'
+        >
         <Stack.Screen name='(tabs)' />
-        <Stack.Screen name='index' />
         <Stack.Screen name='+not-found' />
         <Stack.Screen
           name='stack-modal'

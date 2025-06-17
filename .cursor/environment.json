@@ -1,5 +1,4 @@
 {
-  "agentCanUpdateSnapshot": true,
   "install": "npm install -g pnpm & pnpm install",
   "start": "pnpm run dev"
 }

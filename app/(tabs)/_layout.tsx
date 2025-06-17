@@ -27,7 +27,7 @@ export default function RootLayout() {
         },
         animation: 'shift',
       }}
-      initialRouteName='chat'>
+      initialRouteName='home'>
       <Tabs.Screen
         name='home'
         options={{
@@ -50,9 +50,6 @@ export default function RootLayout() {
         options={{
           title: 'Chat',
           tabBarIcon: ({ color }) => <BotMessageSquare size={28} color={color} />,
-          sceneStyle: {
-            paddingBottom: 80,
-          },
         }}
       />
       <Tabs.Screen

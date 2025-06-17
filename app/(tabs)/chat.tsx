@@ -4,7 +4,7 @@ import { Button } from '~/components/ui/button';
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { ScrollView, TouchableOpacity, Platform, KeyboardAvoidingView, ActivityIndicator, FlatList } from 'react-native';
 import ChatBubble from '~/components/chat-bubble';
-import { BookOpen, ChefHat, CookingPot, Info, MessageSquarePlus, Send, MessageCircle, History } from '~/assets/icons';
+import { BookOpen, ChefHat, CookingPot, Info, MessageSquarePlus, Send, History } from '~/assets/icons';
 import { Textarea } from '~/components/ui/textarea';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BasicModal from '~/components/ui/basic-modal';
@@ -44,10 +44,12 @@ export default function ChatPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [loadingChatId, setLoadingChatId] = useState<string | null>(null);
+  const [isAnimating, setIsAnimating] = useState(false);
   const flatListRef = useRef<FlatList>(null);
   const [contentHeight, setContentHeight] = useState(0);
+  const animationRef = useRef<NodeJS.Timeout | null>(null);
 
-  const { sendMessage, fetchUserChats, createNewChat, loadChatHistory, messages, userChats, currentChat } = useChat();
+  const { sendMessageWithoutAppend, fetchUserChats, createNewChat, loadChatHistory, messages, userChats, currentChat, setMessages } = useChat();
 
   useEffect(() => {
     if (isSignedIn) {
@@ -72,8 +74,84 @@ export default function ChatPage() {
     }
   }, [messages, contentHeight]);
 
+  // Typewriter animation function
+  const animateMessage = useCallback((fullMessage: string, messageType: 'TEXT' | 'RECIPE_DETAILS' | 'GALLERY' | 'JOB_STATUS' = 'TEXT') => {
+    return new Promise<void>((resolve) => {
+      setIsAnimating(true);
+      
+      // Add empty assistant message that will be updated
+      const emptyMessage: ChatMessage = {
+        role: 'ASSISTANT',
+        content: {
+          messageType,
+          message: '',
+          jobInfo: null,
+          recipe: null,
+          recipes: null,
+        }
+      };
+      
+      // Add the empty message first
+      setMessages(prevMessages => [...prevMessages, emptyMessage]);
+      
+      let currentIndex = 0;
+      const typeNextChar = () => {
+        if (currentIndex <= fullMessage.length) {
+          const partialMessage = fullMessage.substring(0, currentIndex);
+          
+          // Update the last message with partial content
+          setMessages(prevMessages => {
+            const updatedMessages = [...prevMessages];
+            const lastMessage = updatedMessages[updatedMessages.length - 1];
+            
+            if (lastMessage && lastMessage.role === 'ASSISTANT') {
+              updatedMessages[updatedMessages.length - 1] = {
+                ...lastMessage,
+                content: {
+                  messageType,
+                  message: partialMessage,
+                  jobInfo: null,
+                  recipe: null,
+                  recipes: null,
+                }
+              };
+            }
+            
+            return updatedMessages;
+          });
+          
+          currentIndex++;
+          
+          if (currentIndex <= fullMessage.length) {
+            // Random delay between 20-60ms for more natural typing
+            const delay = Math.random() * 40 + 20;
+            animationRef.current = setTimeout(typeNextChar, delay);
+          } else {
+            setIsAnimating(false);
+            resolve();
+          }
+        } else {
+          setIsAnimating(false);
+          resolve();
+        }
+      };
+      
+      // Start the animation
+      typeNextChar();
+    });
+  }, []);
+
+  // Cleanup animation on unmount
+  useEffect(() => {
+    return () => {
+      if (animationRef.current) {
+        clearTimeout(animationRef.current);
+      }
+    };
+  }, []);
+
   const handleSendMessage = useCallback(async () => {
-    if (message.trim() === '' || isLoading) {
+    if (message.trim() === '' || isLoading || isAnimating) {
       return;
     }
 
@@ -81,15 +159,37 @@ export default function ChatPage() {
     setMessage(''); // Clear input immediately to show message was sent
     setIsLoading(true);
     
+    // Add user message immediately
+    const userChatMessage: ChatMessage = { role: 'USER', content: userMessage };
+    setMessages(prevMessages => [...prevMessages, userChatMessage]);
+    
     try {
-      const response = await sendMessage(userMessage);
-      console.log(response);
+      const response = await sendMessageWithoutAppend(userMessage);
+      
+      if (response && response.messages && response.messages.length > 0) {
+        const assistantMessage = response.messages[0];
+        
+        // Handle different message types
+        if (typeof assistantMessage.content === 'string') {
+          throw new Error('Assistant message is a string, but it should be an object');
+        }
+
+        if (assistantMessage.content.messageType === 'TEXT') {
+          // Animate text messages
+          await animateMessage(assistantMessage.content.message, 'TEXT');
+        } else {
+          // For non-text messages (recipes, galleries, etc.), add them directly
+          setMessages(prevMessages => [...prevMessages, assistantMessage]);
+        }
+      }
     } catch (error) {
       console.error('Failed to send message:', error);
+      // Add error message with animation
+      await animateMessage('Sorry, I encountered an error processing your request. Please try again.');
     } finally {
       setIsLoading(false);
     }
-  }, [message, isLoading, sendMessage]);
+  }, [message, isLoading, isAnimating, sendMessageWithoutAppend, animateMessage, setMessages]);
 
   const handleRefresh = useCallback(async () => {
     setIsRefreshing(true);
@@ -154,7 +254,7 @@ export default function ChatPage() {
   return (
     <SafeAreaView className='flex-1 bg-background' edges={['top']} style={{ padding: 16 }}>
       <KeyboardAvoidingView
-        style={{ flex: 1, height: '100%' }}
+        style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         keyboardVerticalOffset={0}>
         <View className='w-full flex-row items-center justify-between'>
@@ -195,7 +295,7 @@ export default function ChatPage() {
           <View className='max-h-96'>
             <Text className='mb-4 text-lg font-semibold'>Select a Chat</Text>
             <ScrollView>
-              {userChats.map((chat) => (
+              {userChats.toReversed().map((chat) => (
                 <TouchableOpacity
                   key={chat.chatId}
                   className={`mb-2 rounded-lg border p-4 ${
@@ -245,16 +345,6 @@ export default function ChatPage() {
               flatListRef.current?.scrollToEnd({ animated: true });
             }
           }}
-          onLayout={() => {
-            if (Platform.OS === 'web') {
-              flatListRef.current?.scrollToOffset({
-                offset: contentHeight,
-                animated: false
-              });
-            } else {
-              flatListRef.current?.scrollToEnd({ animated: false });
-            }
-          }}
           onScrollToIndexFailed={() => {
             if (Platform.OS === 'web') {
               flatListRef.current?.scrollToOffset({
@@ -267,19 +357,21 @@ export default function ChatPage() {
           }}
         />
 
-        <View className='mb-4 w-full flex-row items-end gap-2'>
+        <View className='w-full flex-row items-end gap-2 mb-[6.5rem] web:mb-[5rem]'>
           <Textarea
             placeholder='Ask me anything about recipes'
             className='flex-1 rounded-lg bg-background p-2'
             value={message}
             numberOfLines={2}
             onChangeText={setMessage}
+            editable={!isAnimating && !isLoading}
           />
 
           <Button
             variant='outline'
-            onPress={handleSendMessage}>
-            {isLoading ? (
+            onPress={handleSendMessage}
+            disabled={isLoading || isAnimating}>
+            {isLoading || isAnimating ? (
               <ActivityIndicator size='small' color={THEME.light.colors.primary} />
             ) : (
               <Send className='h-6 w-6 text-primary' />

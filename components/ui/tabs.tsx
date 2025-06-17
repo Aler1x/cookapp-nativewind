@@ -64,6 +64,12 @@ export function Tabs({ tabs, defaultTab, onTabChange, className, tabIndicator }:
               outputRange: tabIndicator.left.outputRange,
             }),
             width: tabIndicator.width as any,
+            backgroundColor: THEME.light.colors.primary,
+            position: 'absolute',
+            bottom: 0,
+            top: 0,
+            zIndex: 10,
+            borderRadius: 100,
           },
         ]}
       />
