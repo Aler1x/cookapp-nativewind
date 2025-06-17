@@ -2,7 +2,7 @@ import { View } from '~/components/ui/view';
 import { Text } from '~/components/ui/text';
 import { Button } from '~/components/ui/button';
 import { useEffect, useState, useRef, useCallback } from 'react';
-import { ScrollView, TouchableOpacity, Platform, KeyboardAvoidingView, ActivityIndicator, FlatList } from 'react-native';
+import { ScrollView, TouchableOpacity, Platform, KeyboardAvoidingView, ActivityIndicator, FlatList, VirtualizedList } from 'react-native';
 import ChatBubble from '~/components/chat-bubble';
 import { BookOpen, ChefHat, CookingPot, Info, MessageSquarePlus, Send, History } from '~/assets/icons';
 import { Textarea } from '~/components/ui/textarea';
@@ -45,7 +45,7 @@ export default function ChatPage() {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [loadingChatId, setLoadingChatId] = useState<string | null>(null);
   const [isAnimating, setIsAnimating] = useState(false);
-  const flatListRef = useRef<FlatList>(null);
+  const flatListRef = useRef<VirtualizedList<ChatMessage>>(null);
   const [contentHeight, setContentHeight] = useState(0);
   const animationRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -78,7 +78,7 @@ export default function ChatPage() {
   const animateMessage = useCallback((fullMessage: string, messageType: 'TEXT' | 'RECIPE_DETAILS' | 'GALLERY' | 'JOB_STATUS' = 'TEXT') => {
     return new Promise<void>((resolve) => {
       setIsAnimating(true);
-      
+
       // Add empty assistant message that will be updated
       const emptyMessage: ChatMessage = {
         role: 'ASSISTANT',
@@ -90,20 +90,20 @@ export default function ChatPage() {
           recipes: null,
         }
       };
-      
+
       // Add the empty message first
       setMessages(prevMessages => [...prevMessages, emptyMessage]);
-      
+
       let currentIndex = 0;
       const typeNextChar = () => {
         if (currentIndex <= fullMessage.length) {
           const partialMessage = fullMessage.substring(0, currentIndex);
-          
+
           // Update the last message with partial content
           setMessages(prevMessages => {
             const updatedMessages = [...prevMessages];
             const lastMessage = updatedMessages[updatedMessages.length - 1];
-            
+
             if (lastMessage && lastMessage.role === 'ASSISTANT') {
               updatedMessages[updatedMessages.length - 1] = {
                 ...lastMessage,
@@ -116,12 +116,12 @@ export default function ChatPage() {
                 }
               };
             }
-            
+
             return updatedMessages;
           });
-          
+
           currentIndex++;
-          
+
           if (currentIndex <= fullMessage.length) {
             // Random delay between 20-60ms for more natural typing
             const delay = Math.random() * 40 + 20;
@@ -135,7 +135,7 @@ export default function ChatPage() {
           resolve();
         }
       };
-      
+
       // Start the animation
       typeNextChar();
     });
@@ -158,17 +158,17 @@ export default function ChatPage() {
     const userMessage = message.trim();
     setMessage(''); // Clear input immediately to show message was sent
     setIsLoading(true);
-    
+
     // Add user message immediately
     const userChatMessage: ChatMessage = { role: 'USER', content: userMessage };
     setMessages(prevMessages => [...prevMessages, userChatMessage]);
-    
+
     try {
       const response = await sendMessageWithoutAppend(userMessage);
-      
+
       if (response && response.messages && response.messages.length > 0) {
         const assistantMessage = response.messages[0];
-        
+
         // Handle different message types
         if (typeof assistantMessage.content === 'string') {
           throw new Error('Assistant message is a string, but it should be an object');
@@ -222,27 +222,27 @@ export default function ChatPage() {
     const date = new Date(dateString);
     const now = new Date();
     const diffInHours = (now.getTime() - date.getTime()) / (1000 * 60 * 60);
-    
+
     if (diffInHours < 24) {
-      return date.toLocaleTimeString('en-US', { 
-        hour: '2-digit', 
+      return date.toLocaleTimeString('en-US', {
+        hour: '2-digit',
         minute: '2-digit',
-        hour12: true 
+        hour12: true
       });
     } else if (diffInHours < 168) { // 7 days
-      return date.toLocaleDateString('en-US', { 
+      return date.toLocaleDateString('en-US', {
         weekday: 'short',
-        hour: '2-digit', 
+        hour: '2-digit',
         minute: '2-digit',
-        hour12: true 
+        hour12: true
       });
     } else {
-      return date.toLocaleDateString('en-US', { 
-        month: 'short', 
+      return date.toLocaleDateString('en-US', {
+        month: 'short',
         day: 'numeric',
-        hour: '2-digit', 
+        hour: '2-digit',
         minute: '2-digit',
-        hour12: true 
+        hour12: true
       });
     }
   };
@@ -255,8 +255,7 @@ export default function ChatPage() {
     <SafeAreaView className='flex-1 bg-background' edges={['top']} style={{ padding: 16 }}>
       <KeyboardAvoidingView
         style={{ flex: 1 }}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={0}>
+        behavior={'padding'}        >
         <View className='w-full flex-row items-center justify-between'>
           <Text className='text-2xl font-bold'>CookBot</Text>
           <View className='flex-row items-center gap-2'>
@@ -298,11 +297,10 @@ export default function ChatPage() {
               {userChats.toReversed().map((chat) => (
                 <TouchableOpacity
                   key={chat.chatId}
-                  className={`mb-2 rounded-lg border p-4 ${
-                    currentChat?.chatId === chat.chatId 
-                      ? 'border-primary bg-primary/10' 
+                  className={`mb-2 rounded-lg border p-4 ${currentChat?.chatId === chat.chatId
+                      ? 'border-primary bg-primary/10'
                       : 'border-gray-200 bg-white'
-                  }`}
+                    }`}
                   onPress={() => handleChatSelection(chat.chatId)}
                   disabled={loadingChatId !== null}>
                   <View className='flex-row items-center justify-between'>
@@ -326,9 +324,11 @@ export default function ChatPage() {
           </View>
         </BasicModal>
 
-        <FlatList
+        <VirtualizedList
           ref={flatListRef}
           data={messages}
+          getItemCount={() => messages.length}
+          getItem={(data, index) => messages[index]}
           renderItem={({ item }) => <ChatBubble chatMessage={item} />}
           keyExtractor={(item: ChatMessage, index: number) => `${item.role}-${index}`}
           contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-end' }}
@@ -339,6 +339,16 @@ export default function ChatPage() {
             if (Platform.OS === 'web') {
               flatListRef.current?.scrollToOffset({
                 offset: height,
+                animated: true
+              });
+            } else {
+              flatListRef.current?.scrollToEnd({ animated: true });
+            }
+          }}
+          onLayout={() => {
+            if (Platform.OS === 'web') {
+              flatListRef.current?.scrollToOffset({
+                offset: contentHeight,
                 animated: true
               });
             } else {
@@ -357,7 +367,7 @@ export default function ChatPage() {
           }}
         />
 
-        <View className='w-full flex-row items-end gap-2 mb-[6.5rem] web:mb-[5rem]'>
+        <View className='w-full flex-row items-end gap-2'>
           <Textarea
             placeholder='Ask me anything about recipes'
             className='flex-1 rounded-lg bg-background p-2'

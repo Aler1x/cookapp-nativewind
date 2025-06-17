@@ -1,6 +1,6 @@
 import React from 'react';
 import { TouchableOpacity } from 'react-native';
-import { X } from 'lucide-react-native';
+import { X, Link, PenTool } from 'lucide-react-native';
 import { View } from '~/components/ui/view';
 import { Text } from '~/components/ui/text';
 import { Button } from '~/components/ui/button';
@@ -18,21 +18,51 @@ export default function AddRecipeSelection({
 }: AddRecipeSelectionProps) {
   return (
     <>
-      <View className='flex-row items-center justify-between'>
-        <Text className='text-lg font-semibold'>Add new recipe</Text>
+      <View className='flex-row items-center justify-between mb-4'>
+        <Text className='text-lg font-semibold'>Add New Recipe</Text>
         <TouchableOpacity onPress={onClose}>
           <X size={24} color='#000' />
         </TouchableOpacity>
       </View>
 
-      <View className='mb-6 w-full gap-2'>
-        <Button onPress={onSelectSocialMedia}>
-          <Text>Create from social media</Text>
-        </Button>
+      <View className='gap-4'>
+        <Text className='text-sm text-gray-600 text-center mb-2'>
+          How would you like to add your recipe?
+        </Text>
 
-        {/* <Button onPress={onSelectFromScratch}>
-          <Text>Create from scratch</Text>
-        </Button> */}
+        <TouchableOpacity
+          onPress={onSelectFromScratch}
+          className='w-full border-2 border-primary rounded-xl p-4 bg-primary/5'
+        >
+          <View className='flex-row items-center'>
+            <View className='w-12 h-12 bg-primary/10 rounded-full items-center justify-center mr-4'>
+              <PenTool size={24} color='#F97316' />
+            </View>
+            <View className='flex-1'>
+              <Text className='font-semibold text-lg'>Create from Scratch</Text>
+              <Text className='text-gray-600 text-sm'>
+                Build your recipe step by step with ingredients, instructions, and photos
+              </Text>
+            </View>
+          </View>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={onSelectSocialMedia}
+          className='w-full border border-gray-300 rounded-xl p-4'
+        >
+          <View className='flex-row items-center'>
+            <View className='w-12 h-12 bg-gray-100 rounded-full items-center justify-center mr-4'>
+              <Link size={24} color='#6B7280' />
+            </View>
+            <View className='flex-1'>
+              <Text className='font-semibold text-lg'>From Social Media</Text>
+              <Text className='text-gray-600 text-sm'>
+                Import from Instagram, TikTok, or YouTube links
+              </Text>
+            </View>
+          </View>
+        </TouchableOpacity>
       </View>
     </>
   );

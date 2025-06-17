@@ -50,6 +50,9 @@ export default function RootLayout() {
         options={{
           title: 'Chat',
           tabBarIcon: ({ color }) => <BotMessageSquare size={28} color={color} />,
+          sceneStyle: {
+            paddingBottom: Platform.OS === 'web' ? 80 : 91
+          }
         }}
       />
       <Tabs.Screen

@@ -237,7 +237,7 @@ export default function Page() {
   // Show loading state for recipes
   if (recipesIsLoading && recipes.length === 0) {
     return (
-      <SafeAreaView className='flex-1 items-center justify-center' style={{ padding: 16 }} edges={['top']}>
+      <View className='flex-1 items-center justify-center'>
         <View className='flex-1 items-center justify-center'>
           <ActivityIndicator size='large' color={THEME.light.colors.primary} />
           <Text className='mt-4 text-muted-foreground'>Loading recipes...</Text>
@@ -271,19 +271,18 @@ export default function Page() {
         <BasicModal isModalOpen={showAddRecipeModal} setIsModalOpen={setShowAddRecipeModal} className='gap-4'>
           {renderModalContent()}
         </BasicModal>
-      </SafeAreaView>
+      </View>
     );
   }
 
   return (
-    <SafeAreaView className='flex-1 bg-background' style={{ padding: 16 }} edges={['top']}>
+    <View className='flex-1 bg-background p-4'>
       <FlatList
         data={recipes}
         renderItem={({ item }) => <RecipeCard recipe={item} className='mx-1 h-52 flex-1' />}
         keyExtractor={(item: Recipe, index: number) => `${item.id}-${index}`}
         numColumns={2}
         columnWrapperStyle={{ justifyContent: 'space-between', marginBottom: 12 }}
-        showsVerticalScrollIndicator={false}
         onEndReached={loadMoreRecipes}
         onEndReachedThreshold={0.5}
         refreshing={recipesIsLoading}
@@ -356,6 +355,6 @@ export default function Page() {
       <BasicModal isModalOpen={showAddRecipeModal} setIsModalOpen={setShowAddRecipeModal} className='gap-4'>
         {renderModalContent()}
       </BasicModal>
-    </SafeAreaView>
+    </View>
   );
 }

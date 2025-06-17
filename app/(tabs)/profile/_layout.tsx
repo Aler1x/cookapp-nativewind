@@ -19,7 +19,7 @@ function HeaderContent(props: any) {
   };
 
   return (
-    <SafeAreaView>
+    <SafeAreaView edges={['top']}>
       <View className='flex-row items-center justify-between bg-background px-4 py-2'>
         <TouchableOpacity
           onPress={() => router.push('(tabs)/profile')}
