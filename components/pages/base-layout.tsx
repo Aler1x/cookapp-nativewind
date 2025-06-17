@@ -1,7 +1,6 @@
 import { Stack } from 'expo-router';
 import React from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { PortalHost } from '@rn-primitives/portal';
 import Toast from 'react-native-toast-message';
 import { THEME } from '~/lib/constants';
 import { useColorScheme } from '~/lib/useColorScheme';
@@ -35,8 +34,6 @@ export default function BaseLayout() {
           }}
         />
       </Stack>
-
-      <PortalHost />
 
       <Toast topOffset={50} />
     </>

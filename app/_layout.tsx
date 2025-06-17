@@ -18,6 +18,7 @@ import { tokenCache } from '@clerk/clerk-expo/token-cache';
 import DesktopBlocker from '~/components/DesktopBlocker';
 import BaseLayout from '~/components/pages/base-layout';
 import 'expo-dev-client';
+import { PortalHost } from '@rn-primitives/portal';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -50,6 +51,7 @@ export default function Layout() {
           <SafeAreaProvider>
             <ThemeProvider value={isDarkColorScheme ? THEME.dark : THEME.light}>
               <BaseLayout />
+              <PortalHost />
             </ThemeProvider>
           </SafeAreaProvider>
         </ClerkLoaded>

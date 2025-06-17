@@ -127,6 +127,41 @@ export const useChat = () => {
     }
   }, [$fetch, currentChat]);
 
+  const deleteChatHistory = useCallback(async (chatId: string) => {
+    try {
+      await $fetch(`${API_ENDPOINTS_PREFIX.spring}/chat-history/${chatId}`, {
+        method: 'DELETE',
+      });
+
+      // Update local state
+      setUserChats(prevChats => prevChats.filter(chat => chat.chatId !== chatId));
+      
+      // If deleted chat was the current chat, clear it
+      if (currentChat?.chatId === chatId) {
+        setCurrentChat(null);
+        setMessages([]);
+      }
+
+      Toast.show({
+        type: 'success',
+        text1: 'Chat deleted',
+        text2: 'Chat history has been removed',
+      });
+
+      return true;
+    } catch (error) {
+      console.error('Error deleting chat:', error);
+      
+      Toast.show({
+        type: 'error',
+        text1: 'Delete failed',
+        text2: 'Could not delete chat history',
+      });
+
+      throw error;
+    }
+  }, [$fetch, currentChat, setUserChats, setCurrentChat, setMessages]);
+
   return {
     // actions
     fetchUserChats,
@@ -134,6 +169,7 @@ export const useChat = () => {
     sendMessage,
     sendMessageWithoutAppend,
     loadChatHistory,
+    deleteChatHistory,
     setMessages,
 
     // state

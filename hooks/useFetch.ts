@@ -50,6 +50,10 @@ export function useFetch() {
           return response.json() as Promise<T>;
         }
 
+        if (contentType?.includes('image')) {
+          return response.blob() as Promise<T>;
+        }
+
         return response.text() as any;
       } catch (error) {
         console.error('Error fetching data', error);

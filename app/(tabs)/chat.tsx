@@ -4,7 +4,7 @@ import { Button } from '~/components/ui/button';
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { ScrollView, TouchableOpacity, Platform, KeyboardAvoidingView, ActivityIndicator, FlatList, VirtualizedList } from 'react-native';
 import ChatBubble from '~/components/chat-bubble';
-import { BookOpen, ChefHat, CookingPot, Info, MessageSquarePlus, Send, History } from '~/assets/icons';
+import { BookOpen, ChefHat, CookingPot, Info, MessageSquarePlus, Send, History, Trash2 } from '~/assets/icons';
 import { Textarea } from '~/components/ui/textarea';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import BasicModal from '~/components/ui/basic-modal';
@@ -44,12 +44,13 @@ export default function ChatPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [loadingChatId, setLoadingChatId] = useState<string | null>(null);
+  const [deletingChatId, setDeletingChatId] = useState<string | null>(null);
   const [isAnimating, setIsAnimating] = useState(false);
   const flatListRef = useRef<VirtualizedList<ChatMessage>>(null);
   const [contentHeight, setContentHeight] = useState(0);
   const animationRef = useRef<NodeJS.Timeout | null>(null);
 
-  const { sendMessageWithoutAppend, fetchUserChats, createNewChat, loadChatHistory, messages, userChats, currentChat, setMessages } = useChat();
+  const { sendMessageWithoutAppend, fetchUserChats, createNewChat, loadChatHistory, deleteChatHistory, messages, userChats, currentChat, setMessages } = useChat();
 
   useEffect(() => {
     if (isSignedIn) {
@@ -218,6 +219,20 @@ export default function ChatPage() {
     }
   };
 
+  const handleDeleteChat = async (chatId: string, event: any) => {
+    // Prevent triggering chat selection when delete is clicked
+    event.stopPropagation();
+    
+    setDeletingChatId(chatId);
+    try {
+      await deleteChatHistory(chatId);
+    } catch (error) {
+      console.error('Failed to delete chat:', error);
+    } finally {
+      setDeletingChatId(null);
+    }
+  };
+
   const formatChatDate = (dateString: string) => {
     const date = new Date(dateString);
     const now = new Date();
@@ -302,7 +317,7 @@ export default function ChatPage() {
                       : 'border-gray-200 bg-white'
                     }`}
                   onPress={() => handleChatSelection(chat.chatId)}
-                  disabled={loadingChatId !== null}>
+                  disabled={loadingChatId !== null || deletingChatId !== null}>
                   <View className='flex-row items-center justify-between'>
                     <View className='flex-1'>
                       <Text className='text-sm font-medium'>
@@ -312,11 +327,23 @@ export default function ChatPage() {
                         {formatChatDate(chat.updatedAt)}
                       </Text>
                     </View>
-                    {loadingChatId === chat.chatId ? (
-                      <ActivityIndicator size='small' color={THEME.light.colors.primary} />
-                    ) : currentChat?.chatId === chat.chatId ? (
-                      <View className='ml-2 h-2 w-2 rounded-full bg-primary' />
-                    ) : null}
+                    <View className='flex-row items-center gap-2'>
+                      {deletingChatId === chat.chatId ? (
+                        <ActivityIndicator size='small' color={THEME.light.colors.primary} />
+                      ) : (
+                        <TouchableOpacity
+                          className='p-1'
+                          onPress={(event) => handleDeleteChat(chat.chatId, event)}
+                          disabled={loadingChatId !== null || deletingChatId !== null}>
+                          <Trash2 className='h-4 w-4 text-red-500' />
+                        </TouchableOpacity>
+                      )}
+                      {loadingChatId === chat.chatId ? (
+                        <ActivityIndicator size='small' color={THEME.light.colors.primary} />
+                      ) : currentChat?.chatId === chat.chatId ? (
+                        <View className='ml-1 h-2 w-2 rounded-full bg-primary' />
+                      ) : null}
+                    </View>
                   </View>
                 </TouchableOpacity>
               ))}
