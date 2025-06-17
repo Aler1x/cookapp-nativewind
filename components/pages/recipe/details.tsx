@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { TouchableOpacity } from 'react-native';
 import { View } from '~/components/ui/view';
 import { Text } from '~/components/ui/text';
 import { RecipeFull } from '~/types/recipe';
@@ -23,6 +24,14 @@ const NutritionItem = ({ value, unit, label }: { value: number; unit: string; la
 };
 
 export function RecipeDetails({ recipe }: RecipeDetailsProps) {
+  const [showAllCategories, setShowAllCategories] = useState(false);
+  const visibleCategoriesCount = 10;
+  
+  const displayCategories = showAllCategories 
+    ? recipe.categories 
+    : recipe.categories.slice(0, visibleCategoriesCount);
+  const hasMoreCategories = recipe.categories.length > visibleCategoriesCount;
+
   return (
     <View className='gap-6'>
       {/* Nutritional Information */}
@@ -39,10 +48,19 @@ export function RecipeDetails({ recipe }: RecipeDetailsProps) {
 
       {/* Categories */}
       {recipe.categories.length > 0 && (
-        <View className='flex-row flex-wrap gap-2'>
-          {recipe.categories.map((category) => (
-            <Badge key={category.id} label={capitalizeFirstLetter(category.name)} labelClasses='text-sm font-normal' />
-          ))}
+        <View>
+          <View className='flex-row flex-wrap gap-2'>
+            {displayCategories.map((category) => (
+              <Badge key={category.id} label={capitalizeFirstLetter(category.name)} labelClasses='text-sm font-normal' />
+            ))}
+          </View>
+          {hasMoreCategories && (
+            <TouchableOpacity onPress={() => setShowAllCategories(!showAllCategories)} className='mt-2'>
+              <Text className='text-sm text-gray-500'>
+                {showAllCategories ? 'Show less' : 'Show more'}
+              </Text>
+            </TouchableOpacity>
+          )}
         </View>
       )}
 

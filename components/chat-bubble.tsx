@@ -41,7 +41,7 @@ export default function ChatBubble({ chatMessage }: ChatBubbleProps) {
           <View className='rounded-2xl px-4 py-3 bg-secondary mb-2'>
             <Text className='text-foreground'>{chatMessage.content.message}</Text>
           </View>
-          <View className='w-full max-w-sm'>
+          <View className='max-w-[50%] h-56'>
             <RecipeCard recipe={chatMessage.content.recipe} className='w-full h-80' />
           </View>
         </View>
@@ -61,11 +61,10 @@ export default function ChatBubble({ chatMessage }: ChatBubbleProps) {
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={{ paddingHorizontal: 4 }}
             className='flex-row'
-            // nestedScrollEnabled={true}
             scrollEventThrottle={16}
           >
             {chatMessage.content.recipes.map((recipe, index) => (
-              <View key={recipe.id} className='mr-3' style={{ width: 200, height: 280 }}>
+              <View key={recipe.id} className='mr-3' style={{ width: 180, height: 250 }}>
                 <RecipeCard recipe={recipe} className='w-full h-full' />
               </View>
             ))}

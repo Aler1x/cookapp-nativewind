@@ -77,7 +77,7 @@ export async function sendTokenToBackend(
 ): Promise<boolean> {
   try {
     await $fetch(`${API_ENDPOINTS_PREFIX.spring}/users/push-token`, {
-      method: 'POST',
+      method: 'PUT',
       body: JSON.stringify({
         token: token.token,
         type: token.type,

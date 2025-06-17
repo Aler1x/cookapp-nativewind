@@ -53,6 +53,7 @@ import {
   Clock,
   XCircle,
   AlertCircle,
+  MessageCircle,
 } from 'lucide-react-native';
 import GoogleIcon from './google';
 import AppleIcon from './apple';
@@ -112,6 +113,7 @@ iconWithClassName(CheckCircle);
 iconWithClassName(Clock);
 iconWithClassName(XCircle);
 iconWithClassName(AlertCircle);
+iconWithClassName(MessageCircle);
 
 export {
   MoonStar,
@@ -170,4 +172,5 @@ export {
   Clock,
   XCircle,
   AlertCircle,
+  MessageCircle,
 };
