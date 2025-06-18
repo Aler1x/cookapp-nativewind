@@ -72,6 +72,7 @@ export default function ImageUpload({
         body: blob,
         headers: {
           'Content-Type': blob.type || 'image/jpeg',
+          'Access-Control-Allow-Origin': '*',
         },
       });
 
@@ -178,8 +179,6 @@ export default function ImageUpload({
   };
 
   if (selectedImage) {
-    console.log(selectedImage);
-
     return (
       <View className={cn('relative', className)}>
         <Image
