@@ -88,7 +88,7 @@ export default function HomePage() {
         return await $fetch<PaginatedResponse<Recipe>>(url);
       }
     },
-    [$fetch, isSignedIn, activeBadge, appliedFiltersCount, filters, searchQuery]
+    [$fetch, isSignedIn, activeBadge, appliedFiltersCount, filters]
   );
 
   const {
@@ -122,6 +122,10 @@ export default function HomePage() {
       exclude: { id: number; name: string }[];
     }
   ) => {
+    // Clear active badge when applying filters
+    setActiveBadge('');
+    
+    // Update filters state
     setFilters(newFilters);
 
     if (ingredientData) {
@@ -132,7 +136,7 @@ export default function HomePage() {
       setIngredients(allIngredients);
     }
 
-    await fetchPage(1);
+    // The useEffect below will handle fetching when filters change
   };
 
   const getIngredientsForFilters = () => {
@@ -175,6 +179,13 @@ export default function HomePage() {
   useEffect(() => {
     fetchPageRef.current(1);
   }, [activeBadge]);
+
+  // fetch when filters are applied
+  useEffect(() => {
+    if (appliedFiltersCount > 0) {
+      fetchPageRef.current(1);
+    }
+  }, [appliedFiltersCount, filters]);
 
   // If the user clears the search bar (and no other filters are applied), automatically
   // refresh to show recommendations without requiring an extra submit tap.
