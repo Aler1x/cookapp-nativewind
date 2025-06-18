@@ -10,6 +10,10 @@ import { API_ENDPOINTS_PREFIX, THEME } from '~/lib/constants';
 import { cn } from '~/lib/utils';
 import BasicModal from './basic-modal';
 
+const blurhash =
+  '|rF?hV%2WCj[ayj[a|j[az_NaeWBj@ayfRayfQfQM{M|azj[azf6fQfQfQIpWXofj[ayj[j[fQayWCoeoeaya}j[ayfQa{oLj?j[WVj[ayayj[fQoff7azayj[ayj[j[ayofayayayj[fQj[ayayj[ayfjj[j[ayjuayj[';
+
+
 interface ImageUploadProps {
   onImageSelected: (imageUrl: string) => void;
   existingImageUrl?: string;
@@ -33,6 +37,7 @@ export default function ImageUpload({
   const [selectedImage, setSelectedImage] = useState<string | null>(existingImageUrl || null);
   const [isUploading, setIsUploading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  
   const $fetch = useFetch();
 
   useEffect(() => {
@@ -173,11 +178,17 @@ export default function ImageUpload({
   };
 
   if (selectedImage) {
+    console.log(selectedImage);
+
     return (
       <View className={cn('relative', className)}>
         <Image
           source={{ uri: selectedImage }}
-          className="w-full h-full rounded-lg"
+          alt="recipe image"
+          className="w-full rounded-lg aspect-square"
+          placeholder={{ blurhash }}
+          contentFit="cover"
+          transition={1000}
         />
 
         {!disabled && (
@@ -214,7 +225,7 @@ export default function ImageUpload({
         onPress={disabled ? undefined : () => setIsModalOpen(true)}
         disabled={disabled || isUploading}
         className={cn(
-          'w-full h-48 border-2 border-dashed border-gray-300 rounded-lg items-center justify-center bg-gray-50',
+          'w-full aspect-square border-2 border-dashed border-gray-300 rounded-lg items-center justify-center bg-gray-50',
           disabled && 'opacity-50',
           className
         )}

@@ -3,7 +3,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Plus, X } from 'lucide-react-native';
 import { View } from '~/components/ui/view';
 import { useFetch } from '~/hooks/useFetch';
-import { Recipe } from '~/types/recipe';
+import { Recipe, RecipeFull } from '~/types/recipe';
 import { PaginatedResponse } from '~/types';
 import RecipeCard from '~/components/recipe-card';
 import { Text } from '~/components/ui/text';
@@ -18,8 +18,10 @@ import { Button } from '~/components/ui/button';
 import FullscreenModal from '~/components/ui/fullscreen-modal';
 import JobCard from '~/components/job-card';
 import { useModal } from '~/contexts/modal-context';
+import RecipeForm from '~/components/forms/recipe-form';
+import ImageRecipeInput from '~/components/modals/image-recipe-input';
 
-type ModalStep = 'selection' | 'social-media-input';
+type ModalStep = 'selection' | 'social-media-input' | 'image-input' | 'recipe-form';
 
 export default function Page() {
   const { showJobsModal, setShowJobsModal } = useModal();
@@ -43,6 +45,10 @@ export default function Page() {
   const [modalStep, setModalStep] = useState<ModalStep>('selection');
   const [socialMediaUrl, setSocialMediaUrl] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
+  const [editingRecipe, setEditingRecipe] = useState<RecipeFull | null>(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+
+  const [imageUrl, setImageUrl] = useState('');
 
   const $fetch = useFetch();
 
@@ -169,8 +175,87 @@ export default function Page() {
     }
   };
 
+  const handleImageSubmit = async () => {
+    if (!imageUrl.trim()) return;
+
+    setIsProcessing(true);
+
+    try {
+      const response = await $fetch(`${API_ENDPOINTS_PREFIX.node}/recipe-sources/image-url`, {
+        method: 'POST',
+        body: JSON.stringify({
+          url: imageUrl.trim(),
+        }),
+      });
+
+      if (response) {
+        handleModalClose();
+        Toast.show({
+          type: 'success',
+          text1: 'Recipe Processing Started',
+          text2: 'You can check status by clicking the croissant icon on top right corner',
+        });
+        // Refresh recipes list
+        fetchRecipes();
+      }
+    } catch (error) {
+      console.error('Error submitting image URL:', error);
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
   const handleFromScratch = () => {
-    console.log('Create from scratch selected');
+    setModalStep('recipe-form');
+  };
+
+  const handleRecipeSuccess = (recipe: any) => {
+    handleModalClose();
+    Toast.show({
+      type: 'success',
+      text1: 'Recipe Created!',
+      text2: 'Your recipe has been created successfully',
+    });
+    // Refresh recipes list
+    fetchRecipes();
+  };
+
+  const handleRecipeEdit = async (recipe: Recipe) => {
+    try {
+      // Fetch full recipe data for editing
+      const fullRecipeResponse = await $fetch<RecipeFull>(
+        `${API_ENDPOINTS_PREFIX.spring}/recipes/${recipe.id}`
+      );
+      
+      if (fullRecipeResponse) {
+        setEditingRecipe(fullRecipeResponse);
+        setShowEditModal(true);
+      }
+    } catch (error) {
+      console.error('Error fetching recipe for editing:', error);
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Failed to load recipe for editing',
+      });
+    }
+  };
+
+  const handleEditSuccess = (recipe: any) => {
+    setShowEditModal(false);
+    setEditingRecipe(null);
+    Toast.show({
+      type: 'success',
+      text1: 'Recipe Updated!',
+      text2: 'Your recipe has been updated successfully',
+    });
+    // Refresh recipes list
+    fetchRecipes();
+  };
+
+  const handleEditCancel = () => {
+    setShowEditModal(false);
+    setEditingRecipe(null);
   };
 
   const renderModalContent = () => {
@@ -181,6 +266,7 @@ export default function Page() {
             onClose={handleModalClose}
             onSelectSocialMedia={() => setModalStep('social-media-input')}
             onSelectFromScratch={handleFromScratch}
+            onSelectImage={() => setModalStep('image-input')}
           />
         );
 
@@ -195,6 +281,21 @@ export default function Page() {
             isProcessing={isProcessing}
           />
         );
+
+      case 'image-input':
+        return (
+          <ImageRecipeInput
+            onClose={handleModalClose}
+            onBack={() => setModalStep('selection')}
+            imageUrl={imageUrl}
+            onChangeUrl={setImageUrl}
+            onSubmit={handleImageSubmit}
+            isProcessing={isProcessing}
+          />
+        );
+
+      case 'recipe-form':
+        return null; // This will be handled by the fullscreen modal below
     }
   };
 
@@ -277,9 +378,16 @@ export default function Page() {
 
   return (
     <View className='flex-1 bg-background p-4'>
+      {recipes.length > 0 && (
+        <View className='mb-3 px-2'>
+          <Text className='text-center text-gray-500 text-sm'>
+            💡 Tip: Long press on any recipe to edit it
+          </Text>
+        </View>
+      )}
       <FlatList
         data={recipes}
-        renderItem={({ item }) => <RecipeCard recipe={item} className='mx-1 h-52 flex-1' />}
+        renderItem={({ item }) => <RecipeCard recipe={item} className='mx-1 h-52 flex-1' onLongPress={handleRecipeEdit} />}
         keyExtractor={(item: Recipe, index: number) => `${item.id}-${index}`}
         numColumns={2}
         columnWrapperStyle={{ justifyContent: 'space-between', marginBottom: 12 }}
@@ -293,8 +401,11 @@ export default function Page() {
         ListFooterComponent={renderRecipesFooter}
         ListFooterComponentStyle={{ paddingBottom: 120 }}
         ListEmptyComponent={
-          <View className='flex-1 items-center justify-center'>
-            <Text className='text-center font-medium'>No recipes found</Text>
+          <View className='flex-1 items-center justify-center py-20'>
+            <Text className='text-center font-medium text-lg mb-2'>No recipes found</Text>
+            <Text className='text-center text-gray-500 text-sm'>
+              Create your first recipe using the button below!
+            </Text>
           </View>
         }
       />
@@ -352,9 +463,47 @@ export default function Page() {
         </SafeAreaView>
       </FullscreenModal>
 
-      <BasicModal isModalOpen={showAddRecipeModal} setIsModalOpen={setShowAddRecipeModal} className='gap-4'>
+      {/* Recipe Form Fullscreen Modal */}
+      <FullscreenModal 
+        visible={showAddRecipeModal && modalStep === 'recipe-form'} 
+        onClose={() => {
+          setShowAddRecipeModal(false);
+          setModalStep('selection');
+        }}
+      >
+        <RecipeForm
+          mode="create"
+          onCancel={() => {
+            setShowAddRecipeModal(false);
+            setModalStep('selection');
+          }}
+          onSuccess={handleRecipeSuccess}
+        />
+      </FullscreenModal>
+
+      {/* Basic Modal for Selection and Social Media Input */}
+      <BasicModal 
+        isModalOpen={showAddRecipeModal && modalStep !== 'recipe-form'} 
+        setIsModalOpen={setShowAddRecipeModal} 
+        className='gap-4'
+      >
         {renderModalContent()}
       </BasicModal>
+
+      {/* Edit Recipe Fullscreen Modal */}
+      <FullscreenModal 
+        visible={showEditModal && editingRecipe !== null} 
+        onClose={handleEditCancel}
+      >
+        {editingRecipe && (
+          <RecipeForm
+            mode="edit"
+            initialData={editingRecipe}
+            onCancel={handleEditCancel}
+            onSuccess={handleEditSuccess}
+          />
+        )}
+      </FullscreenModal>
     </View>
   );
 }
