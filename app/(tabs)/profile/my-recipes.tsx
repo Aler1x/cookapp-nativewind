@@ -142,6 +142,9 @@ export default function Page() {
     setShowAddRecipeModal(false);
     setModalStep('selection');
     setSocialMediaUrl('');
+    setImageUrl('');
+    setEditingRecipe(null);
+    setShowEditModal(false);
     setIsProcessing(false);
   };
 
