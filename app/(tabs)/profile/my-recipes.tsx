@@ -18,7 +18,7 @@ import { Button } from '~/components/ui/button';
 import FullscreenModal from '~/components/ui/fullscreen-modal';
 import JobCard from '~/components/job-card';
 import { useModal } from '~/contexts/modal-context';
-import RecipeForm from '~/components/forms/recipe-form';
+// import RecipeForm from '~/components/forms/recipe-form';
 import ImageRecipeInput from '~/components/modals/image-recipe-input';
 
 type ModalStep = 'selection' | 'social-media-input' | 'image-input' | 'recipe-form';
@@ -467,7 +467,7 @@ export default function Page() {
       </FullscreenModal>
 
       {/* Recipe Form Fullscreen Modal */}
-      <FullscreenModal 
+      {/* <FullscreenModal 
         visible={showAddRecipeModal && modalStep === 'recipe-form'} 
         onClose={() => {
           setShowAddRecipeModal(false);
@@ -482,7 +482,7 @@ export default function Page() {
           }}
           onSuccess={handleRecipeSuccess}
         />
-      </FullscreenModal>
+      </FullscreenModal> */}
 
       {/* Basic Modal for Selection and Social Media Input */}
       <BasicModal 
@@ -494,7 +494,7 @@ export default function Page() {
       </BasicModal>
 
       {/* Edit Recipe Fullscreen Modal */}
-      <FullscreenModal 
+      {/* <FullscreenModal 
         visible={showEditModal && editingRecipe !== null} 
         onClose={handleEditCancel}
       >
@@ -506,7 +506,7 @@ export default function Page() {
             onSuccess={handleEditSuccess}
           />
         )}
-      </FullscreenModal>
+      </FullscreenModal> */}
     </View>
   );
 }
