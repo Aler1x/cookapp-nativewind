@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text } from '~/components/ui/text';
 import { View } from '~/components/ui/view';
-import { ActivityIndicator, ScrollView, TouchableOpacity } from 'react-native';
+import { ActivityIndicator, ScrollView, TouchableOpacity, RefreshControl } from 'react-native';
 import LibraryCard from '~/components/library-card';
 import { useFetch } from '~/hooks/useFetch';
 import { API_ENDPOINTS_PREFIX, THEME } from '~/lib/constants';
@@ -55,10 +55,15 @@ export default function LibraryPage() {
   const [collectionName, setCollectionName] = useState('');
 
   const [isLoading, setIsLoading] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
-  const fetchCollections = useCallback(async () => {
+  const fetchCollections = useCallback(async (isRefresh = false) => {
     try {
-      setIsLoading(true);
+      if (isRefresh) {
+        setIsRefreshing(true);
+      } else {
+        setIsLoading(true);
+      }
       const fetchedCollections = await $fetch<{ collections: CollectionPage[] }>(
         `${API_ENDPOINTS_PREFIX.spring}/recipes/collection`
       );
@@ -67,7 +72,11 @@ export default function LibraryPage() {
       console.error('Error fetching collections:', error);
       setCollections([]);
     } finally {
-      setIsLoading(false);
+      if (isRefresh) {
+        setIsRefreshing(false);
+      } else {
+        setIsLoading(false);
+      }
     }
   }, [$fetch]);
 
@@ -76,6 +85,10 @@ export default function LibraryPage() {
       fetchCollections();
     }
   }, [isSignedIn, fetchCollections]);
+
+  const onRefresh = useCallback(() => {
+    fetchCollections(true);
+  }, [fetchCollections]);
 
   const handleCreateNewCollection = useCallback(
     async (collectionName: string) => {
@@ -109,7 +122,13 @@ export default function LibraryPage() {
               <Info className='h-8 w-8' />
             </TouchableOpacity>
           </View>
-          <ScrollView className='mt-4' showsVerticalScrollIndicator={false}>
+          <ScrollView 
+            className='mt-4' 
+            showsVerticalScrollIndicator={false}
+            refreshControl={
+              <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
+            }
+          >
             <View className='flex w-full flex-row flex-wrap justify-between'>
               <TouchableOpacity className='w-[48%]' onPress={() => setIsCreateNewCollectionModalOpen(true)}>
                 <View className='h-32 w-full items-center justify-center rounded-xl border-2 border-dashed border-muted-foreground/30'>
