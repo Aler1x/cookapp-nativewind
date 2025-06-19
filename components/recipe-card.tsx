@@ -44,7 +44,7 @@ export default function RecipeCard({ recipe, className, onLongPress }: RecipeCar
         <View className='flex-row items-center justify-between px-2'>
           <View className='flex-row items-center gap-1'>
             <StarIcon size={12} color='#FFB923' style={{ marginBottom: 1 }} fill='#FFB923' />
-            <Text className='text-xs'>{recipe.rating?.toFixed(1)}</Text>
+            <Text className='text-xs'>{recipe.rating?.toFixed(1) || '-'}</Text>
           </View>
 
           <Separator orientation='vertical' className='h-4 bg-black' />
