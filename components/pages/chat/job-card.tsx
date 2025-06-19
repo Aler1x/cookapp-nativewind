@@ -2,9 +2,11 @@ import { View, Animated } from 'react-native';
 import { Text } from '~/components/ui/text';
 import { CheckCircle, Clock, XCircle, AlertCircle } from '~/assets/icons';
 import { Job } from '~/types/profile';
+import { Recipe } from '~/types/recipe';
 import { useEffect, useRef, useState } from 'react';
 import { useFetch } from '~/hooks/useFetch';
 import { API_ENDPOINTS_PREFIX } from '~/lib/constants';
+import RecipeCard from '~/components/recipe-card';
 
 interface JobCardProps {
   job: Job;
@@ -13,9 +15,11 @@ interface JobCardProps {
 export default function JobCard({ job }: JobCardProps) {
   const progressAnim = useRef(new Animated.Value(0)).current;
   const [currentJob, setCurrentJob] = useState<Job>(job);
+  const [recipe, setRecipe] = useState<Recipe | null>(null);
   const $fetch = useFetch();
 
   const isLoading = currentJob.status.toLowerCase() === 'pending' || currentJob.status.toLowerCase() === 'in_progress' || currentJob.status.toLowerCase() === 'processing';
+  const isCompleted = currentJob.status.toLowerCase() === 'completed';
 
   // Polling effect
   useEffect(() => {
@@ -36,6 +40,22 @@ export default function JobCard({ job }: JobCardProps) {
       clearInterval(intervalId);
     };
   }, [isLoading, currentJob.jobId, $fetch]);
+
+  // Fetch recipe when job is completed
+  useEffect(() => {
+    if (isCompleted && currentJob.recipeId && !recipe) {
+      const fetchRecipe = async () => {
+        try {
+          const response = await $fetch<{ data: Recipe }>(`${API_ENDPOINTS_PREFIX.node}/recipes/${currentJob.recipeId}`);
+          setRecipe(response.data);
+        } catch (error) {
+          console.error('Failed to fetch recipe:', error);
+        }
+      };
+
+      fetchRecipe();
+    }
+  }, [isCompleted, currentJob.recipeId, recipe, $fetch]);
 
   // Animation effect
   useEffect(() => {
@@ -100,6 +120,15 @@ export default function JobCard({ job }: JobCardProps) {
         return '#6b7280'; // gray-500
     }
   };
+
+  // Show recipe card if job is completed and recipe is loaded
+  if (isCompleted && recipe) {
+    return (
+      <View className='max-w-[50%] h-56'>
+        <RecipeCard recipe={recipe} className='mx-0' />
+      </View>
+    );
+  }
 
   return (
     <View className='rounded-2xl px-4 py-3 bg-card border border-border relative overflow-hidden'>

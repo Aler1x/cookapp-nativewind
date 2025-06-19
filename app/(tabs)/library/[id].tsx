@@ -12,7 +12,7 @@ import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/input';
 import BasicModal from '~/components/ui/basic-modal';
 import DeleteConfirmationModal from '~/components/modals/delete-confirmation';
-import { Edit, Trash2 } from 'lucide-react-native';
+import { Edit, Trash2, ChevronLeft } from 'lucide-react-native';
 import RecipeCard from '~/components/recipe-card';
 
 export default function LibraryDetailPage() {
@@ -113,7 +113,12 @@ export default function LibraryDetailPage() {
     <SafeAreaView className='flex-1 bg-background'>
       <View className='flex-1' style={{ padding: 16 }}>
         <View className='mb-6 flex-row items-center justify-between'>
-          <Text className='flex-1 text-3xl font-bold'>{collection?.name || name || 'Collection'}</Text>
+          <View className='flex-row items-center gap-3'>
+            <Button variant='outline' size='icon' onPress={() => router.back()}>
+              <ChevronLeft size={20} color='#666' />
+            </Button>
+            <Text className='text-3xl font-bold'>{collection?.name || name || 'Collection'}</Text>
+          </View>
           <View className='flex-row gap-2'>
             <Button variant='outline' size='icon' onPress={openEditModal}>
               <Edit size={18} color='#666' />
