@@ -112,7 +112,7 @@ export default function ProfilePage() {
                     <CookingPot size={24} color='#4b5563' />
                   </View>
                   <View>
-                    <Text className='max-w-[60vw] text-wrap text-lg font-bold text-gray-800'>
+                    <Text className='max-w-[65vw] text-wrap text-lg font-bold text-gray-800'>
                       Your Premium Plan is Active
                     </Text>
                     <Text className='max-w-[60vw] text-wrap text-sm text-gray-600'>

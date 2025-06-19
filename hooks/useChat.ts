@@ -25,7 +25,6 @@ export const useChat = () => {
   const fetchUserChats = useCallback(async (autoLoadLast = true) => {
     const response = await $fetch<ChatHistoryItem[]>(`${API_ENDPOINTS_PREFIX.spring}/chat-history`);
     setUserChats(response);
-    console.log(response);
     if (response.length > 0 && autoLoadLast) {
       loadChatHistory(response[response.length - 1].chatId);
     }

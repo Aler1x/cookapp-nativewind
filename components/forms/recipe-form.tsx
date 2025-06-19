@@ -213,8 +213,6 @@ export default function RecipeForm({
 
       let response: RecipeFull;
 
-      console.log(apiData);
-
       if (mode === 'create') {
         response = await $fetch<RecipeFull>(
           `${API_ENDPOINTS_PREFIX.spring}/recipes`,

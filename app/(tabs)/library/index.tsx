@@ -100,7 +100,6 @@ export default function LibraryPage() {
             description: '',
           }),
         });
-        console.log('New collection created:', collectionName);
         setCollectionName('');
         setIsCreateNewCollectionModalOpen(false);
         fetchCollections();

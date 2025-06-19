@@ -180,7 +180,10 @@ export default function LibraryDetailPage() {
           setIsDeleteRecipeModalOpen(false);
           setRecipeToDelete(null);
         }}
-        onReject={() => console.log('Recipe delete cancelled')}
+        onReject={() => {
+          setIsDeleteRecipeModalOpen(false);
+          setRecipeToDelete(null);
+        }}
         onApprove={handleDeleteRecipe}
         itemName={recipeToDelete?.title || 'this recipe'}
         message='Are you sure you want to remove'
@@ -191,7 +194,9 @@ export default function LibraryDetailPage() {
       <DeleteConfirmationModal
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
-        onReject={() => console.log('Delete cancelled')}
+        onReject={() => {
+          setIsDeleteModalOpen(false);
+        }}
         onApprove={handleDeleteCollection}
         itemName={collection?.name || name?.toString() || 'this collection'}
         message='Are you sure you want to delete'

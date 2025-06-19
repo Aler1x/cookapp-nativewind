@@ -38,7 +38,6 @@ export default function Layout() {
 
   useEffect(() => {
     if (loaded || error) {
-      console.log('fonts loaded');
       SplashScreen.hideAsync();
     }
   }, [loaded, error]);

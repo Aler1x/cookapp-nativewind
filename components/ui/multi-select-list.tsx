@@ -364,8 +364,6 @@ const MultipleSelectList: React.FC<MultipleSelectListProps> = ({
                         onPress={() => {
                           let existing = selectedval?.indexOf(value);
 
-                          // console.log(existing);
-
                           if (existing != -1 && existing != undefined) {
                             let sv = [...selectedval];
                             sv.splice(existing, 1);

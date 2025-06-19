@@ -38,20 +38,16 @@ export function usePushNotifications() {
 
     // Handle notifications received while app is running
     notificationListener.current = addNotificationReceivedListener((notification) => {
-      console.log('Notification received:', notification);
 
       // Handle different types of notifications
       const data = notification.request.content.data;
       if (data?.type === 'recipe_processed') {
         // You can show a toast or update the UI
-        console.log('Recipe processing completed:', data);
       }
     });
 
     // Handle notification responses (when user taps on notification)
     responseListener.current = addNotificationResponseReceivedListener((response) => {
-      console.log('Notification response:', response);
-
       const data = response.notification.request.content.data;
       if (data?.type === 'recipe_processed') {
         // Navigate to the recipe or recipes list

@@ -79,24 +79,20 @@ async function shareOnWeb(type: ShareType, content: string, options: ShareOption
 
       // Check if the data can be shared before attempting to share
       if (navigator.canShare && !navigator.canShare(shareData)) {
-        console.log('Cannot share this data, falling back to clipboard');
         return await fallbackWebShare(type, content, options);
       }
 
       await navigator.share(shareData);
       return { success: true };
     } catch (error: any) {
-      console.log('Web Share API error:', error);
       if (error.name === 'AbortError') {
         return { success: false, dismissed: true };
       }
       // If Web Share API fails, fall back to clipboard
-      console.log('Web Share API failed, falling back to clipboard');
       return await fallbackWebShare(type, content, options);
     }
   } else {
     // Fallback for browsers without Web Share API
-    console.log('Web Share API not available, using fallback');
     return await fallbackWebShare(type, content, options);
   }
 }
@@ -110,7 +106,6 @@ async function fallbackWebShare(type: ShareType, content: string, options: Share
       // Try to copy to clipboard
       if (navigator.clipboard && navigator.clipboard.writeText) {
         await navigator.clipboard.writeText(content);
-        console.log('Content copied to clipboard');
         Toast.show({
           type: 'success',
           text1: 'Copied to clipboard',
@@ -203,14 +198,11 @@ async function shareOnNative(type: ShareType, content: string, options: ShareOpt
 
   if (result.action === Share.sharedAction) {
     if (result.activityType) {
-      console.log('Shared with activity:', result.activityType);
       return { success: true, activityType: result.activityType };
     } else {
-      console.log('Shared!');
       return { success: true };
     }
   } else if (result.action === Share.dismissedAction) {
-    console.log('Share sheet dismissed');
     return { success: false, dismissed: true };
   }
 
