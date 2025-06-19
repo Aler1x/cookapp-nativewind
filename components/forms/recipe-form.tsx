@@ -76,7 +76,7 @@ export default function RecipeForm({
     })) || [],
     ingredients: initialData?.ingredients?.map(ing => ({
       id: ing.id,
-      productId: 0, // Will need to map this properly
+      productId: ing.productId || 0,
       productName: ing.name,
       amount: ing.measurements.amount,
       unitId: ing.measurements.unit?.id ? parseInt(ing.measurements.unit.id) : undefined,

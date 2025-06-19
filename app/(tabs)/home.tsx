@@ -153,8 +153,10 @@ export default function HomePage() {
   }, [$fetch]);
 
   useEffect(() => {
-    fetchQuickFilters();
-  }, [fetchQuickFilters]);
+    if (isSignedIn) {
+      fetchQuickFilters();
+    }
+  }, [fetchQuickFilters, isSignedIn]);
 
   const handleBadgePress = (badgeId: string) => {
     if (activeBadge === badgeId) {

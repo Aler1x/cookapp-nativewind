@@ -44,6 +44,7 @@ export type Step = {
 export type Ingredient = {
   id: string;
   name: string;
+  productId?: number;
   measurements: {
     amount: number;
     unit?: Unit;
