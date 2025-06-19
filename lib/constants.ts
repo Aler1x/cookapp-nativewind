@@ -70,3 +70,5 @@ export const API_ENDPOINTS_PREFIX = {
   node: '/personalization',
   public: '/public',
 };
+
+export const EXPO_DEV = process.env.EXPO_PUBLIC_DEV === 'true';

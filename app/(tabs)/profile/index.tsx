@@ -10,9 +10,10 @@ import { useRouter, useLocalSearchParams, Link } from 'expo-router';
 import AuthPage from '~/components/pages/auth';
 import FullscreenModal from '~/components/ui/fullscreen-modal';
 import PreferencesPage from '~/components/modals/preferences';
-import { UserPen, ChevronRight, Heart, CookingPot, HelpCircle } from '~/assets/icons';
+import { UserPen, ChevronRight, Heart, CookingPot, HelpCircle, Palette, Settings } from '~/assets/icons';
 import PremiumPage from '~/components/modals/premium';
 import Toast from 'react-native-toast-message';
+import { EXPO_DEV } from '~/lib/constants';
 
 export default function ProfilePage() {
   const { signOut, isLoaded, isSignedIn } = useAuth();
@@ -97,7 +98,7 @@ export default function ProfilePage() {
               </View>
             </View>
 
-            {process.env.NODE_ENV === 'development' && (
+            {EXPO_DEV && (
               <Button variant='outline' size='icon' className='h-10 w-10 border-gray-500' onPress={handleSignOut}>
                 <UserPen size={24} />
               </Button>
@@ -136,17 +137,33 @@ export default function ProfilePage() {
               </TouchableOpacity>
             )}
 
-            {/* <Link href='/profile/settings' asChild>
-              <Pressable className='flex-row items-center justify-between border-b border-gray-500 py-6 px-4'>
-              <View className='flex-row items-center gap-4'>
-              <View className='w-14 h-14 bg-gray-200 rounded-2xl items-center justify-center'>
-              <SettingsIcon size={24} color='#666' />
-              </View>
-              <Text className='text-lg font-semibold'>Settings</Text>
-              </View>
-              <ChevronRight size={24} color='#666' />
-              </Pressable>
-              </Link> */}
+            {EXPO_DEV && (
+              <>
+                <Link href='/profile/settings' asChild>
+                  <Pressable className='flex-row items-center justify-between border-b border-gray-500 py-6 px-4'>
+                    <View className='flex-row items-center gap-4'>
+                      <View className='w-14 h-14 bg-gray-200 rounded-2xl items-center justify-center'>
+                        <Settings size={24} color='#666' />
+                      </View>
+                      <Text className='text-lg font-semibold'>Settings</Text>
+                    </View>
+                    <ChevronRight size={24} color='#666' />
+                  </Pressable>
+                </Link>
+
+                <Link href='/design/go-back' asChild>
+                  <Pressable className='flex-row items-center justify-between border-b border-gray-500 py-6 px-4'>
+                    <View className='flex-row items-center gap-4'>
+                      <View className='w-14 h-14 bg-gray-200 rounded-2xl items-center justify-center'>
+                        <Palette size={24} color='#666' />
+                      </View>
+                      <Text className='text-lg font-semibold'>Design</Text>
+                    </View>
+                    <ChevronRight size={24} color='#666' />
+                  </Pressable>
+                </Link>
+              </>
+            )}
 
             <TouchableOpacity
               onPress={() => setShowPreferences(true)}
@@ -183,20 +200,6 @@ export default function ProfilePage() {
               </View>
               <ChevronRight size={24} color='#666' />
             </TouchableOpacity>
-
-            {/* {process.env.NODE_ENV === 'development' && (
-              <Link href='/design/go-back' asChild>
-              <Pressable className='flex-row items-center justify-between border-b border-gray-500 py-6 px-4'>
-              <View className='flex-row items-center gap-4'>
-              <View className='w-14 h-14 bg-gray-200 rounded-2xl items-center justify-center'>
-              <Palette size={24} color='#666' />
-                    </View>
-                    <Text className='text-lg font-semibold'>Design</Text>
-                  </View>
-                  <ChevronRight size={24} color='#666' />
-                  </Pressable>
-                  </Link>
-                  )} */}
           </View>
 
           <FullscreenModal visible={showPremium} onClose={() => setShowPremium(false)}>

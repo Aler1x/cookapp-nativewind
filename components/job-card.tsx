@@ -5,6 +5,7 @@ import { Badge } from '~/components/ui/badge';
 import { Job } from '~/types/profile';
 import { AlertCircle, CheckCircle, Clock, XCircle } from 'lucide-react-native';
 import { cn } from '~/lib/utils';
+import { EXPO_DEV } from '~/lib/constants';
 
 type JobCardProps = {
   job: Job;
@@ -47,8 +48,6 @@ const getStatusConfig = (status: string) => {
   }
 };
 
-const isDevMode = process.env.NODE_ENV === 'development';
-
 export default function JobCard({ job }: JobCardProps) {
   const statusConfig = getStatusConfig(job.status);
   const StatusIcon = statusConfig.icon;
@@ -89,7 +88,7 @@ export default function JobCard({ job }: JobCardProps) {
         <Text className='text-base font-semibold text-foreground'>{job.recipeName}</Text>
       )}
 
-      {isDevMode && (
+      {EXPO_DEV && (
         <>
           <Text className='text-sm text-muted-foreground'>Job ID: {job.jobId}</Text>
 
