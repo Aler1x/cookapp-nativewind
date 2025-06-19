@@ -5,7 +5,7 @@ import Toast from 'react-native-toast-message';
 import { THEME } from '~/lib/constants';
 import { useColorScheme } from '~/lib/useColorScheme';
 import { usePushNotifications } from '~/hooks/usePushNotifications';
-import { PortalHost } from '@rn-primitives/portal';
+import { toaster } from '~/components/toaster';
 
 export default function BaseLayout() {
   const { isDarkColorScheme } = useColorScheme();
@@ -36,9 +36,7 @@ export default function BaseLayout() {
         />
       </Stack>
 
-      <PortalHost />
-
-      <Toast topOffset={50} />
+      <Toast config={toaster} topOffset={50} />
     </>
   );
 }

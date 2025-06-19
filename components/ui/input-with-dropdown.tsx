@@ -44,6 +44,7 @@ export interface SelectListProps {
   dropdownShown?: boolean;
   fetchItems: (query: string) => Promise<SelectListData[]>;
   allowFreeText?: boolean;
+  closeOnSelect?: boolean;
 }
 
 const InputWithDropdown: React.FC<SelectListProps> = ({
@@ -68,6 +69,7 @@ const InputWithDropdown: React.FC<SelectListProps> = ({
   fontFamily,
   fetchItems,
   allowFreeText = false,
+  closeOnSelect = true,
 }) => {
   const oldOption = React.useRef(null);
   const textInputRef = React.useRef<TextInput>(null);
@@ -179,6 +181,10 @@ const InputWithDropdown: React.FC<SelectListProps> = ({
   }, [dropdown, search, searchQuery, debouncedFetch]);
 
   const getText = () => {
+    if (value) {
+      return value;
+    }
+
     if (selectedVal !== '') {
       return selectedVal;
     }
@@ -261,7 +267,7 @@ const InputWithDropdown: React.FC<SelectListProps> = ({
                       onPress={() => {
                         setSelected(item);
                         setSelectedVal(value);
-                        slideup();
+                        if (closeOnSelect) slideup();
                         setSearchQuery('');
                       }}>
                       <Text style={[{ fontFamily }, dropdownTextStyles]}>{value}</Text>
@@ -275,7 +281,7 @@ const InputWithDropdown: React.FC<SelectListProps> = ({
                 onPress={() => {
                   setSelected(undefined);
                   setSelectedVal('');
-                  slideup();
+                  if (closeOnSelect) slideup();
                   setSearchQuery('');
                 }}>
                 <Text style={[{ fontFamily }, dropdownTextStyles]}>{notFoundText}</Text>

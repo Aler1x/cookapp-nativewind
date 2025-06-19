@@ -6,11 +6,7 @@ export interface RecipeFull {
   mainImageUrl: string;
   description?: string;
   source: 'MANUALLY_CREATED' | 'AI' | 'EXTERNAL' | 'ORIGINAL'; // wtf is last one?
-  author?: {
-    // optional, because on db it don't link to user so it's probably null
-    id: string;
-    name: string;
-  };
+  authorId: string;
   duration: number; // in minutes
   servings: number;
   nutrition?: {
@@ -74,3 +70,5 @@ export type Category = {
   };
   imageUrl: string;
 };
+
+export type CategorySearch = Pick<Category, 'id' | 'name'>

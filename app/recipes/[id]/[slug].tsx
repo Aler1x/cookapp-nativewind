@@ -13,21 +13,21 @@ import { API_ENDPOINTS_PREFIX } from '~/lib/constants';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useFetch } from '~/hooks/useFetch';
 import { RecipeFull } from '~/types/recipe';
-import { BookmarkPlus, ChevronLeft, Star } from '~/assets/icons';
+import { BookmarkPlus, ChevronLeft, Star, Trash2 } from '~/assets/icons';
 import { Response } from '~/types';
 import { capitalizeFirstLetter } from '~/lib/utils';
 import { useAuth } from '@clerk/clerk-expo';
 import { useShoppingListStore } from '~/stores/shopping';
 import BasicModal from '~/components/ui/basic-modal';
 import AddRecipeToCollectionModal from '~/components/modals/add-recipe-to-collection';
+import DeleteConfirmationModal from '~/components/modals/delete-confirmation';
 
 const { width: screenWidth } = Dimensions.get('window');
 const IMAGE_HEIGHT = 350;
 
 export default function Page() {
   const { id, slug } = useLocalSearchParams<{ id: string; slug: string }>();
-  const { isSignedIn } = useAuth();
-  console.log('id', id, slug);
+  const { isSignedIn, userId } = useAuth();
   const router = useRouter();
   const [recipe, setRecipe] = useState<RecipeFull | null>(null);
   const [loading, setLoading] = useState(true);
@@ -35,9 +35,13 @@ export default function Page() {
   const [checkedIngredients, setCheckedIngredients] = useState<Set<string>>(new Set());
   const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
   const [isAddToCollectionModalOpen, setIsAddToCollectionModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const $fetch = useFetch();
   const { addItem } = useShoppingListStore();
+
+  // Check if current user owns this recipe
+  const isOwner = recipe?.authorId === userId;
 
   useEffect(() => {
     const fetchRecipe = async () => {
@@ -101,6 +105,25 @@ export default function Page() {
     }
   };
 
+  const handleDeleteRecipe = async () => {
+    if (!recipe) return;
+
+    try {
+      await $fetch(`${API_ENDPOINTS_PREFIX.spring}/recipes/${recipe.id}`, {
+        method: 'DELETE',
+      });
+      
+              // Navigate back after successful deletion
+        if (router.canGoBack()) {
+          router.back();
+        } else {
+          router.push('/(tabs)/home');
+        }
+    } catch (error) {
+      console.error('Failed to delete recipe:', error);
+    }
+  };
+
   if (loading) {
     return <RecipeSkeleton />;
   }
@@ -138,11 +161,22 @@ export default function Page() {
       </SafeAreaView>
 
       <SafeAreaView className='absolute right-0 top-0 z-20' style={{ elevation: 10 }}>
-        <TouchableOpacity
-          onPress={() => setIsAddToCollectionModalOpen(true)}
-          className='m-4 h-10 w-10 items-center justify-center rounded-full bg-black/50'>
-          <BookmarkPlus size={24} color='white' />
-        </TouchableOpacity>
+        <View className='m-4 flex-row gap-2'>
+          {isSignedIn && isOwner && (
+            <TouchableOpacity
+              onPress={() => setIsDeleteModalOpen(true)}
+              className='h-10 w-10 items-center justify-center rounded-full bg-red-500/80'>
+              <Trash2 size={20} color='white' />
+            </TouchableOpacity>
+          )}
+          {isSignedIn && (
+            <TouchableOpacity
+              onPress={() => setIsAddToCollectionModalOpen(true)}
+              className='h-10 w-10 items-center justify-center rounded-full bg-black/50'>
+              <BookmarkPlus size={24} color='white' />
+            </TouchableOpacity>
+          )}
+        </View>
       </SafeAreaView>
 
       {/* Scrollable Content */}
@@ -240,6 +274,16 @@ export default function Page() {
             className='bg-background'>
             <AddRecipeToCollectionModal recipeId={recipe.id} onClose={() => setIsAddToCollectionModalOpen(false)} />
           </BasicModal>
+          
+          <DeleteConfirmationModal
+            isOpen={isDeleteModalOpen}
+            onClose={() => setIsDeleteModalOpen(false)}
+            onReject={() => setIsDeleteModalOpen(false)}
+            onApprove={handleDeleteRecipe}
+            title="Delete Recipe"
+            message="Are you sure you want to delete"
+            itemName={recipe.title}
+          />
         </SafeAreaView>
       )}
     </View>

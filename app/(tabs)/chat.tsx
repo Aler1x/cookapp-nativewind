@@ -124,8 +124,8 @@ export default function ChatPage() {
           currentIndex++;
 
           if (currentIndex <= fullMessage.length) {
-            // Random delay between 20-60ms for more natural typing
-            const delay = Math.random() * 40 + 20;
+            // Random delay between 5-30ms for more natural typing
+            const delay = Math.random() * 25 + 5;
             animationRef.current = setTimeout(typeNextChar, delay);
           } else {
             setIsAnimating(false);

@@ -12,12 +12,16 @@ import {
   Comfortaa_700Bold,
 } from '@expo-google-fonts/comfortaa';
 import '~/app/global.css';
-import { useEffect } from 'react';
+import React, { useEffect, useLayoutEffect } from 'react';
 import { ClerkProvider, ClerkLoaded } from '@clerk/clerk-expo';
 import { tokenCache } from '@clerk/clerk-expo/token-cache';
 import DesktopBlocker from '~/components/DesktopBlocker';
 import BaseLayout from '~/components/pages/base-layout';
 import 'expo-dev-client';
+
+// Shim for React Native: override useInsertionEffect to prevent scheduling updates in it
+// @ts-ignore
+;(React as any).useInsertionEffect = useLayoutEffect;
 
 SplashScreen.preventAutoHideAsync();
 
