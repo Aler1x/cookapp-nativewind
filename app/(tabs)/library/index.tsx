@@ -15,6 +15,7 @@ import { Input } from '~/components/ui/input';
 import { Button } from '~/components/ui/button';
 import AuthPage from '~/components/pages/auth';
 import HelpModal, { Option } from '~/components/modals/information';
+import { useFocusEffect } from 'expo-router';
 
 export const LIBRARY_HELP_OPTIONS: Option[] = [
   {
@@ -85,6 +86,15 @@ export default function LibraryPage() {
       fetchCollections();
     }
   }, [isSignedIn, fetchCollections]);
+
+  // Refresh collections when screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      if (isSignedIn) {
+        fetchCollections();
+      }
+    }, [isSignedIn, fetchCollections])
+  );
 
   const onRefresh = useCallback(() => {
     fetchCollections(true);

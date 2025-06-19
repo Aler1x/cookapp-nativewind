@@ -13,8 +13,6 @@ export default function Layout() {
           backgroundColor: isDarkColorScheme ? THEME.dark.colors.background : THEME.light.colors.background,
         },
       }}>
-      <Tabs.Screen name='buttons' />
-      <Tabs.Screen name='modals' />
     </Tabs>
   );
 }

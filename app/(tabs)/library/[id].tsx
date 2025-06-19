@@ -1,8 +1,8 @@
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text } from '~/components/ui/text';
 import { FlatList, ActivityIndicator } from 'react-native';
-import { router, useLocalSearchParams } from 'expo-router';
-import { useCallback, useEffect, useState } from 'react';
+import { router, useLocalSearchParams, useFocusEffect } from 'expo-router';
+import { useCallback, useState } from 'react';
 import { useFetch } from '~/hooks/useFetch';
 import { Collection } from '~/types/library';
 import { Recipe } from '~/types/recipe';
@@ -102,9 +102,12 @@ export default function LibraryDetailPage() {
     setIsEditModalOpen(true);
   };
 
-  useEffect(() => {
-    fetchCollection();
-  }, [$fetch]);
+  // Refresh collection when screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      fetchCollection();
+    }, [fetchCollection])
+  );
 
   return (
     <SafeAreaView className='flex-1 bg-background'>

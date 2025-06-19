@@ -27,9 +27,7 @@ export default function RecipeCard({ recipe, className, onLongPress }: RecipeCar
       onPress={handlePress}
       onLongPress={onLongPress ? handleLongPress : undefined}
       className={cn('flex-1 overflow-hidden rounded-3xl border border-black bg-background', className)}
-      style={{
-        elevation: 10,
-      }}>
+      style={{ elevation: 10 }}>
       {recipe.mainImageUrl ? (
         <Image source={{ uri: recipe.mainImageUrl }} className='h-[60%] w-full' resizeMode='cover' />
       ) : (
