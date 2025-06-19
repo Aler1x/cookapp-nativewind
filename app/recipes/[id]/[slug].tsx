@@ -20,7 +20,6 @@ import { useAuth } from '@clerk/clerk-expo';
 import { useShoppingListStore } from '~/stores/shopping';
 import BasicModal from '~/components/ui/basic-modal';
 import AddRecipeToCollectionModal from '~/components/modals/add-recipe-to-collection';
-import DeleteConfirmationModal from '~/components/modals/delete-confirmation';
 
 const { width: screenWidth } = Dimensions.get('window');
 const IMAGE_HEIGHT = 350;
@@ -35,7 +34,6 @@ export default function Page() {
   const [checkedIngredients, setCheckedIngredients] = useState<Set<string>>(new Set());
   const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
   const [isAddToCollectionModalOpen, setIsAddToCollectionModalOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const $fetch = useFetch();
   const { addItem } = useShoppingListStore();
@@ -105,25 +103,6 @@ export default function Page() {
     }
   };
 
-  const handleDeleteRecipe = async () => {
-    if (!recipe) return;
-
-    try {
-      await $fetch(`${API_ENDPOINTS_PREFIX.spring}/recipes/${recipe.id}`, {
-        method: 'DELETE',
-      });
-      
-              // Navigate back after successful deletion
-        if (router.canGoBack()) {
-          router.back();
-        } else {
-          router.push('/(tabs)/home');
-        }
-    } catch (error) {
-      console.error('Failed to delete recipe:', error);
-    }
-  };
-
   if (loading) {
     return <RecipeSkeleton />;
   }
@@ -162,13 +141,6 @@ export default function Page() {
 
       <SafeAreaView className='absolute right-0 top-0 z-20' style={{ elevation: 10 }}>
         <View className='m-4 flex-row gap-2'>
-          {isSignedIn && isOwner && (
-            <TouchableOpacity
-              onPress={() => setIsDeleteModalOpen(true)}
-              className='h-10 w-10 items-center justify-center rounded-full bg-red-500/80'>
-              <Trash2 size={20} color='white' />
-            </TouchableOpacity>
-          )}
           {isSignedIn && (
             <TouchableOpacity
               onPress={() => setIsAddToCollectionModalOpen(true)}
@@ -274,16 +246,6 @@ export default function Page() {
             className='bg-background'>
             <AddRecipeToCollectionModal recipeId={recipe.id} onClose={() => setIsAddToCollectionModalOpen(false)} />
           </BasicModal>
-          
-          <DeleteConfirmationModal
-            isOpen={isDeleteModalOpen}
-            onClose={() => setIsDeleteModalOpen(false)}
-            onReject={() => setIsDeleteModalOpen(false)}
-            onApprove={handleDeleteRecipe}
-            title="Delete Recipe"
-            message="Are you sure you want to delete"
-            itemName={recipe.title}
-          />
         </SafeAreaView>
       )}
     </View>

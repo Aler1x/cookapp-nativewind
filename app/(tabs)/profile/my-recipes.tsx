@@ -20,6 +20,8 @@ import JobCard from '~/components/job-card';
 import { useModal } from '~/contexts/modal-context';
 import RecipeForm from '~/components/forms/recipe-form';
 import ImageRecipeInput from '~/components/modals/image-recipe-input';
+import DeleteConfirmation from '~/components/modals/delete-confirmation';
+import RecipeActions from '~/components/modals/recipe-actions';
 
 type ModalStep = 'selection' | 'social-media-input' | 'image-input' | 'recipe-form';
 
@@ -47,6 +49,10 @@ export default function Page() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [editingRecipe, setEditingRecipe] = useState<RecipeFull | null>(null);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [recipeToDelete, setRecipeToDelete] = useState<Recipe | null>(null);
+  const [showActionsModal, setShowActionsModal] = useState(false);
+  const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
 
   const [imageUrl, setImageUrl] = useState('');
 
@@ -223,6 +229,11 @@ export default function Page() {
     fetchRecipes();
   };
 
+  const handleRecipeLongPress = (recipe: Recipe) => {
+    setSelectedRecipe(recipe);
+    setShowActionsModal(true);
+  };
+
   const handleRecipeEdit = async (recipe: Recipe) => {
     try {
       // Fetch full recipe data for editing
@@ -244,6 +255,11 @@ export default function Page() {
     }
   };
 
+  const handleActionsClose = () => {
+    setShowActionsModal(false);
+    setSelectedRecipe(null);
+  };
+
   const handleEditSuccess = (recipe: any) => {
     setShowEditModal(false);
     setEditingRecipe(null);
@@ -259,6 +275,45 @@ export default function Page() {
   const handleEditCancel = () => {
     setShowEditModal(false);
     setEditingRecipe(null);
+  };
+
+  const handleRecipeDelete = (recipe: Recipe) => {
+    setRecipeToDelete(recipe);
+    setShowDeleteModal(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!recipeToDelete) return;
+
+    try {
+      await $fetch(`${API_ENDPOINTS_PREFIX.spring}/recipes/${recipeToDelete.id}`, {
+        method: 'DELETE',
+      });
+
+      Toast.show({
+        type: 'success',
+        text1: 'Recipe Deleted!',
+        text2: 'Your recipe has been deleted successfully',
+      });
+
+      // Refetch recipes to update the list
+      fetchRecipes();
+    } catch (error) {
+      console.error('Error deleting recipe:', error);
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Failed to delete recipe',
+      });
+    } finally {
+      setShowDeleteModal(false);
+      setRecipeToDelete(null);
+    }
+  };
+
+  const handleDeleteCancel = () => {
+    setShowDeleteModal(false);
+    setRecipeToDelete(null);
   };
 
   const renderModalContent = () => {
@@ -384,13 +439,19 @@ export default function Page() {
       {recipes.length > 0 && (
         <View className='mb-3 px-2'>
           <Text className='text-center text-gray-500 text-sm'>
-            💡 Tip: Long press on any recipe to edit it
+            💡 Tip: Long press on any recipe to edit or delete it
           </Text>
         </View>
       )}
       <FlatList
         data={recipes}
-        renderItem={({ item }) => <RecipeCard recipe={item} className='mx-1 h-52 flex-1' onLongPress={handleRecipeEdit} />}
+        renderItem={({ item }) => (
+          <RecipeCard 
+            recipe={item} 
+            className='mx-1 h-52 flex-1' 
+            onLongPress={handleRecipeLongPress}
+          />
+        )}
         keyExtractor={(item: Recipe, index: number) => `${item.id}-${index}`}
         numColumns={2}
         columnWrapperStyle={{ justifyContent: 'space-between', marginBottom: 12 }}
@@ -507,6 +568,32 @@ export default function Page() {
           />
         )}
       </FullscreenModal>
+
+      {/* Recipe Actions Modal */}
+      <BasicModal 
+        isModalOpen={showActionsModal} 
+        setIsModalOpen={setShowActionsModal}
+      >
+        {selectedRecipe && (
+          <RecipeActions
+            recipeName={selectedRecipe.title}
+            onEdit={() => selectedRecipe && handleRecipeEdit(selectedRecipe)}
+            onDelete={() => selectedRecipe && handleRecipeDelete(selectedRecipe)}
+            onClose={handleActionsClose}
+          />
+        )}
+      </BasicModal>
+
+      {/* Delete Confirmation Modal */}
+      <DeleteConfirmation
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        onReject={handleDeleteCancel}
+        onApprove={handleDeleteConfirm}
+        title="Delete Recipe"
+        message="Are you sure you want to delete"
+        itemName={recipeToDelete?.title || 'this recipe'}
+      />
     </View>
   );
 }

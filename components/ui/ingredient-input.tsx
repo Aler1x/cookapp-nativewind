@@ -35,11 +35,11 @@ interface SingleIngredientInputProps {
   disabled?: boolean;
 }
 
-function SingleIngredientInput({ 
-  ingredient, 
-  onUpdate, 
-  onRemove, 
-  disabled 
+function SingleIngredientInput({
+  ingredient,
+  onUpdate,
+  onRemove,
+  disabled
 }: SingleIngredientInputProps) {
   const { isSignedIn } = useAuth();
   const $fetch = useFetch();
@@ -98,36 +98,20 @@ function SingleIngredientInput({
     [$fetch, isSignedIn]
   );
 
-  const handleProductChange = useCallback((value: SelectListData | string) => {
-    if (typeof value === 'string') {
-      onUpdate({
-        ...ingredient,
-        productName: value,
-        productId: 0, // Use 0 for custom products
-      });
-    } else {
-      onUpdate({
-        ...ingredient,
-        productName: value.value,
-        productId: parseInt(value.id),
-      });
-    }
+  const handleProductChange = useCallback((value: SelectListData) => {
+    onUpdate({
+      ...ingredient,
+      productName: value.value,
+      productId: parseInt(value.id),
+    });
   }, [ingredient, onUpdate]);
 
-  const handleUnitChange = useCallback((value: SelectListData | string) => {
-    if (typeof value === 'string') {
-      onUpdate({
-        ...ingredient,
-        unitName: value,
-        unitId: undefined,
-      });
-    } else {
-      onUpdate({
-        ...ingredient,
+  const handleUnitChange = useCallback((value: SelectListData) => {
+    onUpdate({
+      ...ingredient,
         unitName: value.value,
-        unitId: parseInt(value.id),
-      });
-    }
+      unitId: parseInt(value.id),
+    });
   }, [ingredient, onUpdate]);
 
   const handleAmountChange = useCallback((amount: string) => {

@@ -56,7 +56,7 @@ const InputWithDropdown: React.FC<SelectListProps> = ({
   dropdownItemStyles,
   dropdownTextStyles,
   maxHeight,
-  data = DEFAULT_DATA, // buttplug
+  data = DEFAULT_DATA,
   defaultOption,
   search = true,
   searchPlaceholder = 'search',
