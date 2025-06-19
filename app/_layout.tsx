@@ -48,7 +48,7 @@ export default function Layout() {
 
   return (
     <DesktopBlocker>
-      <ClerkProvider tokenCache={tokenCache} afterSignOutUrl='https://cookapp.alerix.dev'>
+      <ClerkProvider tokenCache={tokenCache} afterSignOutUrl='/(tabs)/home'>
         <ClerkLoaded>
           <SafeAreaProvider>
             <ThemeProvider value={isDarkColorScheme ? THEME.dark : THEME.light}>
