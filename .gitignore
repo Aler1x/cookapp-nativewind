@@ -50,3 +50,6 @@ android/
 
 # iOS
 ios/
+
+# credentials
+credentials/

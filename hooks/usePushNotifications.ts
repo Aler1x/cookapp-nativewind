@@ -12,6 +12,15 @@ import {
 import { useFetch } from './useFetch';
 import { Platform } from 'react-native';
 
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldPlaySound: true,
+    shouldSetBadge: true,
+    shouldShowBanner: true,
+    shouldShowList: true,
+  }),
+});
+
 export function usePushNotifications() {
   const { userId, isSignedIn } = useAuth();
   const $fetch = useFetch();

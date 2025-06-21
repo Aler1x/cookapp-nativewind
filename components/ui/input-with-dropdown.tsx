@@ -40,7 +40,7 @@ export interface SelectListProps {
   notFoundText?: string;
   disabledItemStyles?: ViewStyle;
   disabledTextStyles?: TextStyle;
-  value?: any;
+  value?: SelectListData | string;
   dropdownShown?: boolean;
   fetchItems: (query: string) => Promise<SelectListData[]>;
   allowFreeText?: boolean;

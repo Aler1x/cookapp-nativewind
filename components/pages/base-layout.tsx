@@ -11,7 +11,7 @@ export default function BaseLayout() {
   const { isDarkColorScheme } = useColorScheme();
 
   // FIX: With expo go this is not working
-  // usePushNotifications();
+  usePushNotifications();
 
   return (
     <>

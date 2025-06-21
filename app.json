@@ -4,7 +4,6 @@
     "slug": "cookapp",
     "scheme": "cookapp-nativewind",
     "version": "1.0.0",
-    "userInterfaceStyle": "automatic",
     "icon": "./assets/images/icon.png",
     "newArchEnabled": true,
     "orientation": "portrait",
@@ -28,6 +27,14 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
+      "edgeToEdgeEnabled": true,
+      "androidNavigationBar": {
+        "backgroundColor": "#ffffff"
+      },
+      "googleServicesFile": "./credentials/google-services.json",
+      "permissions": [
+        "NOTIFICATIONS"
+      ],
       "package": "com.alerix.cookapp",
       "intentFilters": [
         {
